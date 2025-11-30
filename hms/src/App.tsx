@@ -2,6 +2,7 @@
 import { Button, MantineProvider, createTheme } from '@mantine/core';
 import '@mantine/core/styles.css'
 import AppRoutes from './Routes/AppRoutes';
+import './App.css'
 const theme = createTheme({
   focusRing:"never",
   fontFamily:"Poppins, sans-serif",

@@ -25,7 +25,8 @@
   --color-neutral-950: #000000;
   --font-poppins:"Poppins", sans-serif;
   --font-merriweather: "Merriweather", serif;
-  
+  --color-dark:#212529;
+  --color-light:#F0F3FB;
 }
 html, body{
   font-family: var(--font-poppins);
