@@ -11,8 +11,8 @@ const LoginPage = () => {
       password:'',
     },
     validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-      password:(value) => (!value?"Password is required!":null)
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Email inválido'),
+      password:(value) => (!value?"Senha é obrigatória!":null)
     },
   });
    const handleSubmit = (values: typeof form.values) => {
@@ -27,7 +27,7 @@ const LoginPage = () => {
         </div>
             <div className=" relative w-[450px] backdrop-blur-md p-10 py-8 rounded-xl">
                 <form onSubmit={form.onSubmit(handleSubmit)} className=" relative flex flex-col gap-5! [&_input]: pl-2 [&_svg]: text-neutral-100">
-                    <div className="self-center font-medium font-merriweather text-xl text-light">Login</div>
+                    <div className="self-center font-medium font-merriweather text-xl text-light">Entrar</div>
                     <TextInput variant="unstyled" placeholder="Email" radius="md" size="md"  {...form.getInputProps('email')} withAsterisk styles={{
                         input:{
                             color: '#f5f5f5',
@@ -35,15 +35,15 @@ const LoginPage = () => {
                             backgroundColor: 'transparent'
                         }
                     }}/>
-                    <PasswordInput placeholder="Password" variant="unstyled" radius="md" size="md"  {...form.getInputProps('password')} withAsterisk  styles={{
+                    <PasswordInput placeholder="Senha" variant="unstyled" radius="md" size="md"  {...form.getInputProps('password')} withAsterisk  styles={{
                         input:{
                             color:'#f5f5f5',
                             border:'1px solid #aaa',
                             backgroundColor:'transparent',
                         }
                     }} />
-                    <Button type="submit" color="pink">Login</Button>
-                    <div>Dont have an account? <Link to={"/register"}>Register</Link></div>
+                    <Button type="submit" color="pink">Entrar</Button>
+                    <div className="self-center">Não possui uma conta? <Link className="hover:underline" to={"/register"}>Cadastre-se</Link></div>
                 </form>
             </div>
         </div>

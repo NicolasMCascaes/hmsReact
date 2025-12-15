@@ -3,11 +3,11 @@ import { IconCalendarCheck, IconHeartbeat, IconLayoutGrid, IconMoodHeart, IconSt
 import avatar from '../../assets/avatar.jpg'
 import { NavLink } from 'react-router-dom'
 const Links = [
-  { name: "Dashboard", url: "/dashboard", icon: <IconLayoutGrid stroke={1.5} /> },
-  { name: "Doctors", url: "/doctors", icon: <IconStethoscope stroke={1.5} /> },
-  { name: "Patients", url: "/patients", icon: <IconMoodHeart stroke={1.5} /> },
-  { name: "Appointments", url: "/appointments", icon: <IconCalendarCheck stroke={1.5} /> },
-  { name: "Pharmacy", url: "/pharmacy", icon: <IconVaccine stroke={1.5} /> },
+  { name: "Painel", url: "/dashboard", icon: <IconLayoutGrid stroke={1.5} /> },
+  { name: "Médicos", url: "/doctors", icon: <IconStethoscope stroke={1.5} /> },
+  { name: "Pacientes", url: "/patients", icon: <IconMoodHeart stroke={1.5} /> },
+  { name: "Consultas", url: "/appointments", icon: <IconCalendarCheck stroke={1.5} /> },
+  { name: "Farmácia", url: "/pharmacy", icon: <IconVaccine stroke={1.5} /> },
 ]
 const SideBar = () => {
   return (

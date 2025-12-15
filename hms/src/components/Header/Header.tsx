@@ -11,7 +11,7 @@ const Header = () => {
     </ActionIcon>
 
     <div className='flex gap-5 items-center'>
-      <Link to="login"><Button>Login</Button></Link>
+      <Link to="login"><Button>Entrar</Button></Link>
       <ActionIcon variant="transparent" aria-label="Settings" size="md">
     <IconBellRinging style={{ width: '90%', height: '90%' }} stroke={1.5} />
     </ActionIcon>

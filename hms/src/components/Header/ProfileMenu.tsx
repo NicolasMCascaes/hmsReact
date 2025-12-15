@@ -20,15 +20,15 @@ const ProfileMenu = () => {
       </Menu.Target>
 
       <Menu.Dropdown>
-        <Menu.Label>Application</Menu.Label>
+        <Menu.Label>Aplicação</Menu.Label>
         <Menu.Item leftSection={<IconSettings size={14} />}>
-          Settings
+          Configurações
         </Menu.Item>
         <Menu.Item leftSection={<IconMessageCircle size={14} />}>
-          Messages
+          Mensagens
         </Menu.Item>
         <Menu.Item leftSection={<IconPhoto size={14} />}>
-          Gallery
+          Galeria
         </Menu.Item>
         <Menu.Item
           leftSection={<IconSearch size={14} />}
@@ -38,22 +38,22 @@ const ProfileMenu = () => {
             </Text>
           }
         >
-          Search
+          Pesquisar
         </Menu.Item>
 
         <Menu.Divider />
 
-        <Menu.Label>Danger zone</Menu.Label>
+        <Menu.Label>Zona de risco</Menu.Label>
         <Menu.Item
           leftSection={<IconArrowsLeftRight size={14} />}
         >
-          Transfer my data
+          Transferir meus dados
         </Menu.Item>
         <Menu.Item
           color="red"
           leftSection={<IconTrash size={14} />}
         >
-          Delete my account
+          Deletar minha conta
         </Menu.Item>
       </Menu.Dropdown>
     </Menu>
