@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/user")
@@ -53,6 +54,11 @@ public class UserApi {
         final UserDetails userDetails = userDetailsService.loadUserByUsername(loginDto.getEmail());
         final String jwt = jwtUtil.generateToken(userDetails);
         return new ResponseEntity<>(jwt, HttpStatus.OK);
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<?> getMethodName() {
+        return ResponseEntity.ok("TEST");
     }
 
 }
