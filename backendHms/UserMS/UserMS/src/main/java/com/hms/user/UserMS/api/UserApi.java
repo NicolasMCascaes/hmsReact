@@ -52,6 +52,7 @@ public class UserApi {
             throw new HmsException("INVALID_CREDENTIALS");
         }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(loginDto.getEmail());
+        System.out.println("Falhou aqui");
         final String jwt = jwtUtil.generateToken(userDetails);
         return new ResponseEntity<>(jwt, HttpStatus.OK);
     }

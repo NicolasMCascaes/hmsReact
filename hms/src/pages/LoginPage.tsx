@@ -1,22 +1,34 @@
 import { Button, PasswordInput, TextInput } from "@mantine/core"
 import { IconHeartbeat } from "@tabler/icons-react"
 import { useForm } from '@mantine/form';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { loginUser } from "../services/UserService";
+import { errorNotification, sucessNotification } from "../utilities/NotificationUtility";
+import { useState } from "react";
 
 
 const LoginPage = () => {
+    const navigate = useNavigate();
+    const[loading, setLoading] = useState(false)
     const form = useForm({
     initialValues: {
       email: '',
       password:'',
     },
     validate: {
+      
       email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Email inválido'),
       password:(value) => (!value?"Senha é obrigatória!":null)
     },
   });
    const handleSubmit = (values: typeof form.values) => {
-    console.log(values);
+    setLoading(true)
+    loginUser(values).then(()=>{
+      sucessNotification("Login com sucesso!")
+      navigate('/dashboard')
+    }).catch((error) =>{
+      errorNotification(error.response.data.errorMessage)
+    }).finally(()=> setLoading(false))
   };
     return (
         <div style={{ background: 'url("/bg.jpg")' }} className='h-screen w-screen bg-cover! bg-center! bg-no-repeat! flex flex-col items-center justify-center'>
@@ -42,7 +54,7 @@ const LoginPage = () => {
                             backgroundColor:'transparent',
                         }
                     }} />
-                    <Button type="submit" color="pink">Entrar</Button>
+                    <Button loading={loading} type="submit" color="pink">Entrar</Button>
                     <div className="self-center">Não possui uma conta? <Link className="hover:underline" to={"/register"}>Cadastre-se</Link></div>
                 </form>
             </div>
