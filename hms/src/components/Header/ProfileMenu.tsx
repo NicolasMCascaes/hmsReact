@@ -1,4 +1,4 @@
-import { Menu, Button, Text, Avatar } from '@mantine/core';
+import { Menu, Text, Avatar } from '@mantine/core';
 import {
   IconSettings,
   IconSearch,
@@ -8,13 +8,16 @@ import {
   IconArrowsLeftRight,
 } from '@tabler/icons-react';
 import avatar from '../../assets/avatar.jpg'
+import { useSelector } from 'react-redux';
 
 const ProfileMenu = () => {
+  const user = useSelector((state:any)=> state.user)
+
   return (
     <Menu shadow="md" width={200}>
       <Menu.Target>
          <div className='flex items-center gap-3 cursor-pointer'>
-           <span className='font-medium text-lg text-neutral-900'>Nicolas</span>
+           <span className='font-medium text-lg text-neutral-900'>{user.name}</span>
            <Avatar variant = "filled" src={avatar} alt="Nicolas" size={50}/>
          </div>
       </Menu.Target>

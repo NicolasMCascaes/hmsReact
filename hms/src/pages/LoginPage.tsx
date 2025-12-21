@@ -5,11 +5,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../services/UserService";
 import { errorNotification, sucessNotification } from "../utilities/NotificationUtility";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setJwt } from "../slices/JwtSlice";
+import {jwtDecode} from "jwt-decode"
+import { setUser } from "../slices/UserSlice";
 
 
 const LoginPage = () => {
     const navigate = useNavigate();
     const[loading, setLoading] = useState(false)
+    const dispatch = useDispatch();
     const form = useForm({
     initialValues: {
       email: '',
@@ -23,8 +28,11 @@ const LoginPage = () => {
   });
    const handleSubmit = (values: typeof form.values) => {
     setLoading(true)
-    loginUser(values).then(()=>{
+    loginUser(values).then((data)=>{
+      console.log(jwtDecode(data))
       sucessNotification("Login com sucesso!")
+      dispatch(setJwt(data))
+      dispatch(setUser(jwtDecode(data)))
       navigate('/dashboard')
     }).catch((error) =>{
       errorNotification(error.response.data.errorMessage)
