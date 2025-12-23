@@ -3,7 +3,7 @@ package com.hms.ProfileMS.entity;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import com.hms.ProfileMS.dto.BloodGroup;
+import com.hms.ProfileMS.dto.DoctorDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,4 +34,9 @@ public class Doctor {
     private String department;
     private Integer totalExp;
 
+    public DoctorDto toDto() {
+        return new DoctorDto(this.idDoctor, this.name, this.email, this.dob, this.phone, this.address,
+                this.licenseNumber,
+                this.specialization, this.department, this.totalExp);
+    }
 }
