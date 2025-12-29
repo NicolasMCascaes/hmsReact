@@ -19,9 +19,12 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public UUID addDoctor(DoctorDto doctor) throws HmsException {
         if (doctorRepository.findByEmail(doctor.getEmail()).isPresent()) {
+            System.out.println("Email" + doctor.getEmail());
             throw new HmsException("DOCTOR_ALREADY_EXISTS");
         }
-        if (doctorRepository.findByLicenseNumber(doctor.getLicenseNumber()).isPresent()) {
+        if (doctor.getLicenseNumber() != null
+                && doctorRepository.findByLicenseNumber(doctor.getLicenseNumber()).isPresent()) {
+            System.out.println("License: " + doctor.getLicenseNumber());
             throw new HmsException("DOCTOR_ALREADY_EXISTS");
         }
         return doctorRepository.save(doctor.toEntity()).getIdDoctor();

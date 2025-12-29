@@ -21,7 +21,7 @@ public class PatientServiceImpl implements PatientService {
         if (patientRepository.findByEmail(patient.getEmail()).isPresent()) {
             throw new HmsException("PATIENT_ALREADY_EXISTS!");
         }
-        if (patientRepository.findByCpf(patient.getCpf()).isPresent()) {
+        if (patient.getCpf() != null && patientRepository.findByCpf(patient.getCpf()).isPresent()) {
             throw new HmsException("PATIENT_ALREADY_EXISTS!");
         }
         return patientRepository.save(patient.toEntity()).getIdPatient();

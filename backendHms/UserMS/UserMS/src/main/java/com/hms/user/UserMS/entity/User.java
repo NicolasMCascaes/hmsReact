@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,8 +22,9 @@ public class User {
     private String email;
     private String password;
     private Roles role;
+    private UUID profileId;
 
-    public UserDto toDto(){
-        return new UserDto(this.id, this.name, this.email, this.password, this.role);
+    public UserDto toDto() {
+        return new UserDto(this.id, this.name, this.email, this.password, this.role, this.profileId);
     }
 }

@@ -7,18 +7,22 @@ import com.hms.user.UserMS.exception.HmsException;
 import com.hms.user.UserMS.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
 
 @Service("userService")
+@Transactional
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ApiService apiService;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ApiService apiService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.apiService = apiService;
     }
 
     @Override
@@ -28,6 +32,9 @@ public class UserServiceImpl implements UserService {
             throw new HmsException("USER_ALREADY_EXISTS");
         }
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        UUID profileId = apiService.addProfile(userDto).block();
+        System.out.println(profileId);
+        userDto.setProfileId(profileId);
         userRepository.save(userDto.toEntity());
     }
 

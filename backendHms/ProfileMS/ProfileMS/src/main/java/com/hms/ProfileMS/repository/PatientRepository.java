@@ -7,7 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import com.hms.ProfileMS.entity.Patient;
-import java.util.List;
 
 @Repository
 public interface PatientRepository extends CrudRepository<Patient, UUID> {

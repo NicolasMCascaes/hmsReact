@@ -32,9 +32,11 @@ public class Patient {
     @Column(unique = true)
     private String cpf;
     private BloodGroup bloodGroup;
+    private String alergies;
+    private String chronicDisease;
 
     public PatientDto toDto() {
         return new PatientDto(this.idPatient, this.name, this.email, this.dob, this.phone, this.address, this.cpf,
-                this.bloodGroup);
+                this.bloodGroup, this.alergies, this.chronicDisease);
     }
 }
