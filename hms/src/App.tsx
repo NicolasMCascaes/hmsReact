@@ -2,11 +2,13 @@
 import { MantineProvider, createTheme } from '@mantine/core';
 import '@mantine/core/styles.css'
 import '@mantine/notifications/styles.css';
+import '@mantine/dates/styles.css';
 import { Notifications } from '@mantine/notifications';
 import AppRoutes from './Routes/AppRoutes';
 import './App.css'
 import {Provider} from "react-redux"
 import Store from './utilities/Store';
+import 'react-phone-input-2/lib/style.css'
 const theme = createTheme({
   focusRing:"never",
   fontFamily:"Poppins, sans-serif",

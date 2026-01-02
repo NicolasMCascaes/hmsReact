@@ -1,14 +1,15 @@
 import { Avatar, Text } from '@mantine/core'
-import { IconCalendarCheck, IconHeartbeat, IconLayoutGrid, IconMoodHeart, IconStethoscope, IconVaccine } from '@tabler/icons-react'
-import avatar from '../../assets/avatar.jpg'
+import { IconCalendarCheck, IconHeartbeat, IconLayoutGrid, IconMoodHeart, IconStethoscope, IconUser, IconVaccine } from '@tabler/icons-react'
+import avatar from '../../../assets/avatar.jpg'
 import { NavLink } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 const Links = [
-  { name: "Painel", url: "/dashboard", icon: <IconLayoutGrid stroke={1.5} /> },
-  { name: "Médicos", url: "/doctors", icon: <IconStethoscope stroke={1.5} /> },
-  { name: "Pacientes", url: "/patients", icon: <IconMoodHeart stroke={1.5} /> },
-  { name: "Consultas", url: "/appointments", icon: <IconCalendarCheck stroke={1.5} /> },
-  { name: "Farmácia", url: "/pharmacy", icon: <IconVaccine stroke={1.5} /> },
+  { name: "Painel", url: "/doctor/dashboard", icon: <IconLayoutGrid stroke={1.5} /> },
+  { name: "Médicos", url: "/doctor/doctors", icon: <IconStethoscope stroke={1.5} /> },
+  { name: "Pacientes", url: "/doctor/patients", icon: <IconMoodHeart stroke={1.5} /> },
+  { name: "Consultas", url: "/doctor/appointments", icon: <IconCalendarCheck stroke={1.5} /> },
+  { name: "Perfil", url: "/doctor/profile", icon: <IconUser stroke={1.5} /> },
+  { name: "Farmácia", url: "/doctor/pharmacy", icon: <IconVaccine stroke={1.5} /> },
 ]
 const SideBar = () => {
   const user = useSelector((state:any)=> state.user)

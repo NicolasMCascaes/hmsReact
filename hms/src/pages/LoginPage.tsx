@@ -31,9 +31,11 @@ const LoginPage = () => {
     loginUser(values).then((data)=>{
       console.log(jwtDecode(data))
       sucessNotification("Login com sucesso!")
+      const user: any = jwtDecode(data)
+      navigate(`${user.roles.toLowerCase()}/dashboard`)
       dispatch(setJwt(data))
       dispatch(setUser(jwtDecode(data)))
-      navigate('/dashboard')
+      
     }).catch((error) =>{
       errorNotification(error.response.data.errorMessage)
     }).finally(()=> setLoading(false))
