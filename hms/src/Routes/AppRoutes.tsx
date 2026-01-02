@@ -8,7 +8,7 @@ import ProtectedRoute from "./ProtectedRoute"
 import PatientDashboard from "../Layout/PatientDashboard"
 import DoctorDashboard from "../Layout/DoctorDashboard"
 import PatientProfilePage from "../pages/PatientProfilePage"
-import Profile from "../components/Doctor/Profile/Profile"
+import DoctorProfilePage from "../pages/DoctorProfilePage"
 
 const AppRoutes = () => {
   return (
@@ -34,7 +34,7 @@ const AppRoutes = () => {
               <Route path='/doctor' element={<ProtectedRoute><DoctorDashboard/></ProtectedRoute>}>
                 <Route path="dashboard" element={<Random/>} />
                 <Route path="doctors" element={<Random/>} />
-                <Route path="profile" element={<Profile/>} />
+                <Route path="profile" element={<DoctorProfilePage/>} />
                 <Route path="patients" element={<Random/>} />
                 <Route path="appointments" element={<Random/>} />
                 <Route path="pharmacy" element={<Random/>} />

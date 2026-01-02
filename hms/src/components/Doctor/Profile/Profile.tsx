@@ -1,4 +1,4 @@
-import { Avatar, Button, Divider, Modal, NumberInput, Table, TagsInput, TextInput } from "@mantine/core"
+import { Avatar, Button, Divider, Modal, NumberInput, Select, Table, TextInput } from "@mantine/core"
 import avatar from '../../../assets/avatar.jpg'
 import { useSelector } from "react-redux"
 import { useState } from "react";
@@ -64,11 +64,11 @@ const Profile = () => {
                                  : <Table.Td>{doctor.licenseNumber}</Table.Td>}</Table.Tr>
                             <Table.Tr>
                                 <Table.Th className="font-semibold text-xl">Especialização</Table.Th>
-                                {editMode ? <Table.Td><TagsInput label="Especialização"/></Table.Td>
+                                {editMode ? <Table.Td><Select label="Especialização" data={['Cardiologia', 'Dermatologia', 'Neurologia', 'Pediatria', 'Psiquiatria', 'Oncologia', 'Ortopedia', 'Oftalmologia', 'Ginecologia', 'Urologia', 'Gastroenterologia', 'Endocrinologia', 'Radiologia', 'Anestesiologia', 'Nefrologia', 'Pneumologia', 'Reumatologia', 'Cirurgia Geral', 'Cirurgia Plástica', 'Medicina de Emergência']}/></Table.Td>
                                  : <Table.Td>{doctor.specialization}</Table.Td>}</Table.Tr>
                             <Table.Tr>
                                 <Table.Th className="font-semibold text-xl">Departamento</Table.Th>
-                                {editMode ? <Table.Td><TextInput label="Departamento"/></Table.Td>
+                                {editMode ? <Table.Td><Select label="Departamento" data={['Cardiologia', 'Dermatologia', 'Neurologia', 'Pediatria', 'Psiquiatria', 'Oncologia', 'Ortopedia', 'Oftalmologia', 'Ginecologia e Obstetrícia', 'Urologia', 'Gastroenterologia', 'Endocrinologia', 'Radiologia', 'Anestesiologia', 'Nefrologia', 'Pneumologia', 'Reumatologia', 'Cirurgia Geral', 'Cirurgia Plástica', 'Emergência', 'Medicina Intensiva', 'Laboratório', 'Fisioterapia', 'Farmácia', 'Administração Hospitalar']}/></Table.Td>
                                  : <Table.Td>{doctor.department}</Table.Td>}</Table.Tr>
                             <Table.Tr>
                                 <Table.Th className="font-semibold text-xl">Tempo de experiência profissional</Table.Th>

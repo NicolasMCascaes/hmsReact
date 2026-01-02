@@ -1,11 +1,10 @@
 import { Avatar, Text } from '@mantine/core'
-import { IconCalendarCheck, IconHeartbeat, IconLayoutGrid, IconMoodHeart, IconStethoscope, IconUser, IconVaccine } from '@tabler/icons-react'
+import { IconCalendarCheck, IconHeartbeat, IconLayoutGrid, IconMoodHeart, IconUser, IconVaccine } from '@tabler/icons-react'
 import avatar from '../../../assets/avatar.jpg'
 import { NavLink } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 const Links = [
   { name: "Painel", url: "/doctor/dashboard", icon: <IconLayoutGrid stroke={1.5} /> },
-  { name: "Médicos", url: "/doctor/doctors", icon: <IconStethoscope stroke={1.5} /> },
   { name: "Pacientes", url: "/doctor/patients", icon: <IconMoodHeart stroke={1.5} /> },
   { name: "Consultas", url: "/doctor/appointments", icon: <IconCalendarCheck stroke={1.5} /> },
   { name: "Perfil", url: "/doctor/profile", icon: <IconUser stroke={1.5} /> },
