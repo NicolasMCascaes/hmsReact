@@ -26,6 +26,7 @@ const RegisterPage = () => {
         },
     });
     const handleSubmit = (values: typeof form.values) => {
+        console.log(values)
         setLoading(true)
         registerUser(values).then((data)=>{
             console.log(data)

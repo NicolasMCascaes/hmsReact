@@ -8,6 +8,8 @@ import com.hms.ProfileMS.dto.PatientDto;
 import com.hms.ProfileMS.exception.HmsException;
 import com.hms.ProfileMS.repository.PatientRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class PatientServiceImpl implements PatientService {
     private final PatientRepository patientRepository;
@@ -30,6 +32,13 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public PatientDto getPatientById(UUID id) throws HmsException {
         return patientRepository.findById(id).orElseThrow(() -> new HmsException("PATIENT_NOT_FOUND")).toDto();
+    }
+
+    @Override
+    @Transactional
+    public PatientDto updatePatient(PatientDto dto) throws HmsException {
+        patientRepository.findById(dto.getIdPatient()).orElseThrow(() -> new HmsException("PATIENT_NOT_FOUND"));
+        return patientRepository.save(dto.toEntity()).toDto();
     }
 
 }

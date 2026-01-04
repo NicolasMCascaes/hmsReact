@@ -9,4 +9,6 @@ public interface DoctorService {
     public UUID addDoctor(DoctorDto doctor) throws HmsException;
 
     public DoctorDto getDoctorById(UUID id) throws HmsException;
+
+    public DoctorDto updateDoctor(DoctorDto doctor) throws HmsException;
 }

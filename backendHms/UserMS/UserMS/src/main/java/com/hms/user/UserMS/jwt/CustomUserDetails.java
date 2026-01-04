@@ -23,6 +23,7 @@ public class CustomUserDetails implements UserDetails {
     private String password;
     private Roles role;
     private String name;
+    private UUID profileId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

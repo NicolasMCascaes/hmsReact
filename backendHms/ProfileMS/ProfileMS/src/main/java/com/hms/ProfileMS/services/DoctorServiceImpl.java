@@ -7,6 +7,8 @@ import com.hms.ProfileMS.dto.DoctorDto;
 import com.hms.ProfileMS.exception.HmsException;
 import com.hms.ProfileMS.repository.DoctorRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository doctorRepository;
@@ -33,6 +35,14 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public DoctorDto getDoctorById(UUID id) throws HmsException {
         return doctorRepository.findById(id).orElseThrow(() -> new HmsException("DOCTOR_NOT_FOUND")).toDto();
+    }
+
+    @Override
+    @Transactional
+    public DoctorDto updateDoctor(DoctorDto dto) throws HmsException {
+        doctorRepository.findById(dto.getIdDoctor())
+                .orElseThrow(() -> new HmsException("DOCTOR_NOT_FOUND"));
+        return doctorRepository.save(dto.toEntity()).toDto();
     }
 
 }
