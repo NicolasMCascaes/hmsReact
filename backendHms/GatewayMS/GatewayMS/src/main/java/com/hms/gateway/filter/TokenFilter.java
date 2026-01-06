@@ -22,7 +22,6 @@ public class TokenFilter extends AbstractGatewayFilterFactory<TokenFilter.Config
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             String path = exchange.getRequest().getPath().toString();
-            System.out.println("Caminho: " + path);
             if (path.equals("/user/login") || path.equals("/user/register")) {
 
                 return chain.filter(exchange.mutate().request(r -> r.header("X-Secret-Key", "SECRET")).build());

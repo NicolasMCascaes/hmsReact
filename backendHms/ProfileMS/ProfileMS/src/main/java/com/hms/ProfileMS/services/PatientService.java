@@ -11,4 +11,6 @@ public interface PatientService {
     public PatientDto getPatientById(UUID id) throws HmsException;
 
     public PatientDto updatePatient(PatientDto doctor) throws HmsException;
+
+    public Boolean patientExists(UUID id) throws HmsException;
 }

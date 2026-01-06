@@ -21,12 +21,10 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public UUID addDoctor(DoctorDto doctor) throws HmsException {
         if (doctorRepository.findByEmail(doctor.getEmail()).isPresent()) {
-            System.out.println("Email" + doctor.getEmail());
             throw new HmsException("DOCTOR_ALREADY_EXISTS");
         }
         if (doctor.getLicenseNumber() != null
                 && doctorRepository.findByLicenseNumber(doctor.getLicenseNumber()).isPresent()) {
-            System.out.println("License: " + doctor.getLicenseNumber());
             throw new HmsException("DOCTOR_ALREADY_EXISTS");
         }
         return doctorRepository.save(doctor.toEntity()).getIdDoctor();
@@ -43,6 +41,11 @@ public class DoctorServiceImpl implements DoctorService {
         doctorRepository.findById(dto.getIdDoctor())
                 .orElseThrow(() -> new HmsException("DOCTOR_NOT_FOUND"));
         return doctorRepository.save(dto.toEntity()).toDto();
+    }
+
+    @Override
+    public Boolean doctorExists(UUID id) throws HmsException {
+        return doctorRepository.existsById(id);
     }
 
 }

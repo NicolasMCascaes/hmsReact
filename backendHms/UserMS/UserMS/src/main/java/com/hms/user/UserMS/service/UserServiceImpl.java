@@ -33,7 +33,6 @@ public class UserServiceImpl implements UserService {
         }
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         UUID profileId = apiService.addProfile(userDto).block();
-        System.out.println(profileId);
         userDto.setProfileId(profileId);
         userRepository.save(userDto.toEntity());
     }

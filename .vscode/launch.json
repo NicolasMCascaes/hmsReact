@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "AppointmentsMsApplication",
+            "request": "launch",
+            "mainClass": "com.hms.AppointmentsMS.AppointmentsMsApplication",
+            "projectName": "AppointmentsMS"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-ProfileMsApplication<ProfileMS>",
             "request": "launch",
             "cwd": "${workspaceFolder}",

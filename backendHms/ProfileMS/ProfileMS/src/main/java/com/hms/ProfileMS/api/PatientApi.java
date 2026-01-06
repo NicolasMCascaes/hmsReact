@@ -43,8 +43,12 @@ public class PatientApi {
     @PutMapping("/update")
     public ResponseEntity<PatientDto> updatePatient(@RequestBody PatientDto dto)
             throws HmsException {
-
         return new ResponseEntity<>(patientService.updatePatient(dto), HttpStatus.OK);
+    }
+
+    @GetMapping("/exists/{id}")
+    public ResponseEntity<Boolean> patientExistss(@PathVariable UUID id) throws HmsException {
+        return new ResponseEntity<>(patientService.patientExists(id), HttpStatus.OK);
     }
 
 }
