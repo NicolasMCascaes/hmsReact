@@ -20,20 +20,22 @@ public class ApiService {
 
     public Mono<Boolean> doctorExists(UUID id) {
 
-        return webClientBuilder.build().get().uri("http://localhost:8081/profile/doctor/exists/" + id)
+        return webClientBuilder.build().get().uri("lb://ProfileMS/profile/doctor/exists/" + id)
                 .retrieve().bodyToMono(Boolean.class);
     }
 
     public Mono<Boolean> patientExists(UUID id) {
-        return webClientBuilder.build().get().uri("http://localhost:8081/profile/patient/exists/" + id)
+        return webClientBuilder.build().get().uri("lb://ProfileMS/profile/patient/exists/" + id)
                 .retrieve().bodyToMono(Boolean.class);
     }
+
     public Mono<PatientDto> getPatient(UUID id) {
-        return webClientBuilder.build().get().uri("http://localhost:8081/profile/patient/get/" + id)
+        return webClientBuilder.build().get().uri("lb://ProfileMS/profile/patient/get/" + id)
                 .retrieve().bodyToMono(PatientDto.class);
     }
+
     public Mono<DoctorDto> getDoctor(UUID id) {
-        return webClientBuilder.build().get().uri("http://localhost:8081/profile/doctor/get/" + id)
+        return webClientBuilder.build().get().uri("lb://ProfileMS/profile/doctor/get/" + id)
                 .retrieve().bodyToMono(DoctorDto.class);
     }
 }

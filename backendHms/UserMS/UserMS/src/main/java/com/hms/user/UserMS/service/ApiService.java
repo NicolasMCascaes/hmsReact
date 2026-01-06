@@ -20,10 +20,10 @@ public class ApiService {
 
     public Mono<UUID> addProfile(UserDto user) {
         if (user.getRole().equals(Roles.DOCTOR)) {
-            return webClientBuilder.build().post().uri("http://localhost:8081/profile/doctor/add").bodyValue(user)
+            return webClientBuilder.build().post().uri("lb://ProfileMS/profile/doctor/add").bodyValue(user)
                     .retrieve().bodyToMono(UUID.class);
         } else if (user.getRole().equals(Roles.PATIENT)) {
-            return webClientBuilder.build().post().uri("http://localhost:8081/profile/patient/add").bodyValue(user)
+            return webClientBuilder.build().post().uri("lb://ProfileMS/profile/patient/add").bodyValue(user)
                     .retrieve().bodyToMono(UUID.class);
         }
         return null;
