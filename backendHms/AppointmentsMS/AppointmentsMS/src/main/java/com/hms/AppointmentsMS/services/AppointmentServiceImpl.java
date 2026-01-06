@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
+import com.hms.AppointmentsMS.clients.ProfileClient;
 import com.hms.AppointmentsMS.dto.AppointmentDTO;
 import com.hms.AppointmentsMS.dto.AppointmentDetailsDto;
 import com.hms.AppointmentsMS.dto.DoctorDto;
@@ -16,17 +17,17 @@ import com.hms.AppointmentsMS.repositories.AppointmentRepository;
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
-    private final ApiService apiService;
+    private final ProfileClient apiService;
 
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, ApiService apiService) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, ProfileClient apiService) {
         this.appointmentRepository = appointmentRepository;
         this.apiService = apiService;
     }
 
     @Override
     public Long scheduleAppointment(AppointmentDTO dto) throws HmsException {
-        Boolean patientExists = apiService.patientExists(dto.getPatientId()).block();
-        Boolean doctorExists = apiService.doctorExists(dto.getDoctorId()).block();
+        Boolean patientExists = apiService.patientExists(dto.getPatientId());
+        Boolean doctorExists = apiService.doctorExists(dto.getDoctorId());
         if (!patientExists) {
             throw new HmsException("PATIENT_NOT_FOUND");
         }
@@ -72,8 +73,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     public AppointmentDetailsDto getAppointmentDetailsWithName(Long appointmentId) throws HmsException {
         AppointmentDTO appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new HmsException("APPOINTMENT_NOT_FOUND")).toDTO();
-        PatientDto patient = apiService.getPatient(appointment.getPatientId()).block();
-        DoctorDto doctor = apiService.getDoctor(appointment.getDoctorId()).block();
+        PatientDto patient = apiService.getPatient(appointment.getPatientId());
+        DoctorDto doctor = apiService.getDoctor(appointment.getDoctorId());
         return new AppointmentDetailsDto(appointment.getIdAppointment(), appointment.getPatientId(), patient.getName(),
                 patient.getPhone(), patient.getEmail(), appointment.getDoctorId(), doctor.getName(),
                 appointment.getAppointmentTime(), appointment.getStatus(), appointment.getReason(),

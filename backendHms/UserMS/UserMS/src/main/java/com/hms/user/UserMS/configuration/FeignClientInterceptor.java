@@ -1,0 +1,15 @@
+package com.hms.user.UserMS.configuration;
+
+import org.springframework.context.annotation.Configuration;
+
+import feign.RequestInterceptor;
+import feign.RequestTemplate;
+
+@Configuration
+public class FeignClientInterceptor implements RequestInterceptor {
+    @Override
+    public void apply(RequestTemplate arg0) {
+        arg0.header("X-Secret-Key", "SECRET");
+    }
+
+}

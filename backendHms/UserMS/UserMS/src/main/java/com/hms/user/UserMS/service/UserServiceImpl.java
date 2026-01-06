@@ -8,7 +8,6 @@ import com.hms.user.UserMS.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,7 +31,7 @@ public class UserServiceImpl implements UserService {
             throw new HmsException("USER_ALREADY_EXISTS");
         }
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        UUID profileId = apiService.addProfile(userDto).block();
+        UUID profileId = apiService.addProfile(userDto);
         userDto.setProfileId(profileId);
         userRepository.save(userDto.toEntity());
     }
