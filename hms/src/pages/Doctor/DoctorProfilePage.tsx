@@ -1,4 +1,5 @@
-import Profile from '../components/Doctor/Profile/Profile'
+import Profile from "../../components/Doctor/Profile/Profile"
+
 
 const DoctorProfilePage = () => {
   return (

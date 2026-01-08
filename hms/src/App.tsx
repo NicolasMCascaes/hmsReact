@@ -1,5 +1,6 @@
 
 import { MantineProvider, createTheme } from '@mantine/core';
+import { PrimeReactProvider} from 'primereact/api';
 import '@mantine/core/styles.css'
 import '@mantine/notifications/styles.css';
 import '@mantine/dates/styles.css';
@@ -32,10 +33,12 @@ function App() {
   return (
     <Provider store={Store}>
     <MantineProvider theme={theme}>
+        <PrimeReactProvider>
         <Notifications position='top-center' />
             <div>
                <AppRoutes/>
             </div>
+          </PrimeReactProvider>
       </MantineProvider>
       </Provider>
       

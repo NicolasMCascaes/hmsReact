@@ -1,7 +1,9 @@
 package com.hms.ProfileMS.services;
 
+import java.util.List;
 import java.util.UUID;
 
+import com.hms.ProfileMS.dto.DoctorDropdown;
 import com.hms.ProfileMS.dto.DoctorDto;
 import com.hms.ProfileMS.exception.HmsException;
 
@@ -13,4 +15,6 @@ public interface DoctorService {
     public DoctorDto updateDoctor(DoctorDto doctor) throws HmsException;
 
     public Boolean doctorExists(UUID id) throws HmsException;
+
+    public List<DoctorDropdown> getAllDoctorsName() throws HmsException;
 }

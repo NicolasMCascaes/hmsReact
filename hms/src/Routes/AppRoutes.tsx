@@ -7,8 +7,10 @@ import PublicRoute from "./PublicRoute"
 import ProtectedRoute from "./ProtectedRoute"
 import PatientDashboard from "../Layout/PatientDashboard"
 import DoctorDashboard from "../Layout/DoctorDashboard"
-import PatientProfilePage from "../pages/PatientProfilePage"
-import DoctorProfilePage from "../pages/DoctorProfilePage"
+import PatientProfilePage from "../pages/Patient/PatientProfilePage"
+import DoctorProfilePage from "../pages/Doctor/DoctorProfilePage"
+import DoctorAppointmentPage from "../pages/Doctor/DoctorAppointmentPage"
+import PatientAppointmentPage from "../pages/Patient/PatientAppointmentPage"
 
 const AppRoutes = () => {
   return (
@@ -27,7 +29,7 @@ const AppRoutes = () => {
               <Route path='/patient' element={<ProtectedRoute><PatientDashboard/></ProtectedRoute>}>
                 <Route path="dashboard" element={<Random/>} />
                 <Route path="profile" element={<PatientProfilePage/>} />
-                <Route path="appointments" element={<Random/>} />
+                <Route path="appointments" element={<PatientAppointmentPage/>} />
                 
                 
               </Route>
@@ -36,7 +38,7 @@ const AppRoutes = () => {
                 <Route path="doctors" element={<Random/>} />
                 <Route path="profile" element={<DoctorProfilePage/>} />
                 <Route path="patients" element={<Random/>} />
-                <Route path="appointments" element={<Random/>} />
+                <Route path="appointments" element={<DoctorAppointmentPage/>} />
                 <Route path="pharmacy" element={<Random/>} />
               </Route>
             </Routes>

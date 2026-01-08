@@ -1,8 +1,10 @@
 package com.hms.ProfileMS.services;
 
+import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 
+import com.hms.ProfileMS.dto.DoctorDropdown;
 import com.hms.ProfileMS.dto.DoctorDto;
 import com.hms.ProfileMS.exception.HmsException;
 import com.hms.ProfileMS.repository.DoctorRepository;
@@ -46,6 +48,11 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public Boolean doctorExists(UUID id) throws HmsException {
         return doctorRepository.existsById(id);
+    }
+
+    @Override
+    public List<DoctorDropdown> getAllDoctorsName() throws HmsException {
+        return doctorRepository.findAllDoctorDropdown();
     }
 
 }

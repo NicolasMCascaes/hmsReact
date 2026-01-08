@@ -24,6 +24,8 @@
     "dayjs": "^1.11.19",
     "icons-react": "^3.7.1",
     "jwt-decode": "^4.0.0",
+    "primeicons": "^7.0.0",
+    "primereact": "^10.9.7",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-phone-input-2": "^2.15.1",

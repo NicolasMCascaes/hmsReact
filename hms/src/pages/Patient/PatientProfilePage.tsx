@@ -1,5 +1,6 @@
+import Profile from "../../components/Patient/Profile/Profile"
 
-import Profile from '../components/Patient/Profile/Profile'
+
 
 const PatientProfilePage = () => {
   return (
