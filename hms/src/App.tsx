@@ -1,6 +1,7 @@
 
 import { MantineProvider, createTheme } from '@mantine/core';
 import { PrimeReactProvider} from 'primereact/api';
+import { ModalsProvider } from '@mantine/modals';
 import '@mantine/core/styles.css'
 import '@mantine/notifications/styles.css';
 import '@mantine/dates/styles.css';
@@ -33,12 +34,14 @@ function App() {
   return (
     <Provider store={Store}>
     <MantineProvider theme={theme}>
+       <ModalsProvider>
         <PrimeReactProvider>
         <Notifications position='top-center' />
             <div>
                <AppRoutes/>
             </div>
           </PrimeReactProvider>
+          </ModalsProvider>
       </MantineProvider>
       </Provider>
       

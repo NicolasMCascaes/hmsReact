@@ -18,5 +18,22 @@ const bloodGroup = [
   { value: 'O_POSITIVE', label: 'O+' },
   { value: 'O_NEGATIVE', label: 'O-' },
 ];
+const appointmentReasons = [
+  'Consulta de rotina',
+  'Retorno médico',
+  'Sintomas de gripe',
+  'Acompanhamento de condição crônica',
+  'Discussão de resultados de exames',
+  'Renovação de receita médica',
+  'Vacinação',
+  'Avaliação de lesão',
+  'Saúde mental / Psicologia',
+  'Encaminhamento para especialista',
+  'Verificação da pressão arterial',
+  'Acompanhamento de diabetes',
+  'Consulta de pré-natal',
+  'Problemas de pele',
+  'Alergias'
+];
 
-export {bloodGroups, bloodGroup}
+export {bloodGroups, bloodGroup, appointmentReasons}

@@ -18,6 +18,7 @@ const Profile = () => {
     const [opened, { open, close }] = useDisclosure(false);
     const [profile, setProfile] = useState<any>({})
     const [loading, setLoading] = useState(false)
+    
     useEffect(() => {
   getDoctorProfile(user.profileId)
     .then((data) => {

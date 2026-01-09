@@ -1,6 +1,8 @@
 package com.hms.AppointmentsMS.services;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -79,6 +81,16 @@ public class AppointmentServiceImpl implements AppointmentService {
                 patient.getPhone(), patient.getEmail(), appointment.getDoctorId(), doctor.getName(),
                 appointment.getAppointmentTime(), appointment.getStatus(), appointment.getReason(),
                 appointment.getNotes());
+    }
+
+    @Override
+    public List<AppointmentDetailsDto> findAllAppointmentsWithDetails(UUID patientId) throws HmsException {
+        return appointmentRepository.findAllByPatientId(patientId).stream()
+                .map(appointment -> {
+                    DoctorDto doctorDto = apiService.getDoctor(appointment.getDoctorId());
+                    appointment.setDoctorName(doctorDto.getName());
+                    return appointment;
+                }).toList();
     }
 
 }

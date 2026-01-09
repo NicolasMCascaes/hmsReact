@@ -1,6 +1,8 @@
 package com.hms.AppointmentsMS.services;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 import com.hms.AppointmentsMS.dto.AppointmentDTO;
 import com.hms.AppointmentsMS.dto.AppointmentDetailsDto;
@@ -18,4 +20,7 @@ public interface AppointmentService {
     void rescheduleAppointment(Long appointmentId, LocalDateTime time) throws HmsException;
 
     AppointmentDetailsDto getAppointmentDetailsWithName(Long appointmentId) throws HmsException;
+
+    List<AppointmentDetailsDto> findAllAppointmentsWithDetails(UUID patientId) throws HmsException;
+
 }

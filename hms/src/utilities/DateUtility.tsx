@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 const formatDate= (dateString: any) => {
   if(!dateString) return '-'
   const months = [
@@ -12,4 +14,21 @@ const formatDate= (dateString: any) => {
   
    return `${day} de ${month} de ${year}`;
 }
-export {formatDate}
+const toIsoLocalDateTime = (dateString:any) => {
+   return dayjs(dateString).format('YYYY-MM-DDTHH:mm:ss');
+}
+const formatDateWithTime = (dateTime: any) =>{
+  if(!dateTime) return '-'
+  const date = new Date(dateTime);
+
+  const options: Intl.DateTimeFormatOptions ={
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day:'numeric',
+    hour:'numeric',
+    minute:'numeric'
+  }
+  return date.toLocaleString('pt-br', options)
+}
+export {formatDate, toIsoLocalDateTime, formatDateWithTime}
