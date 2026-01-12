@@ -42,9 +42,9 @@ public class AppointmentAPI {
         return new ResponseEntity<>(appointmentService.getAppointmentDetails(id), HttpStatus.OK);
     }
 
-    @PatchMapping("/cancel/{id}")
-    public ResponseEntity<String> cancelAppointment(@PathVariable Long id) throws HmsException {
-        appointmentService.cancelAppointment(id);
+    @PatchMapping("/cancel/{idAppointment}")
+    public ResponseEntity<String> cancelAppointment(@PathVariable Long idAppointment) throws HmsException {
+        appointmentService.cancelAppointment(idAppointment);
         return new ResponseEntity<>("Appointment Cancelled", HttpStatus.OK);
     }
 
