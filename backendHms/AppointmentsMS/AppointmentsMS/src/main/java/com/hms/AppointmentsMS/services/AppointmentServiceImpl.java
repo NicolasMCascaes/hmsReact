@@ -93,4 +93,16 @@ public class AppointmentServiceImpl implements AppointmentService {
                 }).toList();
     }
 
+    @Override
+    public List<AppointmentDetailsDto> findAllAppointmentsByDoctorId(UUID doctorId) throws HmsException {
+        return appointmentRepository.findAllByDoctorId(doctorId).stream()
+                .map(appointment -> {
+                    PatientDto patientDto = apiService.getPatient(appointment.getPatientId());
+                    appointment.setPatientName(patientDto.getName());
+                    appointment.setPatientEmail(patientDto.getEmail());
+                    appointment.setPatientPhone(patientDto.getPhone());
+                    return appointment;
+                }).toList();
+    }
+
 }

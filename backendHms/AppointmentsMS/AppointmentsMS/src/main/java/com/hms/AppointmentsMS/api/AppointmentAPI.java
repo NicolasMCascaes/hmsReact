@@ -55,10 +55,16 @@ public class AppointmentAPI {
         return new ResponseEntity<>(appointmentService.getAppointmentDetailsWithName(id), HttpStatus.OK);
     }
 
-    @GetMapping("/getAll/details/{patientId}")
+    @GetMapping("/getAllByPatient/details/{patientId}")
     public ResponseEntity<List<AppointmentDetailsDto>> getAllAppointmentsWithDetails(@PathVariable UUID patientId)
             throws HmsException {
         return new ResponseEntity<>(appointmentService.findAllAppointmentsWithDetails(patientId), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllByDoctor/details/{profileId}")
+    public ResponseEntity<List<AppointmentDetailsDto>> getAllAppointmentsByDoctorId(@PathVariable UUID profileId)
+            throws HmsException {
+        return new ResponseEntity<>(appointmentService.findAllAppointmentsByDoctorId(profileId), HttpStatus.OK);
     }
 
 }

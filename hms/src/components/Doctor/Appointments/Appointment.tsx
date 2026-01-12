@@ -11,7 +11,7 @@ import { getDoctorDropdown } from '../../../services/DoctorProfileService';
 import { DateTimePicker } from '@mantine/dates';
 import dayjs from 'dayjs';
 import { useForm } from '@mantine/form';
-import { cancelAppointment, getAllAppointmentByPatient, scheduleAppointment } from '../../../services/AppointmentService';
+import { cancelAppointment, getAllAppointmentByDoctor, getAllAppointmentByPatient, scheduleAppointment } from '../../../services/AppointmentService';
 import { useSelector } from 'react-redux';
 import { errorNotification, sucessNotification } from '../../../utilities/NotificationUtility';
 import { formatDateWithTime, toIsoLocalDateTime } from '../../../utilities/DateUtility';
@@ -45,7 +45,8 @@ const Appointment = () => {
 
     const [filters, setFilters] = useState<DataTableFilterMeta>({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        doctorName: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+        patientName: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+        patientPhone: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
         appointmentTime: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
         reason: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
         notes: { value: null, matchMode: FilterMatchMode.IN },
@@ -82,7 +83,7 @@ const Appointment = () => {
     }, []);
 
     const fetchData = () => {
-        getAllAppointmentByPatient(user.profileId).then((data) => {
+        getAllAppointmentByDoctor(user.profileId).then((data) => {
             setAppointments(data)
         }).catch((error: any) => {
             console.log(error)
@@ -187,10 +188,6 @@ const Appointment = () => {
 
     const actionBodyTemplate = (rowData: any) => {
         return <div className='flex gap-2'>
-            <ActionIcon>
-                <IconEdit size={20} stroke={1.5} />
-            </ActionIcon>
-
             <ActionIcon color='red' onClick={() => { console.log("rowData.idAppointment =", rowData.idAppointment), handleDelete(Number(rowData.idAppointment)) }}>
 
                 <IconTrash size={20} stroke={1.5} />
@@ -200,14 +197,7 @@ const Appointment = () => {
     const timeTemplate = (rowData: any) => {
         return <span className='text-red-400'>{formatDateWithTime(rowData.appointmentTime)}</span>
     }
-    const leftToolbarTemplate = () => {
-        return (
-            <div className="flex flex-wrap gap-2 justify-between items-center">
-                <Button leftSection={<IconPlus />} onClick={open}>Agendar Consulta</Button>
-
-            </div>
-        );
-    };
+   
     const centerToolBarTemplate = () => {
         return (
             <SegmentedControl
@@ -240,7 +230,7 @@ const Appointment = () => {
     })
     return (
         <div className="card">
-            <Toolbar className="mb-4" start={leftToolbarTemplate} center={centerToolBarTemplate} end={rightToolbarTemplate}></Toolbar>
+            <Toolbar className="mb-4"  center={centerToolBarTemplate} end={rightToolbarTemplate}></Toolbar>
             <DataTable value={filteredAppointments} size='small' paginator rows={10}
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 rowsPerPageOptions={[10, 25, 50]} dataKey="idAppointment" selectionMode="checkbox" selection={selectedCustomers}
@@ -248,9 +238,10 @@ const Appointment = () => {
                     const customers = e.value as Customer[];
                     setSelectedCustomers(customers);
                 }}
-                filters={filters} filterDisplay="menu" globalFilterFields={['doctorName', 'appointmentTime', 'reason', 'notes', 'status']}
+                filters={filters} filterDisplay="menu" globalFilterFields={['patientName', 'appointmentTime', 'reason', 'notes', 'status']}
                 emptyMessage="Nenhuma consulta encontrada." currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} consultas">
-                <Column field="doctorName" header="Doutor" sortable filter filterPlaceholder="Procurar por nome" style={{ minWidth: '14rem' }} />
+                <Column field="patientName" header="Paciente" sortable filter filterPlaceholder="Procurar por nome" style={{ minWidth: '14rem' }} />
+                <Column field="patientPhone" header="Telefone para contato" filter filterPlaceholder="Procurar telefone" style={{ minWidth: '14rem' }} />
                 <Column field="appointmentTime" header="Data e horário" body={timeTemplate} sortable style={{ minWidth: '14rem' }} />
                 <Column field="reason" header="Motivo da consulta" sortable filter style={{ minWidth: '14rem' }} />
                 <Column field="notes" header="Observações adicionais" sortable filter style={{ minWidth: '14rem' }} />

@@ -30,11 +30,18 @@ const getAppointment= (appointmentId:any) => {
     })
 }
 const getAllAppointmentByPatient = (patientId: any) => {
-    return axiosInstance.get('/appointment/getAll/details/' + patientId).then((response: any) =>{
+    return axiosInstance.get('/appointment/getAllByPatient/details/' + patientId).then((response: any) =>{
+        return response.data
+    }).catch((error:any) => {
+        throw error
+    })
+}
+const getAllAppointmentByDoctor = (doctorId: any) => {
+    return axiosInstance.get('/appointment/getAllByDoctor/details/' + doctorId).then((response: any) =>{
         return response.data
     }).catch((error:any) => {
         throw error
     })
 }
 
-export {scheduleAppointment, cancelAppointment, getAppointmentDetails, getAppointment, getAllAppointmentByPatient}
+export {scheduleAppointment, cancelAppointment, getAppointmentDetails, getAppointment, getAllAppointmentByPatient, getAllAppointmentByDoctor}

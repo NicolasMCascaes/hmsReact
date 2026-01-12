@@ -6,7 +6,7 @@ const DoctorDashboard = () => {
   return (
     <div className='flex'>
         <SideBar/>
-        <div className='w-full flex flex-col'>
+        <div className='w-full flex overflow-hidden flex-col'>
             <Header/>
             <Outlet />
         </div>  
