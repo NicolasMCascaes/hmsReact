@@ -28,7 +28,7 @@ public class ApRecord {
     private Long idRecord;
     private UUID patientId;
     private UUID doctorId;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;
     private String sintoms;

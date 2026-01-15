@@ -3,14 +3,13 @@ package com.hms.AppointmentsMS.services;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hms.AppointmentsMS.dto.ApRecordDTO;
 import com.hms.AppointmentsMS.entity.ApRecord;
 import com.hms.AppointmentsMS.exceptions.HmsException;
 import com.hms.AppointmentsMS.repositories.ApRecordRepository;
 import com.hms.AppointmentsMS.utilities.StringListConverter;
-
-import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
@@ -64,6 +63,7 @@ public class ApRecordServiceImpl implements ApRecordService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ApRecordDTO getApRecordById(Long apRecordId) throws HmsException {
         return apRecordRepository.findById(apRecordId)
                 .orElseThrow(() -> new HmsException("APPOINTMENT_RECORD_NOT_FOUND")).toDto();
