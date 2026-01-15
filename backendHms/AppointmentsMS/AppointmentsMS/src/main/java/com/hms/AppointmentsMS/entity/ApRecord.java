@@ -28,7 +28,7 @@ public class ApRecord {
     private Long idRecord;
     private UUID patientId;
     private UUID doctorId;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;
     private String sintoms;
@@ -40,9 +40,10 @@ public class ApRecord {
     private LocalDateTime createdAt;
 
     public ApRecordDTO toDto() {
-        return new ApRecordDTO(idRecord, patientId, doctorId, idRecord,
+        return new ApRecordDTO(idRecord, patientId, doctorId,
+                appointment != null ? appointment.getIdAppointment() : null,
                 sintoms != null ? StringListConverter.stringToList(tests) : null, diagnosis,
-                tests != null ? StringListConverter.stringToList(tests) : null, notes, referral, followUpDate,
+                tests != null ? StringListConverter.stringToList(tests) : null, null, notes, referral, followUpDate,
                 createdAt);
     }
 }

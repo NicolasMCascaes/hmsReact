@@ -24,6 +24,7 @@ public class ApRecordDTO {
     private List<String> sintoms;
     private String diagnosis;
     private List<String> tests;
+    private PrescriptionDTO prescription;
     private String notes;
     private String referral;
     private LocalDate followUpDate;
@@ -34,7 +35,7 @@ public class ApRecordDTO {
                 this.idRecord,
                 this.patientId,
                 this.doctorId,
-                new Appointment(this.appointmentId),
+                new Appointment(appointmentId),
                 StringListConverter.listToString(sintoms),
                 this.diagnosis,
                 StringListConverter.listToString(tests),
