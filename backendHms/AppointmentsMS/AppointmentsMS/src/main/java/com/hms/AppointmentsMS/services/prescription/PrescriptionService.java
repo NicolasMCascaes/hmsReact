@@ -1,6 +1,6 @@
-package com.hms.AppointmentsMS.services;
+package com.hms.AppointmentsMS.services.prescription;
 
-import com.hms.AppointmentsMS.dto.PrescriptionDTO;
+import com.hms.AppointmentsMS.dto.prescription.PrescriptionDTO;
 import com.hms.AppointmentsMS.exceptions.HmsException;
 
 public interface PrescriptionService {

@@ -1,4 +1,4 @@
-package com.hms.AppointmentsMS.dto;
+package com.hms.AppointmentsMS.dto.medicine;
 
 import com.hms.AppointmentsMS.entity.Medicine;
 import com.hms.AppointmentsMS.entity.Prescription;

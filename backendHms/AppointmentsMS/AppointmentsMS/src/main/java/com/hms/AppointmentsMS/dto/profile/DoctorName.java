@@ -1,4 +1,4 @@
-package com.hms.AppointmentsMS.dto;
+package com.hms.AppointmentsMS.dto.profile;
 
 import java.util.UUID;
 

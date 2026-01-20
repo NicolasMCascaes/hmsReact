@@ -1,8 +1,9 @@
-package com.hms.AppointmentsMS.dto;
+package com.hms.AppointmentsMS.dto.appointment;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.hms.AppointmentsMS.dto.profile.Status;
 import com.hms.AppointmentsMS.entity.Appointment;
 
 import jakarta.validation.constraints.NotBlank;

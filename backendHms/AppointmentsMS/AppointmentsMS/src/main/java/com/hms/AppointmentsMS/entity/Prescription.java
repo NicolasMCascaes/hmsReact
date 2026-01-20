@@ -3,7 +3,7 @@ package com.hms.AppointmentsMS.entity;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import com.hms.AppointmentsMS.dto.PrescriptionDTO;
+import com.hms.AppointmentsMS.dto.prescription.PrescriptionDTO;
 
 import jakarta.persistence.OneToOne;
 

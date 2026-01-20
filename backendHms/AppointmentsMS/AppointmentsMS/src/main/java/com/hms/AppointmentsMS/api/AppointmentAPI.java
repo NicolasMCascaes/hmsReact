@@ -10,10 +10,11 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hms.AppointmentsMS.dto.AppointmentDTO;
-import com.hms.AppointmentsMS.dto.AppointmentDetailsDto;
+import com.hms.AppointmentsMS.dto.appointment.AppointmentDTO;
+import com.hms.AppointmentsMS.dto.appointment.AppointmentDetailsDto;
 import com.hms.AppointmentsMS.exceptions.HmsException;
-import com.hms.AppointmentsMS.services.AppointmentService;
+import com.hms.AppointmentsMS.services.appointment.AppointmentService;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;

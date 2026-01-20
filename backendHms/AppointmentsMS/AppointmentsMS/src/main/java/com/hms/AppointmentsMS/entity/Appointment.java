@@ -3,8 +3,8 @@ package com.hms.AppointmentsMS.entity;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.hms.AppointmentsMS.dto.AppointmentDTO;
-import com.hms.AppointmentsMS.dto.Status;
+import com.hms.AppointmentsMS.dto.appointment.AppointmentDTO;
+import com.hms.AppointmentsMS.dto.profile.Status;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

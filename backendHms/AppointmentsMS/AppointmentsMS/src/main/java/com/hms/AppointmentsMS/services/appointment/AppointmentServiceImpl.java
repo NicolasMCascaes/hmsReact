@@ -1,4 +1,4 @@
-package com.hms.AppointmentsMS.services;
+package com.hms.AppointmentsMS.services.appointment;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -7,11 +7,11 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.hms.AppointmentsMS.clients.ProfileClient;
-import com.hms.AppointmentsMS.dto.AppointmentDTO;
-import com.hms.AppointmentsMS.dto.AppointmentDetailsDto;
-import com.hms.AppointmentsMS.dto.DoctorDto;
-import com.hms.AppointmentsMS.dto.PatientDto;
-import com.hms.AppointmentsMS.dto.Status;
+import com.hms.AppointmentsMS.dto.appointment.AppointmentDTO;
+import com.hms.AppointmentsMS.dto.appointment.AppointmentDetailsDto;
+import com.hms.AppointmentsMS.dto.profile.DoctorDto;
+import com.hms.AppointmentsMS.dto.profile.PatientDto;
+import com.hms.AppointmentsMS.dto.profile.Status;
 import com.hms.AppointmentsMS.entity.Appointment;
 import com.hms.AppointmentsMS.exceptions.HmsException;
 import com.hms.AppointmentsMS.repositories.AppointmentRepository;

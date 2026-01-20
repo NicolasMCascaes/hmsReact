@@ -1,10 +1,10 @@
-package com.hms.AppointmentsMS.services;
+package com.hms.AppointmentsMS.services.medicine;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.hms.AppointmentsMS.dto.MedicineDto;
+import com.hms.AppointmentsMS.dto.medicine.MedicineDto;
 import com.hms.AppointmentsMS.entity.Medicine;
 import com.hms.AppointmentsMS.exceptions.HmsException;
 import com.hms.AppointmentsMS.repositories.MedicineRepository;

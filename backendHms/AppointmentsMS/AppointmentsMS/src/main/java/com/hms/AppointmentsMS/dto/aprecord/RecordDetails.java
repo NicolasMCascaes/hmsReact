@@ -1,4 +1,4 @@
-package com.hms.AppointmentsMS.dto;
+package com.hms.AppointmentsMS.dto.aprecord;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

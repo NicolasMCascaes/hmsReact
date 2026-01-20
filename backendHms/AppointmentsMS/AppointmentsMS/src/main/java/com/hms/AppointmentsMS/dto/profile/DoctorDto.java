@@ -1,4 +1,4 @@
-package com.hms.AppointmentsMS.dto;
+package com.hms.AppointmentsMS.dto.profile;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -20,6 +20,5 @@ public class DoctorDto {
     private String specialization;
     private String department;
     private Integer totalExp;
-
 
 }

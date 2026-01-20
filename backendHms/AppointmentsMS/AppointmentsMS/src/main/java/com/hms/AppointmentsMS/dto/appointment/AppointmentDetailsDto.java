@@ -1,7 +1,9 @@
-package com.hms.AppointmentsMS.dto;
+package com.hms.AppointmentsMS.dto.appointment;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import com.hms.AppointmentsMS.dto.profile.Status;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

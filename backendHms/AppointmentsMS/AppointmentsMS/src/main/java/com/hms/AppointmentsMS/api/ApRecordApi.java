@@ -12,10 +12,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hms.AppointmentsMS.dto.ApRecordDTO;
-import com.hms.AppointmentsMS.dto.RecordDetails;
+import com.hms.AppointmentsMS.dto.aprecord.ApRecordDTO;
+import com.hms.AppointmentsMS.dto.aprecord.RecordDetails;
 import com.hms.AppointmentsMS.exceptions.HmsException;
-import com.hms.AppointmentsMS.services.ApRecordService;
+import com.hms.AppointmentsMS.services.aprecord.ApRecordService;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;

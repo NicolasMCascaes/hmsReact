@@ -1,11 +1,11 @@
-package com.hms.AppointmentsMS.services;
+package com.hms.AppointmentsMS.services.appointment;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import com.hms.AppointmentsMS.dto.AppointmentDTO;
-import com.hms.AppointmentsMS.dto.AppointmentDetailsDto;
+import com.hms.AppointmentsMS.dto.appointment.AppointmentDTO;
+import com.hms.AppointmentsMS.dto.appointment.AppointmentDetailsDto;
 import com.hms.AppointmentsMS.exceptions.HmsException;
 
 public interface AppointmentService {

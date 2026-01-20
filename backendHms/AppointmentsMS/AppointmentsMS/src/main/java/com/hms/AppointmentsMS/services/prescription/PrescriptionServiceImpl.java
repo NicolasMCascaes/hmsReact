@@ -1,12 +1,13 @@
-package com.hms.AppointmentsMS.services;
+package com.hms.AppointmentsMS.services.prescription;
 
 import java.time.LocalDate;
 
 import org.springframework.stereotype.Service;
 
-import com.hms.AppointmentsMS.dto.PrescriptionDTO;
+import com.hms.AppointmentsMS.dto.prescription.PrescriptionDTO;
 import com.hms.AppointmentsMS.exceptions.HmsException;
 import com.hms.AppointmentsMS.repositories.PrescriptionRepository;
+import com.hms.AppointmentsMS.services.medicine.MedicineService;
 
 import jakarta.transaction.Transactional;
 

@@ -1,10 +1,10 @@
-package com.hms.AppointmentsMS.services;
+package com.hms.AppointmentsMS.services.aprecord;
 
 import java.util.List;
 import java.util.UUID;
 
-import com.hms.AppointmentsMS.dto.ApRecordDTO;
-import com.hms.AppointmentsMS.dto.RecordDetails;
+import com.hms.AppointmentsMS.dto.aprecord.ApRecordDTO;
+import com.hms.AppointmentsMS.dto.aprecord.RecordDetails;
 import com.hms.AppointmentsMS.exceptions.HmsException;
 
 public interface ApRecordService {

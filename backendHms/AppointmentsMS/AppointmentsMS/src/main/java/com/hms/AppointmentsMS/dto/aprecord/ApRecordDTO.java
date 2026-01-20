@@ -1,10 +1,11 @@
-package com.hms.AppointmentsMS.dto;
+package com.hms.AppointmentsMS.dto.aprecord;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import com.hms.AppointmentsMS.dto.prescription.PrescriptionDTO;
 import com.hms.AppointmentsMS.entity.ApRecord;
 import com.hms.AppointmentsMS.entity.Appointment;
 import com.hms.AppointmentsMS.utilities.StringListConverter;

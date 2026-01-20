@@ -1,6 +1,6 @@
 package com.hms.AppointmentsMS.entity;
 
-import com.hms.AppointmentsMS.dto.MedicineDto;
+import com.hms.AppointmentsMS.dto.medicine.MedicineDto;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

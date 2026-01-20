@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.hms.AppointmentsMS.dto.DoctorDto;
-import com.hms.AppointmentsMS.dto.DoctorName;
-import com.hms.AppointmentsMS.dto.PatientDto;
+import com.hms.AppointmentsMS.dto.profile.DoctorDto;
+import com.hms.AppointmentsMS.dto.profile.DoctorName;
+import com.hms.AppointmentsMS.dto.profile.PatientDto;
 
 @FeignClient(name = "ProfileMS")
 public interface ProfileClient {

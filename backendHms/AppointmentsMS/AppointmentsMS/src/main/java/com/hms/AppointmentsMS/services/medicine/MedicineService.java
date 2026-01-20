@@ -1,8 +1,8 @@
-package com.hms.AppointmentsMS.services;
+package com.hms.AppointmentsMS.services.medicine;
 
 import java.util.List;
 
-import com.hms.AppointmentsMS.dto.MedicineDto;
+import com.hms.AppointmentsMS.dto.medicine.MedicineDto;
 import com.hms.AppointmentsMS.exceptions.HmsException;
 
 public interface MedicineService {
