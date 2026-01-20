@@ -1,6 +1,10 @@
 package com.hms.AppointmentsMS.services;
 
+import java.util.List;
+import java.util.UUID;
+
 import com.hms.AppointmentsMS.dto.ApRecordDTO;
+import com.hms.AppointmentsMS.dto.RecordDetails;
 import com.hms.AppointmentsMS.exceptions.HmsException;
 
 public interface ApRecordService {
@@ -13,4 +17,9 @@ public interface ApRecordService {
     public ApRecordDTO getApRecordById(Long apRecordId) throws HmsException;
 
     public ApRecordDTO getApRecordDetailsByAppointmentId(Long appointmentId) throws HmsException;
+
+    public List<RecordDetails> getRecordsByPatientId(UUID patientId) throws HmsException;
+
+    public List<RecordDetails> getRecordsById(Long recordId) throws HmsException;
+
 }

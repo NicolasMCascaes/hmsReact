@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.hms.AppointmentsMS.dto.ApRecordDTO;
+import com.hms.AppointmentsMS.dto.RecordDetails;
 import com.hms.AppointmentsMS.utilities.StringListConverter;
 
 import jakarta.persistence.Entity;
@@ -44,6 +45,14 @@ public class ApRecord {
                 appointment != null ? appointment.getIdAppointment() : null,
                 sintoms != null ? StringListConverter.stringToList(tests) : null, diagnosis,
                 tests != null ? StringListConverter.stringToList(tests) : null, null, notes, referral, followUpDate,
+                createdAt);
+    }
+
+    public RecordDetails toRecordDetails() {
+        return new RecordDetails(idRecord, patientId, doctorId, null, appointment.getIdAppointment(),
+                sintoms != null ? StringListConverter.stringToList(sintoms) : null,
+                diagnosis,
+                tests != null ? StringListConverter.stringToList(tests) : null, notes, referral, followUpDate,
                 createdAt);
     }
 }

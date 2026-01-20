@@ -20,4 +20,7 @@ public interface DoctorRepository extends CrudRepository<Doctor, UUID> {
 
     @Query("SELECT d.id AS id, d.name AS name FROM Doctor d")
     List<DoctorDropdown> findAllDoctorDropdown();
+
+    @Query("SELECT d.id AS id, d.name AS name from Doctor d WHERE d.idDoctor in ?1")
+    List<DoctorDropdown> findAllDoctorDropdownsByIds(List<UUID> ids);
 }

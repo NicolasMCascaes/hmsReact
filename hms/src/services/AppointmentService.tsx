@@ -43,5 +43,12 @@ const getAllAppointmentByDoctor = (doctorId: any) => {
         throw error
     })
 }
+const createApReport = (apReport: any) =>{
+    return axiosInstance.post('/appointment/report/create', apReport).then((response: any) =>{
+        return response.data
+    }).catch((error:any) => {
+        throw error
+    })
+}
 
-export {scheduleAppointment, cancelAppointment, getAppointmentDetails, getAppointment, getAllAppointmentByPatient, getAllAppointmentByDoctor}
+export {scheduleAppointment, cancelAppointment, getAppointmentDetails, getAppointment, getAllAppointmentByPatient, getAllAppointmentByDoctor, createApReport}

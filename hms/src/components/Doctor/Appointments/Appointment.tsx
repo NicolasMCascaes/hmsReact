@@ -5,7 +5,7 @@ import { Column, type ColumnFilterElementTemplateOptions } from 'primereact/colu
 import { Dropdown, type DropdownChangeEvent } from 'primereact/dropdown';
 import { Tag } from 'primereact/tag';
 import { ActionIcon, Button, LoadingOverlay, Modal, Select, TextInput, Text, SegmentedControl } from '@mantine/core';
-import { IconEdit, IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
+import { IconEdit, IconEye, IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { getDoctorDropdown } from '../../../services/DoctorProfileService';
 import { DateTimePicker } from '@mantine/dates';
@@ -18,6 +18,7 @@ import { formatDateWithTime, toIsoLocalDateTime } from '../../../utilities/DateU
 import { appointmentReasons } from '../../../data/DropDownData';
 import { modals } from '@mantine/modals';
 import { Toolbar } from 'primereact/toolbar';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -37,6 +38,7 @@ const Appointment = () => {
     const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
     const [doctors, setDoctors] = useState<any[]>([])
     const [opened, { open, close }] = useDisclosure(false);
+    const navigate = useNavigate()
     const user = useSelector((state: any) => state.user)
     const [loading, setLoading] = useState(false)
     const [, { toggle }] = useDisclosure(false);
@@ -188,8 +190,10 @@ const Appointment = () => {
 
     const actionBodyTemplate = (rowData: any) => {
         return <div className='flex gap-2'>
+            <ActionIcon onClick={()=>navigate("" + rowData.idAppointment)}>
+                <IconEye size={20} stroke={1.5} />
+            </ActionIcon>
             <ActionIcon color='red' onClick={() => { console.log("rowData.idAppointment =", rowData.idAppointment), handleDelete(Number(rowData.idAppointment)) }}>
-
                 <IconTrash size={20} stroke={1.5} />
             </ActionIcon>
         </div>

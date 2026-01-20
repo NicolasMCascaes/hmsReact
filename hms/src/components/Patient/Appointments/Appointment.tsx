@@ -5,7 +5,7 @@ import { Column, type ColumnFilterElementTemplateOptions } from 'primereact/colu
 import { Dropdown, type DropdownChangeEvent } from 'primereact/dropdown';
 import { Tag } from 'primereact/tag';
 import { ActionIcon, Button, LoadingOverlay, Modal, Select, TextInput, Text, SegmentedControl } from '@mantine/core';
-import { IconEdit, IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
+import { IconEdit, IconEye, IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { getDoctorDropdown } from '../../../services/DoctorProfileService';
 import { DateTimePicker } from '@mantine/dates';
@@ -188,11 +188,10 @@ const Appointment = () => {
     const actionBodyTemplate = (rowData: any) => {
         return <div className='flex gap-2'>
             <ActionIcon>
-                <IconEdit size={20} stroke={1.5} />
+                <IconEye size={20} stroke={1.5} />
             </ActionIcon>
 
             <ActionIcon color='red' onClick={() => { console.log("rowData.idAppointment =", rowData.idAppointment), handleDelete(Number(rowData.idAppointment)) }}>
-
                 <IconTrash size={20} stroke={1.5} />
             </ActionIcon>
         </div>

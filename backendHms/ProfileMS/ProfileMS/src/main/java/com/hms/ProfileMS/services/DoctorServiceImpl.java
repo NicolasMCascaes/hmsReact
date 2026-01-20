@@ -55,4 +55,9 @@ public class DoctorServiceImpl implements DoctorService {
         return doctorRepository.findAllDoctorDropdown();
     }
 
+    @Override
+    public List<DoctorDropdown> getAllDoctorDropdownsByIds(List<UUID> ids) {
+        return doctorRepository.findAllDoctorDropdownsByIds(ids);
+    }
+
 }
