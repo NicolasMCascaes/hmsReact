@@ -1,14 +1,25 @@
 import { ActionIcon, Button, Fieldset, MultiSelect, NumberInput, Select, Textarea, TextInput } from "@mantine/core"
 import { frequency, routes, sintoms, tests, types } from "../../../data/DropDownData"
-import { IconTrash } from "@tabler/icons-react"
+import { IconEye, IconSearch, IconTrash } from "@tabler/icons-react"
 import { useForm } from "@mantine/form"
-import { createApReport } from "../../../services/AppointmentService"
+import { createApReport, getPatientReports, reportExist } from "../../../services/AppointmentService"
 import { errorNotification, sucessNotification } from "../../../utilities/NotificationUtility"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { DataTable, type DataTableFilterMeta } from "primereact/datatable"
+import { Column } from "primereact/column"
+import { useNavigate } from "react-router-dom"
+import { formatDateWithTime } from "../../../utilities/DateUtility"
+import { FilterMatchMode, FilterOperator } from "primereact/api"
+import { Toolbar } from "primereact/toolbar"
 
 
 const ApReport = ({appointment}:any) => {
     const [loading, setLoading] = useState(false)
+    const [globalFilterValue, setGlobalFilterValue] = useState<string>('');
+    const[data, setData] = useState<any[]>([])
+    const[allowAdd, setAllowAdd] = useState<boolean>(false) 
+    const [edit, setEdit] = useState<boolean>(false)   
+    const navigate = useNavigate()
     type Medicine = {
         name: string
         medicineId?:number
@@ -49,6 +60,27 @@ const ApReport = ({appointment}:any) => {
 
     },
     })
+    useEffect(()=>{
+        fetchData()
+    },[appointment])
+    const fetchData = () =>{
+        if (appointment?.patientId) {
+            
+            getPatientReports(appointment?.patientId).then((res)=>{
+                setData(res)
+            }).catch((error:any)=>{
+                console.log(error)
+            })
+        }
+        if (appointment?.idAppointment) {
+        reportExist(appointment.idAppointment)
+            .then((res) => {setAllowAdd(!res)})
+            .catch((error)=>{
+                console.log(error)
+                setAllowAdd(true)
+            })
+        }
+    }
     const insertMedicine = () => {
         form.insertListItem('prescription.medicines', { name: '', dosage: '', frequency: '', duration: 0, route: '', type: '', instructions: '' })
     }
@@ -72,7 +104,10 @@ const ApReport = ({appointment}:any) => {
         setLoading(true)
         createApReport(data).then(()=>{
             sucessNotification("OK lets go")
-            
+            form.reset()
+            setEdit(false)
+            setAllowAdd(false)
+            fetchData()
         }).catch((error:any)=>{
             console.log(error)
             errorNotification(error.response.data.errorMessage)
@@ -80,8 +115,58 @@ const ApReport = ({appointment}:any) => {
             setLoading(false)
         })
     }
+     const onGlobalFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            const value = e.target.value;
+            let _filters: any = { ...filters };
+    
+            _filters['global'].value = value;
+    
+            setFilters(_filters);
+            setGlobalFilterValue(value);
+        };
+        const [filters, setFilters] = useState<DataTableFilterMeta>({
+                    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+                    patientName: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+                    patientPhone: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+                    appointmentTime: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
+                    reason: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+                    notes: { value: null, matchMode: FilterMatchMode.IN },
+                    status: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+                    activity: { value: null, matchMode: FilterMatchMode.BETWEEN }
+                });
+       const timeTemplate = (rowData: any) => {
+        return <span className='text-primary-900'>{formatDateWithTime(rowData.createdAt)}</span>
+    }
+    const rightToolbarTemplate = () => {
+        return <TextInput value={globalFilterValue} leftSection={<IconSearch />} fw={500} onChange={onGlobalFilterChange} placeholder="Pesquisar palavra-chave" />;
+    };
+    const actionBodyTemplate = (rowData: any) => {
+            return <div className='flex gap-2'>
+                <ActionIcon onClick={()=>navigate("/doctor/appointments/" + rowData.appointmentId)}>
+                    <IconEye size={20} stroke={1.5} />
+                </ActionIcon>
+                
+            </div>
+        };
+        const leftToolbarTemplate = () =>{
+            return( allowAdd && (<Button variant="filled" onClick={()=>setEdit(true)}>Adicionar relatório</Button>))
+        }
   return (
-    <form onSubmit={form.onSubmit(handleSubmit)}>
+    <div>
+    <Toolbar className="mb-4" left={leftToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
+    {!edit?<DataTable value={data} size='small' paginator rows={10}
+                            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                            rowsPerPageOptions={[10, 25, 50]} dataKey="idAppointment"
+                            emptyMessage="Nenhuma prescrição." currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} prescrições">
+                            <Column field="doctorName" header="Doutor" sortable style={{ minWidth: '14rem' }} />
+                            <Column field="reportDate" header="Data do relatório" body={timeTemplate} style={{ minWidth: '14rem' }} />
+                            <Column field="diagnosis" header="Diagnóstico" style={{ minWidth: '14rem' }} />
+                            <Column field="medicines" header="Medicamentos" body={(rowData)=>rowData.medicines?.length??0} style={{ minWidth: '14rem' }} />
+                            <Column field="notes" header="Observações adicionais" style={{ minWidth: '14rem' }} />
+                            <Column headerStyle={{ width: '5rem', textAlign: 'center' }} bodyStyle={{ textAlign: 'center', overflow: 'visible' }} body={actionBodyTemplate} />
+                            
+                        </DataTable>
+    :<form onSubmit={form.onSubmit(handleSubmit)}>
     <Fieldset className="grid grid-cols-1 gap-5" legend={<span className="text-lg font-medium text-primary-500">Informações</span>} style={{ border: '1px solid #67e1cf'}}>
         <MultiSelect withAsterisk label="Sintomas" clearable searchable  comboboxProps={{ transitionProps: { transition: 'pop', duration: 200 } }} {...form.getInputProps("sintoms")} data={sintoms}/>
         <MultiSelect label="Exames solicitados"{...form.getInputProps("tests")} data={tests} />
@@ -116,10 +201,11 @@ const ApReport = ({appointment}:any) => {
     </Fieldset>
     <div className="flex flex-row justify-between">
         <Button type="submit" loading={loading}color="primary">Salvar Relatório</Button>
-        <Button variant = "filled" color="red" type="reset">Cancelar</Button>
+        <Button variant = "filled" color="red" type="reset" onClick={()=>setEdit(false)}>Cancelar</Button>
     </div>
     </div>
-    </form>
+    </form>}
+    </div>
   )
 }
 
