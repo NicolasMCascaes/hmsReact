@@ -1,10 +1,18 @@
 package com.hms.AppointmentsMS.services.prescription;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.hms.AppointmentsMS.clients.ProfileClient;
 import com.hms.AppointmentsMS.dto.prescription.PrescriptionDTO;
+import com.hms.AppointmentsMS.dto.prescription.PrescriptionDetails;
+import com.hms.AppointmentsMS.dto.profile.DoctorName;
+import com.hms.AppointmentsMS.entity.Prescription;
 import com.hms.AppointmentsMS.exceptions.HmsException;
 import com.hms.AppointmentsMS.repositories.PrescriptionRepository;
 import com.hms.AppointmentsMS.services.medicine.MedicineService;
@@ -18,9 +26,13 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
     private final MedicineService medicineService;
 
-    public PrescriptionServiceImpl(PrescriptionRepository prescriptionRepository, MedicineService medicineService) {
+    private final ProfileClient apiService;
+
+    public PrescriptionServiceImpl(PrescriptionRepository prescriptionRepository, MedicineService medicineService,
+            ProfileClient apiService) {
         this.prescriptionRepository = prescriptionRepository;
         this.medicineService = medicineService;
+        this.apiService = apiService;
     }
 
     @Override
@@ -52,6 +64,34 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         prescriptionDTO.setMedicines(medicineService.getAllMedicinesByPrescriptionId(id));
         return prescriptionDTO;
 
+    }
+
+    @Override
+    public List<PrescriptionDetails> getPrescriptionsByPatientId(UUID patientId) throws HmsException {
+        List<Prescription> prescriptions = prescriptionRepository.findAllByPatientId(patientId);
+        List<PrescriptionDetails> prescriptionDetails = prescriptions.stream().map(Prescription::toPrescriptionDetails)
+                .toList();
+        prescriptionDetails.forEach(details -> {
+            try {
+                details.setMedicines(medicineService.getAllMedicinesByPrescriptionId(details.getIdPrescription()));
+            } catch (HmsException e) {
+                e.printStackTrace();
+            }
+
+        });
+        List<UUID> doctorsIds = prescriptionDetails.stream().map(PrescriptionDetails::getDoctorId).distinct().toList();
+        List<DoctorName> doctorNames = apiService.getAllDoctorDropdowns(doctorsIds);
+        Map<UUID, String> doctorMap = doctorNames.stream()
+                .collect(Collectors.toMap(DoctorName::getId, DoctorName::getName));
+        prescriptionDetails.forEach(prescription -> {
+            String doctorName = doctorMap.get(prescription.getDoctorId());
+            if (doctorName != null) {
+                prescription.setDoctorName(doctorName);
+            } else {
+                prescription.setDoctorName("Doutor desconhecido");
+            }
+        });
+        return prescriptionDetails;
     }
 
 }

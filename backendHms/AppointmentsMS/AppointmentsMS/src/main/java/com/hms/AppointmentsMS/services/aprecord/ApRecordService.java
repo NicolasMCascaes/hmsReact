@@ -22,4 +22,6 @@ public interface ApRecordService {
 
     public List<RecordDetails> getRecordsById(Long recordId) throws HmsException;
 
+    public Boolean isReportExists(Long appointmentId) throws HmsException;
+
 }

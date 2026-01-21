@@ -8,7 +8,6 @@ import { useState } from "react"
 
 
 const ApReport = ({appointment}:any) => {
-    console.log(appointment)
     const [loading, setLoading] = useState(false)
     type Medicine = {
         name: string
@@ -93,7 +92,7 @@ const ApReport = ({appointment}:any) => {
     <div className="grid gap-4 grid-cols-1">
 
      <Fieldset className="grid grid-cols-1 gap-5" legend={<span className="text-lg font-medium text-primary-500">Prescrição</span>} style={{ border: '1px solid #67e1cf'}}>
-     <Textarea label="Anotações adicionais" placeholder="Anotações" {...form.getInputProps("notes")}/>
+     <Textarea label="Anotações adicionais" placeholder="Anotações" {...form.getInputProps(`prescription.notes`)}/>
      {
         form.values.prescription.medicines.map((medicine: Medicine, index: number) => (
         <div key={index} className="grid grid-cols-1 gap-3">

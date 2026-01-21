@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import com.hms.AppointmentsMS.dto.prescription.PrescriptionDTO;
+import com.hms.AppointmentsMS.dto.prescription.PrescriptionDetails;
 
 import jakarta.persistence.OneToOne;
 
@@ -40,5 +41,10 @@ public class Prescription {
     public PrescriptionDTO toDto() {
         return new PrescriptionDTO(this.idPrescription, this.patientId, this.doctorId, this.idPrescription,
                 this.prescriptionDate, this.notes, null);
+    }
+
+    public PrescriptionDetails toPrescriptionDetails() {
+        return new PrescriptionDetails(idPrescription, patientId, doctorId, null, appointment.getIdAppointment(),
+                prescriptionDate, notes, null);
     }
 }

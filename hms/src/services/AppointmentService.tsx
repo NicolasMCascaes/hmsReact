@@ -50,5 +50,27 @@ const createApReport = (apReport: any) =>{
         throw error
     })
 }
+const reportExist = (appointmentId: any) =>{
+    return axiosInstance.get('/appointment/report/isRecordExists/' + appointmentId).then((response: any) =>{
+        return response.data
+    }).catch((error:any) => {
+        throw error
+    })
+}
+const getPatientReports = (patientId:any) =>{
+    return axiosInstance.get('/appointment/report/getRecordsByPatientId/' + patientId).then((response: any) =>{
+        return response.data
+    }).catch((error:any) => {
+        throw error
+    })
+}
+const getPrescriptionsByPatientId = (patientId:any) =>{
+    return axiosInstance.get('/appointment/report/getPrescriptionsByPatientId/' + patientId).then((response: any) =>{
+        return response.data
+    }).catch((error:any) => {
+        throw error
+    })
+}
 
-export {scheduleAppointment, cancelAppointment, getAppointmentDetails, getAppointment, getAllAppointmentByPatient, getAllAppointmentByDoctor, createApReport}
+
+export {scheduleAppointment, cancelAppointment, getAppointmentDetails, getAppointment, getAllAppointmentByPatient, getAllAppointmentByDoctor, createApReport, reportExist, getPatientReports, getPrescriptionsByPatientId}

@@ -5,13 +5,13 @@ import { Column, type ColumnFilterElementTemplateOptions } from 'primereact/colu
 import { Dropdown, type DropdownChangeEvent } from 'primereact/dropdown';
 import { Tag } from 'primereact/tag';
 import { ActionIcon, Button, LoadingOverlay, Modal, Select, TextInput, Text, SegmentedControl } from '@mantine/core';
-import { IconEdit, IconEye, IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
+import { IconEye, IconSearch, IconTrash } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { getDoctorDropdown } from '../../../services/DoctorProfileService';
 import { DateTimePicker } from '@mantine/dates';
 import dayjs from 'dayjs';
 import { useForm } from '@mantine/form';
-import { cancelAppointment, getAllAppointmentByDoctor, getAllAppointmentByPatient, scheduleAppointment } from '../../../services/AppointmentService';
+import { cancelAppointment, getAllAppointmentByDoctor, scheduleAppointment } from '../../../services/AppointmentService';
 import { useSelector } from 'react-redux';
 import { errorNotification, sucessNotification } from '../../../utilities/NotificationUtility';
 import { formatDateWithTime, toIsoLocalDateTime } from '../../../utilities/DateUtility';
@@ -37,7 +37,7 @@ const Appointment = () => {
 
     const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
     const [doctors, setDoctors] = useState<any[]>([])
-    const [opened, { open, close }] = useDisclosure(false);
+    const [opened, { close }] = useDisclosure(false);
     const navigate = useNavigate()
     const user = useSelector((state: any) => state.user)
     const [loading, setLoading] = useState(false)
@@ -141,7 +141,6 @@ const Appointment = () => {
             },
             onConfirm: () => {
                 cancelAppointment(idAppointment).then(() => {
-                    console.log(idAppointment)
                     setLoading(true)
                     sucessNotification("Agendamento cancelado com sucesso!")
                     setAppointments((prev) =>
@@ -193,7 +192,7 @@ const Appointment = () => {
             <ActionIcon onClick={()=>navigate("" + rowData.idAppointment)}>
                 <IconEye size={20} stroke={1.5} />
             </ActionIcon>
-            <ActionIcon color='red' onClick={() => { console.log("rowData.idAppointment =", rowData.idAppointment), handleDelete(Number(rowData.idAppointment)) }}>
+            <ActionIcon color='red' onClick={() => { handleDelete(Number(rowData.idAppointment)) }}>
                 <IconTrash size={20} stroke={1.5} />
             </ActionIcon>
         </div>
@@ -220,7 +219,7 @@ const Appointment = () => {
         const appointmentDate = new Date(appointment.appointmentTime)
         const today = new Date()
 
-        // Zera horas, minutos e segundos de ambos
+        
         appointmentDate.setHours(0, 0, 0, 0)
         today.setHours(0, 0, 0, 0)
 

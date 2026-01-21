@@ -18,6 +18,7 @@ public interface ApRecordRepository extends JpaRepository<ApRecord, Long> {
     @Query(value = "SELECT * FROM ap_record WHERE appointment_id = :appointmentId", nativeQuery = true)
     Optional<ApRecord> findByAppointmentIdNative(@Param("appointmentId") Long appointmentId);
 
-    @Query("SELECT new com.hms.AppointmentsMS.dto.RecordDetails(a.idAppointment, a.patientId, a.doctorId, null, a.appointmentId, a.sintoms, a.diagnosis, a.tests, a.notes, a.referral) FROM ApRecord a WHERE a.patientId = ?1")
-    List<ApRecord> findAllByPatientId(UUID patientId);
+    List<ApRecord> findByPatientId(UUID patientId);
+
+    Boolean existsByAppointment_IdAppointment(Long appointmentId);
 }

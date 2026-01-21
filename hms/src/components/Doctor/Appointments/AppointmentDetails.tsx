@@ -6,6 +6,7 @@ import { errorNotification } from "../../../utilities/NotificationUtility";
 import { IconCalendar, IconClock, IconMail, IconMedicalCrossCircle, IconNotes, IconPhone, IconReportMedical, IconStethoscope, IconUser, IconVaccine } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import ApReport from "./ApReport";
+import Prescriptions from "./Prescriptions";
 const AppointmentDetails = () => {
     const {idAppointment} = useParams()
     const [appointments, setAppointment] = useState<any>({})
@@ -16,7 +17,7 @@ const AppointmentDetails = () => {
         console.log(error)
         errorNotification("Erro ao buscar os dados do agendamento")
       })
-    }, [])
+    }, [idAppointment])
     const statusTranslations: Record<string, string> = {
         SCHEDULED: 'Agendada',
         CANCELLED: 'Cancelada',
@@ -29,7 +30,7 @@ const AppointmentDetails = () => {
       <Link className="text-primary-400 hover:underline" to="/doctor/appointments">Agendamentos</Link>
       <Text className="text-primary-400">Detalhes</Text>
       </Breadcrumbs>
-        <div className="grid grid-cols-2">
+        <div className="flex flex-col gap-6">
         <div className="w-md">
        <Card shadow="sm" padding="lg" radius="md" className="border border-primary-400">
       <Group justify="space-between" mb="md">
@@ -48,7 +49,7 @@ const AppointmentDetails = () => {
         </Group>
         <Group gap="xs">
           <IconPhone size={16} />
-          <Text>{appointments.patientPhone}</Text>
+          <Text>{appointments.patientPhone ? appointments.patientPhone === '' ? null : '*Paciente sem telefone cadastrado*' : null}</Text>
         </Group>
         <Group gap="xs">
           <IconMail size={16} />
@@ -104,7 +105,7 @@ const AppointmentDetails = () => {
       </Tabs.Panel>
 
       <Tabs.Panel value="prescriptions">
-        Messages tab content
+        <Prescriptions appointment={appointments}/>
       </Tabs.Panel>
 
       <Tabs.Panel value="reports">

@@ -39,7 +39,7 @@ public class ApRecordServiceImpl implements ApRecordService {
     public Long createApRecord(ApRecordDTO apRecordDTO) throws HmsException {
 
         Optional<ApRecord> existingRecord = apRecordRepository
-                .findByAppointmentIdNative(apRecordDTO.getAppointmentId());
+                .findByAppointment_IdAppointment(apRecordDTO.getAppointmentId());
         if (existingRecord.isPresent()) {
             throw new HmsException("APPOINTMENT_RECORD_ALREADY_EXISTS");
         }
@@ -92,7 +92,7 @@ public class ApRecordServiceImpl implements ApRecordService {
 
     @Override
     public List<RecordDetails> getRecordsByPatientId(UUID patientId) throws HmsException {
-        List<ApRecord> records = apRecordRepository.findAllByPatientId(patientId);
+        List<ApRecord> records = apRecordRepository.findByPatientId(patientId);
         List<RecordDetails> recordDetails = records.stream().map(ApRecord::toRecordDetails).toList();
         List<UUID> doctorsIds = recordDetails.stream().map(RecordDetails::getDoctorId).distinct().toList();
         List<DoctorName> doctorsNames = apiService.getAllDoctorDropdowns(doctorsIds);
@@ -114,6 +114,11 @@ public class ApRecordServiceImpl implements ApRecordService {
     public List<RecordDetails> getRecordsById(Long recordId) throws HmsException {
 
         throw new UnsupportedOperationException("Unimplemented method 'getRecordsById'");
+    }
+
+    @Override
+    public Boolean isReportExists(Long appointmentId) throws HmsException {
+        return apRecordRepository.existsByAppointment_IdAppointment(appointmentId);
     }
 
 }
