@@ -179,7 +179,7 @@ const ApReport = ({appointment}:any) => {
      <Fieldset className="grid grid-cols-1 gap-5" legend={<span className="text-lg font-medium text-primary-500">Prescrição</span>} style={{ border: '1px solid #67e1cf'}}>
      <Textarea label="Anotações adicionais" placeholder="Anotações" {...form.getInputProps(`prescription.notes`)}/>
      {
-        form.values.prescription.medicines.map((medicine: Medicine, index: number) => (
+        form.values.prescription.medicines.map((_medicine: Medicine, index: number) => (
         <div key={index} className="grid grid-cols-1 gap-3">
         <div className="flex items-center col-span-1 justify-between">
             <h1 className="text-xl font-medium">Medicamento {index + 1}</h1>
