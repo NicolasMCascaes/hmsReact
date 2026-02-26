@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import com.hms.pharmacy.dto.MedicineInventoryDto;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,9 +33,12 @@ public class MedicineInventory {
     private Integer quantity;
     private LocalDate expireDate;
     private LocalDateTime addedDate;
+    private Integer initialQuantity;
+    @Enumerated(EnumType.STRING)
+    private StockStatus stockStatus;
 
     public MedicineInventoryDto toDto() {
         return new MedicineInventoryDto(this.id, medicine.getIdMedicine(), this.batchNo, this.quantity, this.expireDate,
-                this.addedDate);
+                this.addedDate, this.initialQuantity, this.stockStatus);
     }
 }

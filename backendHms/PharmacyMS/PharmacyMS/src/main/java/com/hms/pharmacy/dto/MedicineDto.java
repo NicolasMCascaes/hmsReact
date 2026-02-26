@@ -26,12 +26,13 @@ public class MedicineDto {
     private String manufacturer;
     @NotNull(message = "Medicine price can not be null!")
     private BigDecimal price;
+    private Integer stock;
     private LocalDateTime createdAt;
     @NotBlank(message = "Medicine dosage can not be blank!")
     private String dosage;
 
     public Medicine toEntity() {
         return new Medicine(this.idMedicine, this.name, this.category, this.type, this.manufacturer, this.price,
-                this.createdAt, this.dosage);
+                this.stock, this.createdAt, this.dosage);
     }
 }

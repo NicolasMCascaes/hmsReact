@@ -26,12 +26,13 @@ public class Medicine {
     private Type type;
     private String manufacturer;
     private BigDecimal price;
+    private Integer stock;
     private LocalDateTime createdAt;
     private String dosage;
 
     public MedicineDto toDto() {
         return new MedicineDto(this.idMedicine, this.name, this.category, this.type, this.manufacturer, this.price,
-                this.createdAt, this.dosage);
+                this.stock, this.createdAt, this.dosage);
     }
 
     public Medicine(Long idMedicine) {

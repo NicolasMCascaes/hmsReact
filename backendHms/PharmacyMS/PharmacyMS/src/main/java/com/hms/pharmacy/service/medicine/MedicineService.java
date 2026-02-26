@@ -16,4 +16,10 @@ public interface MedicineService {
 
     public List<MedicineDto> getAllMedicines() throws HmsException;
 
+    public Integer getMedicineStockById(Long id) throws HmsException;
+
+    public Integer addStock(Long id, Integer quantity) throws HmsException;
+
+    public Integer reduceStock(Long id, Integer quantity) throws HmsException;
+
 }

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import com.hms.pharmacy.entity.Medicine;
 import com.hms.pharmacy.entity.MedicineInventory;
+import com.hms.pharmacy.entity.StockStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,10 +21,12 @@ public class MedicineInventoryDto {
     private Integer quantity;
     private LocalDate expireDate;
     private LocalDateTime addedDate;
+    private Integer initialQuantity;
+    private StockStatus stockStatus;
 
     public MedicineInventory toEntity() {
         return new MedicineInventory(this.id, new Medicine(this.medicineId), this.batchNo, this.quantity,
                 this.expireDate,
-                this.addedDate);
+                this.addedDate, this.initialQuantity, this.stockStatus);
     }
 }

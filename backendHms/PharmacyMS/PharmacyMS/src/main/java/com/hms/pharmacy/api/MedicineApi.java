@@ -32,7 +32,6 @@ public class MedicineApi {
 
     @PostMapping("/add")
     public ResponseEntity<Long> addMedicine(@RequestBody MedicineDto medicineDto) throws HmsException {
-
         return new ResponseEntity<>(medicineService.addMedicine(medicineDto), HttpStatus.OK);
     }
 
@@ -50,6 +49,25 @@ public class MedicineApi {
     public ResponseEntity<ResponseDto> updateMedicine(@RequestBody MedicineDto medicineDto) throws HmsException {
         medicineService.updateMedicine(medicineDto);
         return new ResponseEntity<>(new ResponseDto("MedicineUpdated"), HttpStatus.OK);
+    }
+
+    @GetMapping("/getStockById/{id}")
+    public ResponseEntity<Integer> getStockById(@PathVariable Long id) throws HmsException {
+        return new ResponseEntity<>(medicineService.getMedicineStockById(id), HttpStatus.OK);
+    }
+
+    @PatchMapping("/addStock/{id}/{quantity}")
+    public ResponseEntity<ResponseDto> addStock(@PathVariable Long id, @PathVariable Integer quantity)
+            throws HmsException {
+        medicineService.addStock(id, quantity);
+        return new ResponseEntity<>(new ResponseDto("StockAdded"), HttpStatus.OK);
+    }
+
+    @PatchMapping("/reduceStock/{id}/{quantity}")
+    public ResponseEntity<ResponseDto> reduceStock(@PathVariable Long id, @PathVariable Integer quantity)
+            throws HmsException {
+        medicineService.reduceStock(id, quantity);
+        return new ResponseEntity<>(new ResponseDto("StockReduced"), HttpStatus.OK);
     }
 
 }

@@ -15,4 +15,6 @@ public interface MedicineInventoryService {
     void updateMedicine(MedicineInventoryDto medicineInventory) throws HmsException;
 
     void deleteMedicine(Long idMedicine) throws HmsException;
+
+    void deleteExpiredMedicines() throws HmsException;
 }

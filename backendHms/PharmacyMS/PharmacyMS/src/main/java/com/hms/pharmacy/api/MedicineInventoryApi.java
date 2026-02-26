@@ -45,12 +45,12 @@ public class MedicineInventoryApi {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/getMedicineById")
+    @GetMapping("/getMedicineById/{id}")
     public ResponseEntity<MedicineInventoryDto> getMedicineById(@PathVariable Long id) throws HmsException {
         return ResponseEntity.ok(medicineInventoryService.getMedicineById(id));
     }
 
-    @DeleteMapping("/deleteMedicine")
+    @DeleteMapping("/deleteMedicine/{idMedicine}")
     public ResponseEntity<Void> deleteMedicine(@PathVariable Long idMedicine) throws HmsException {
         medicineInventoryService.deleteMedicine(idMedicine);
         return ResponseEntity.ok().build();
