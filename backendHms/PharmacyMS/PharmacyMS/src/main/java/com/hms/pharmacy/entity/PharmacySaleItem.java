@@ -11,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +27,7 @@ public class PharmacySaleItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sale_id")
     private PharmacySale sale;
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "medicine_id")
     private Medicine medicine;
     private String batchNo;
@@ -36,7 +35,8 @@ public class PharmacySaleItem {
     private BigDecimal unitPrice;
 
     public PharmacySaleItemDto toDto() {
-        return new PharmacySaleItemDto(idPharmacySaleItem, sale.getId(), medicine.getIdMedicine(), batchNo,
+        return new PharmacySaleItemDto(idPharmacySaleItem, sale != null ? sale.getId() : null, medicine.getIdMedicine(),
+                batchNo,
                 quantity, unitPrice);
     }
 }
