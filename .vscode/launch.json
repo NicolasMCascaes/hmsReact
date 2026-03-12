@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "MediaApplication",
+            "request": "launch",
+            "mainClass": "com.hms.media.MediaApplication",
+            "projectName": "media"
+        },
+        {
+            "type": "java",
             "name": "PharmacyMsApplication",
             "request": "launch",
             "mainClass": "com.hms.pharmacy.PharmacyMsApplication",
