@@ -133,5 +133,67 @@ const types = [
   { value: "solucao_nasal", label: "Solução nasal" },
 ];
 
+const medicineCategoryLabels: Record<string, string> = {
+  ANALGESIC: "Analgésico",
+  ANTIBIOTIC: "Antibiótico",
+  ANTIINFLAMMATORY: "Anti-inflamatório",
+  ANTIALERGIC: "Antialérgico",
+  ANTIVIRAL: "Antiviral",
+  ANTIFUNGAL: "Antifúngico",
+  ANTIPYRETIC: "Antipirético",
+  ANTIHYPERTENSIVE: "Anti-hipertensivo",
+  ANTIDIABETIC: "Antidiabético",
+  ANTIDEPRESSANT: "Antidepressivo",
+  ANTIANXIETY: "Ansiolítico",
+  ANTICONVULSANT: "Anticonvulsivante",
+  HORMONAL: "Hormonal",
+  VACCINE: "Vacina",
+  SUPPLEMENT: "Suplemento",
+  ANESTHETIC: "Anestésico",
+  GASTROINTESTINAL: "Gastrointestinal",
+  CARDIOVASCULAR: "Cardiovascular",
+  RESPIRATORY: "Respiratório",
+  DERMATOLOGICAL: "Dermatológico",
+}
 
-export {bloodGroups, bloodGroup, appointmentReasons, sintoms, tests, frequency, routes, types}
+const medicineTypeLabels: Record<string, string> = {
+  TABLET: "Comprimido",
+  CAPSULE: "Cápsula",
+  LIQUID: "Líquido",
+  SYRUP: "Xarope",
+  INJECTION: "Injeção",
+  DROPS: "Gotas",
+  OINTMENT: "Pomada",
+  CREAM: "Creme",
+  GEL: "Gel",
+  SPRAY: "Spray",
+  INHALER: "Inalador",
+  SUPPOSITORY: "Supositório",
+  PATCH: "Adesivo",
+  POWDER: "Pó",
+  SOLUTION: "Solução",
+  SUSPENSION: "Suspensão",
+  LOTION: "Loção",
+  SHAMPOO: "Shampoo",
+  MOUTHWASH: "Enxaguante bucal",
+}
+
+const medicineCategories = Object.entries(medicineCategoryLabels).map(([value, label]) => ({ value, label }))
+
+const medicineTypes = Object.entries(medicineTypeLabels).map(([value, label]) => ({ value, label }))
+
+
+export {
+  bloodGroups,
+  bloodGroup,
+  appointmentReasons,
+  sintoms,
+  tests,
+  frequency,
+  routes,
+  types,
+  medicineCategories,
+  medicineTypes,
+  medicineCategoryLabels,
+  medicineTypeLabels,
+}

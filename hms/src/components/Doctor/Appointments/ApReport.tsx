@@ -103,7 +103,7 @@ const ApReport = ({appointment}:any) => {
         console.log(data)
         setLoading(true)
         createApReport(data).then(()=>{
-            sucessNotification("OK lets go")
+            sucessNotification("Medicamento adicionado com sucesso!")
             form.reset()
             setEdit(false)
             setAllowAdd(false)
