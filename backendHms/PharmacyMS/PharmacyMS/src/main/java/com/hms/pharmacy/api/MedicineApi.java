@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.hms.pharmacy.dto.MedicineDropdown;
+
 @RestController
 @Validated
 @CrossOrigin
@@ -43,6 +45,11 @@ public class MedicineApi {
     @GetMapping("/getAllMedicines")
     public ResponseEntity<List<MedicineDto>> getAllMedicines() throws HmsException {
         return new ResponseEntity<>(medicineService.getAllMedicines(), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllDropdown")
+    public ResponseEntity<List<MedicineDropdown>> getAllMedicineDropdowns() throws HmsException {
+        return new ResponseEntity<>(medicineService.getAllMedicineDropdowns(), HttpStatus.OK);
     }
 
     @PatchMapping("/update")

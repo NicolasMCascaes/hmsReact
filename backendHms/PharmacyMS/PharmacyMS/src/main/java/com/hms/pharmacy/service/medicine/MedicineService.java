@@ -2,6 +2,7 @@ package com.hms.pharmacy.service.medicine;
 
 import java.util.List;
 
+import com.hms.pharmacy.dto.MedicineDropdown;
 import com.hms.pharmacy.dto.MedicineDto;
 import com.hms.pharmacy.exception.HmsException;
 
@@ -15,6 +16,8 @@ public interface MedicineService {
     public void deleteMedicine(Long id) throws HmsException;
 
     public List<MedicineDto> getAllMedicines() throws HmsException;
+
+    public List<MedicineDropdown> getAllMedicineDropdowns() throws HmsException;
 
     public Integer getMedicineStockById(Long id) throws HmsException;
 

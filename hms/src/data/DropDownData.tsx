@@ -1,3 +1,4 @@
+
 const bloodGroups: Record<string, string> = {
   A_POSITIVE: 'A+',
   A_NEGATIVE: 'A-',

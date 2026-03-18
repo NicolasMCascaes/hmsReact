@@ -15,9 +15,14 @@ const getAllMedicines = async () => {
     .then((response:any) => response.data)
     .catch((error:any) => {throw error})
 }
+const getAllMedicineDropdown = async () => {
+    return axiosInstance.get('/pharmacy/medicine/getAllDropdown')
+    .then((response:any) => response.data)
+    .catch((error:any) => {throw error})
+}
 const updateMedicine = async (medicine:any) => {
     return axiosInstance.patch('/pharmacy/medicine/update', medicine)
     .then((response:any) => response.data)
     .catch((error:any) => {throw error})
 }
-export {addMedicine, getMedicineById, getAllMedicines, updateMedicine}
+export {addMedicine, getMedicineById, getAllMedicines, getAllMedicineDropdown, updateMedicine}

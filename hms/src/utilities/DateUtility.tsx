@@ -17,6 +17,9 @@ const formatDate= (dateString: any) => {
 const toIsoLocalDateTime = (dateString:any) => {
    return dayjs(dateString).format('YYYY-MM-DDTHH:mm:ss');
 }
+const toIsoLocalDate = (dateString:any) => {
+   return dayjs(dateString).format('YYYY-MM-DD');
+}
 const formatDateWithTime = (dateTime: any) =>{
   if(!dateTime) return '-'
   const date = new Date(dateTime);
@@ -31,4 +34,4 @@ const formatDateWithTime = (dateTime: any) =>{
   }
   return date.toLocaleString('pt-br', options)
 }
-export {formatDate, toIsoLocalDateTime, formatDateWithTime}
+export {formatDate, toIsoLocalDateTime, toIsoLocalDate, formatDateWithTime}

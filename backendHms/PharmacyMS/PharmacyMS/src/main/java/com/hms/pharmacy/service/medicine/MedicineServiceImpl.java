@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hms.pharmacy.dto.MedicineDropdown;
 import com.hms.pharmacy.dto.MedicineDto;
 import com.hms.pharmacy.entity.Medicine;
 import com.hms.pharmacy.exception.HmsException;
@@ -72,6 +73,11 @@ public class MedicineServiceImpl implements MedicineService {
     @Override
     public List<MedicineDto> getAllMedicines() throws HmsException {
         return medicineRepository.findAll().stream().map(Medicine::toDto).toList();
+    }
+
+    @Override
+    public List<MedicineDropdown> getAllMedicineDropdowns() throws HmsException {
+        return medicineRepository.findAllMedicineDropdown();
     }
 
     @Override

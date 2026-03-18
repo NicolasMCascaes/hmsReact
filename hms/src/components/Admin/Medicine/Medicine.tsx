@@ -22,6 +22,7 @@ type MedicineFormValues = {
   manufacturer: string
   price: number | string
   dosage: string
+  stock: number
 }
 
 type MedicineRecord = MedicineFormValues & {
@@ -47,6 +48,7 @@ const Medicine = () => {
       type: "",
       manufacturer: "",
       price: 0,
+      stock: 0,
       dosage: "",
     },
     validate: {
@@ -278,10 +280,12 @@ const Medicine = () => {
       >
         <Column field="name" header="Nome" sortable style={{ minWidth: "14rem" }} />
         <Column field="category" header="Categoria" sortable body={categoryBodyTemplate} style={{ minWidth: "12rem" }} />
+         <Column field="price" header="Preco" sortable body={priceBodyTemplate} style={{ minWidth: "10rem" }} />
+        <Column field="stock" header="Quantidade em estoque" sortable style={{ minWidth: "12rem" }} />
         <Column field="type" header="Tipo" sortable body={typeBodyTemplate} style={{ minWidth: "12rem" }} />
         <Column field="manufacturer" header="Fabricante" sortable style={{ minWidth: "14rem" }} />
         <Column field="dosage" header="Dosagem" style={{ minWidth: "10rem" }} />
-        <Column field="price" header="Preco" sortable body={priceBodyTemplate} style={{ minWidth: "10rem" }} />
+       
          <Column headerStyle={{ width: '5rem', textAlign: 'center' }} bodyStyle={{ textAlign: 'center', overflow: 'visible' }} body={actionBodyTemplate} />
       </DataTable>
     </div>

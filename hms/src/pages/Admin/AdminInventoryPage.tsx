@@ -1,8 +1,8 @@
-import React from 'react'
+import Inventory from "../../components/Admin/Inventory/Inventory"
 
 const AdminInventoryPage = () => {
   return (
-    <div className='p-5'>AdminInventoryPage</div>
+    <div className='p-5'><Inventory /></div>
   )
 }
 
