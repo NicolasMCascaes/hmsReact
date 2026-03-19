@@ -241,5 +241,4 @@ Fluxo recomendado:
 3. Abra um Pull Request com descricao objetiva.
 
 ## Licenca
-
-Defina aqui a licenca do projeto (ex.: MIT) para uso em producao no GitHub.
+Projeto ainda em fase de testes com fins educacionais
