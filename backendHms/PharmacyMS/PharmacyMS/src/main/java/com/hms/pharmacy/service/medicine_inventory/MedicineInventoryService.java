@@ -10,6 +10,8 @@ public interface MedicineInventoryService {
 
     MedicineInventoryDto getMedicineById(Long idMedicine) throws HmsException;
 
+    String sellStock(Long medicineId, Integer quantity) throws HmsException;
+
     Long addMedicine(MedicineInventoryDto medicineInventory) throws HmsException;
 
     void updateMedicine(MedicineInventoryDto medicineInventory) throws HmsException;

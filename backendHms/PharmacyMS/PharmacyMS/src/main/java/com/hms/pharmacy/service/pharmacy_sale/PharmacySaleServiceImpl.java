@@ -6,29 +6,41 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hms.pharmacy.dto.PharmacySaleDto;
+import com.hms.pharmacy.dto.PharmacySaleItemDto;
+import com.hms.pharmacy.dto.SaleRequest;
 import com.hms.pharmacy.entity.PharmacySale;
 import com.hms.pharmacy.exception.HmsException;
 import com.hms.pharmacy.repository.PharmacySaleRepository;
+import com.hms.pharmacy.service.medicine_inventory.MedicineInventoryService;
+import com.hms.pharmacy.service.pharmacy_sale_item.SaleItemService;
 
 @Service
 @Transactional
 public class PharmacySaleServiceImpl implements PharmacySaleService {
 
     private final PharmacySaleRepository pharmacySaleRepository;
+    private final SaleItemService saleItemService;
+    private final MedicineInventoryService medicineInventoryService;
 
-    public PharmacySaleServiceImpl(PharmacySaleRepository pharmacySaleRepository) {
+    public PharmacySaleServiceImpl(PharmacySaleRepository pharmacySaleRepository, SaleItemService saleItemService,
+            MedicineInventoryService medicineInventoryService) {
         this.pharmacySaleRepository = pharmacySaleRepository;
+        this.saleItemService = saleItemService;
+        this.medicineInventoryService = medicineInventoryService;
     }
 
     @Override
-    public Long createSale(PharmacySaleDto dto) throws HmsException {
+    public Long createSale(SaleRequest dto) throws HmsException {
         if (pharmacySaleRepository.existsByPrescriptionId(dto.getPrescriptionId())) {
             throw new HmsException("SALE_ALREADY_EXISTS");
         }
-        if (dto.getSaleDate() == null) {
-            dto.setSaleDate(LocalDateTime.now());
+        for (PharmacySaleItemDto itemDto : dto.getSaleItems()) {
+            itemDto.setBatchNo(medicineInventoryService.sellStock(itemDto.getMedicineId(), itemDto.getQuantity()));
         }
-        PharmacySale savedSale = pharmacySaleRepository.save(dto.toEntity());
+        PharmacySale savedSale = new PharmacySale(null, dto.getPrescriptionId(), LocalDateTime.now(),
+                dto.getTotalAmount());
+        pharmacySaleRepository.save(savedSale);
+        saleItemService.createSaleItems(savedSale.getId(), dto.getSaleItems());
         return savedSale.getId();
     }
 

@@ -9,8 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hms.pharmacy.dto.PharmacySaleDto;
+import com.hms.pharmacy.dto.SaleRequest;
 import com.hms.pharmacy.exception.HmsException;
 import com.hms.pharmacy.service.pharmacy_sale.PharmacySaleService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,12 +30,12 @@ public class PharmacySaleApi {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Long> postMethodName(@RequestBody PharmacySaleDto dto) throws HmsException {
+    public ResponseEntity<Long> postMethodName(@RequestBody @Valid SaleRequest dto) throws HmsException {
         return ResponseEntity.ok(pharmacySaleService.createSale(dto));
     }
 
     @PatchMapping("/update")
-    public ResponseEntity<Void> updateSale(@RequestBody PharmacySaleDto dto) throws HmsException {
+    public ResponseEntity<Void> updateSale(@RequestBody @Valid PharmacySaleDto dto) throws HmsException {
         pharmacySaleService.updateSale(dto);
         return ResponseEntity.ok().build();
     }

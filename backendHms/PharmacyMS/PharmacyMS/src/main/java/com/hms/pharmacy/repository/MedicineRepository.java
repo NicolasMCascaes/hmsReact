@@ -18,7 +18,7 @@ public interface MedicineRepository extends JpaRepository<Medicine, Long> {
     @Query("SELECT m.stock FROM Medicine m WHERE m.idMedicine = :id")
     Optional<Integer> findStockByIdMedicine(@Param("id") Long id);
 
-    @Query("SELECT m.idMedicine AS id, m.name AS name, m.manufacturer as manufacturer FROM Medicine m ORDER BY m.name ASC")
+    @Query("SELECT m.idMedicine AS id, m.name AS name, m.manufacturer as manufacturer, m.price as price FROM Medicine m ORDER BY m.name ASC")
     List<MedicineDropdown> findAllMedicineDropdown();
 
 }

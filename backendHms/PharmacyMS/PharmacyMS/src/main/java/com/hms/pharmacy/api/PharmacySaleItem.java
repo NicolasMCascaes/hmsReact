@@ -18,6 +18,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @CrossOrigin
@@ -45,6 +46,11 @@ public class PharmacySaleItem {
             @RequestParam Long medicineid, @RequestParam Long saleId) throws HmsException {
         saleItemService.createMultipleSaleItem(saleId, medicineid, items);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/getBySaleId/{saleId}")
+    public ResponseEntity<List<PharmacySaleItemDto>> getBySaleId(@PathVariable Long saleId) throws HmsException {
+        return ResponseEntity.ok(saleItemService.getItemBySaleId(saleId));
     }
 
 }

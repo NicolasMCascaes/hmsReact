@@ -9,14 +9,18 @@ import com.hms.pharmacy.dto.PharmacySaleItemDto;
 import com.hms.pharmacy.entity.PharmacySaleItem;
 import com.hms.pharmacy.exception.HmsException;
 import com.hms.pharmacy.repository.PharmacySaleItemRepository;
+import com.hms.pharmacy.service.medicine_inventory.MedicineInventoryService;
 
 @Service
 @Transactional
 public class SaleItemServiceImpl implements SaleItemService {
     private final PharmacySaleItemRepository repository;
+    private final MedicineInventoryService medicineInventoryService;
 
-    public SaleItemServiceImpl(PharmacySaleItemRepository repository) {
+    public SaleItemServiceImpl(PharmacySaleItemRepository repository,
+            MedicineInventoryService medicineInventoryService) {
         this.repository = repository;
+        this.medicineInventoryService = medicineInventoryService;
     }
 
     @Override
@@ -57,6 +61,14 @@ public class SaleItemServiceImpl implements SaleItemService {
     @Override
     public PharmacySaleItemDto getItemById(Long saleId) throws HmsException {
         return repository.findById(saleId).orElseThrow(() -> new HmsException("ITEM_NOT_FOUND")).toDto();
+    }
+
+    @Override
+    public void createSaleItems(Long saleId, List<PharmacySaleItemDto> dtos) throws HmsException {
+        dtos.stream().map((dto) -> {
+            dto.setSaleId(saleId);
+            return dto.toEntity();
+        }).forEach(repository::save);
     }
 
 }

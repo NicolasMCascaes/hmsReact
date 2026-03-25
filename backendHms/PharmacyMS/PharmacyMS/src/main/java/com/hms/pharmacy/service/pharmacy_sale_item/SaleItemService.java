@@ -8,6 +8,8 @@ import com.hms.pharmacy.exception.HmsException;
 public interface SaleItemService {
     Long createSaleItem(PharmacySaleItemDto dto) throws HmsException;
 
+    void createSaleItems(Long saleId, List<PharmacySaleItemDto> dtos) throws HmsException;
+
     void deleteSaleItem(Long itemId) throws HmsException;
 
     void createMultipleSaleItem(Long saleId, Long medicineId, List<PharmacySaleItemDto> saleItems) throws HmsException;

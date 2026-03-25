@@ -15,4 +15,7 @@ public interface MedicineInventoryRepository extends JpaRepository<MedicineInven
     @Query("SELECT mi FROM MedicineInventory mi WHERE mi.expireDate <= :now AND mi.stockStatus = :stockStatus")
     List<MedicineInventory> findExpiredMedicines(LocalDate now, StockStatus stockStatus);
 
+    List<MedicineInventory> findByMedicine_IdMedicineAndExpireDateAfterAndQuantityGreaterThanAndStockStatusNotOrderByExpireDateAsc(
+            Long medicineId, LocalDate now, Integer quantity, StockStatus status);
+
 }
