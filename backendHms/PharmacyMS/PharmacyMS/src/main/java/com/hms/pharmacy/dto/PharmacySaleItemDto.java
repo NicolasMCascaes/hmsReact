@@ -29,7 +29,7 @@ public class PharmacySaleItemDto {
     private BigDecimal unitPrice;
 
     public PharmacySaleItem toEntity() {
-        return new PharmacySaleItem(this.idPharmacySale, new PharmacySale(this.idPharmacySale),
+        return new PharmacySaleItem(this.idPharmacySale, new PharmacySale(this.saleId),
                 new Medicine(this.medicineId), batchNo, quantity, unitPrice);
     }
 }

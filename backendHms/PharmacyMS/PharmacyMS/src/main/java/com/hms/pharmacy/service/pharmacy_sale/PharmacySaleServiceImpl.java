@@ -31,9 +31,11 @@ public class PharmacySaleServiceImpl implements PharmacySaleService {
 
     @Override
     public Long createSale(SaleRequest dto) throws HmsException {
+        System.out.println("Creating sale with prescription ID: " + dto.getPrescriptionId());
         if (pharmacySaleRepository.existsByPrescriptionId(dto.getPrescriptionId())) {
             throw new HmsException("SALE_ALREADY_EXISTS");
         }
+
         for (PharmacySaleItemDto itemDto : dto.getSaleItems()) {
             itemDto.setBatchNo(medicineInventoryService.sellStock(itemDto.getMedicineId(), itemDto.getQuantity()));
         }
