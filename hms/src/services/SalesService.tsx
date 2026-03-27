@@ -23,4 +23,9 @@ const getSaleByPrescriptionId = async (prescriptionId: number) => {
     .then((response:any) => response.data)
     .catch((error:any) => {throw error})
 }
-export {createSale, updateSale, deleteSaleByPrescriptionId, getSaleById, getSaleByPrescriptionId}
+const getAllSales = async () => {
+    return axiosInstance.get('/pharmacy/sales/getAllSales')
+    .then((response:any) => response.data)
+    .catch((error:any) => {throw error})
+}
+export {createSale, updateSale, deleteSaleByPrescriptionId, getSaleById, getSaleByPrescriptionId, getAllSales}
