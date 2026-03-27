@@ -1,5 +1,7 @@
 package com.hms.pharmacy.api;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -54,6 +56,11 @@ public class PharmacySaleApi {
     @GetMapping("/getByPrescriptionId/{prescriptionId}")
     public ResponseEntity<PharmacySaleDto> getByPrescriptionId(@PathVariable Long prescriptionId) throws HmsException {
         return ResponseEntity.ok(pharmacySaleService.getSaleByPrescriptionId(prescriptionId));
+    }
+
+    @GetMapping("/getAllSales")
+    public ResponseEntity<List<PharmacySaleDto>> getAllSales() throws HmsException {
+        return ResponseEntity.ok(pharmacySaleService.getAllSales());
     }
 
 }

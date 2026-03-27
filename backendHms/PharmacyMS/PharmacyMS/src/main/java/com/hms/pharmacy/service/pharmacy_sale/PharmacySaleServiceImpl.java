@@ -1,6 +1,7 @@
 package com.hms.pharmacy.service.pharmacy_sale;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,14 +33,15 @@ public class PharmacySaleServiceImpl implements PharmacySaleService {
     @Override
     public Long createSale(SaleRequest dto) throws HmsException {
         System.out.println("Creating sale with prescription ID: " + dto.getPrescriptionId());
-        if (pharmacySaleRepository.existsByPrescriptionId(dto.getPrescriptionId())) {
+        if (dto.getPrescriptionId() != null && pharmacySaleRepository.existsByPrescriptionId(dto.getPrescriptionId())) {
             throw new HmsException("SALE_ALREADY_EXISTS");
         }
 
         for (PharmacySaleItemDto itemDto : dto.getSaleItems()) {
             itemDto.setBatchNo(medicineInventoryService.sellStock(itemDto.getMedicineId(), itemDto.getQuantity()));
         }
-        PharmacySale savedSale = new PharmacySale(null, dto.getPrescriptionId(), LocalDateTime.now(),
+        PharmacySale savedSale = new PharmacySale(null, dto.getPrescriptionId(), dto.getBuyerName(),
+                dto.getContactPhone(), LocalDateTime.now(),
                 dto.getTotalAmount());
         pharmacySaleRepository.save(savedSale);
         saleItemService.createSaleItems(savedSale.getId(), dto.getSaleItems());
@@ -52,6 +54,8 @@ public class PharmacySaleServiceImpl implements PharmacySaleService {
                 .orElseThrow(() -> new HmsException("SALE_NOT_FOUND"));
         sale.setSaleDate(dto.getSaleDate());
         sale.setTotalAmount(dto.getTotalAmount());
+        sale.setBuyerName(dto.getBuyerName());
+        sale.setContactPhone(dto.getContactPhone());
         pharmacySaleRepository.save(sale);
     }
 
@@ -72,6 +76,11 @@ public class PharmacySaleServiceImpl implements PharmacySaleService {
         PharmacySale sale = pharmacySaleRepository.findByPrescriptionId(prescriptionId)
                 .orElseThrow(() -> new HmsException("SALE_NOT_FOUND"));
         return sale.toDto();
+    }
+
+    @Override
+    public List<PharmacySaleDto> getAllSales() throws HmsException {
+        return pharmacySaleRepository.findAll().stream().map(PharmacySale::toDto).toList();
     }
 
 }

@@ -19,8 +19,11 @@ public class PharmacySaleDto {
     private LocalDateTime saleDate;
     @NotNull(message = "Total amount must not be null")
     private Double totalAmount;
+    private String buyerName;
+    private String contactPhone;
 
     public PharmacySale toEntity() {
-        return new PharmacySale(this.id, this.prescriptionId, this.saleDate, this.totalAmount);
+        return new PharmacySale(this.id, this.prescriptionId, this.buyerName, this.contactPhone, this.saleDate,
+                this.totalAmount);
     }
 }

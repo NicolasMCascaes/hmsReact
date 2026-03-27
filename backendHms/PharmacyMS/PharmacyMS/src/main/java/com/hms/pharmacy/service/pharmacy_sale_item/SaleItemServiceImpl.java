@@ -9,18 +9,14 @@ import com.hms.pharmacy.dto.PharmacySaleItemDto;
 import com.hms.pharmacy.entity.PharmacySaleItem;
 import com.hms.pharmacy.exception.HmsException;
 import com.hms.pharmacy.repository.PharmacySaleItemRepository;
-import com.hms.pharmacy.service.medicine_inventory.MedicineInventoryService;
 
 @Service
 @Transactional
 public class SaleItemServiceImpl implements SaleItemService {
     private final PharmacySaleItemRepository repository;
-    private final MedicineInventoryService medicineInventoryService;
 
-    public SaleItemServiceImpl(PharmacySaleItemRepository repository,
-            MedicineInventoryService medicineInventoryService) {
+    public SaleItemServiceImpl(PharmacySaleItemRepository repository) {
         this.repository = repository;
-        this.medicineInventoryService = medicineInventoryService;
     }
 
     @Override
