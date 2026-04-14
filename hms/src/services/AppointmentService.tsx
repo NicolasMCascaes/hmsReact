@@ -71,6 +71,20 @@ const getPrescriptionsByPatientId = (patientId:any) =>{
         throw error
     })
 }
+const getAllPrescriptionDetails = () =>{
+    return axiosInstance.get('/appointment/report/getAllPrescriptionDetails').then((response: any) =>{
+        return response.data
+    }).catch((error:any) => {
+        throw error
+    })
+}
+const getAllMedicinesByPrescriptionId = (id:any) =>{
+    return axiosInstance.get('/appointment/report/getMedicinesByPrescriptionId/' + id).then((response: any) =>{
+        return response.data 
+    }).catch((error:any) => {
+        throw error
+    })
+}
 
 
-export {scheduleAppointment, cancelAppointment, getAppointmentDetails, getAppointment, getAllAppointmentByPatient, getAllAppointmentByDoctor, createApReport, reportExist, getPatientReports, getPrescriptionsByPatientId}
+export {scheduleAppointment, cancelAppointment, getAppointmentDetails, getAppointment, getAllAppointmentByPatient, getAllAppointmentByDoctor, createApReport, reportExist, getPatientReports, getPrescriptionsByPatientId, getAllPrescriptionDetails, getAllMedicinesByPrescriptionId}

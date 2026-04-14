@@ -1,6 +1,6 @@
 import { ActionIcon, Button, Card, Divider, Fieldset, Group, Input, LoadingOverlay, Modal, NumberInput, Select, Stack, Text, TextInput } from "@mantine/core"
 import { useForm } from "@mantine/form"
-import { IconEye, IconPill, IconPlus, IconSearch, IconTrash } from "@tabler/icons-react"
+import { IconEye, IconPill, IconPlus, IconSearch, IconTrash, IconUpload } from "@tabler/icons-react"
 import { useEffect, useState } from "react"
 import { DataTable, type DataTableFilterMeta } from "primereact/datatable"
 import { Column } from "primereact/column"
@@ -12,9 +12,11 @@ import { getAllMedicines } from "../../../services/MedicineService"
 import { getSaleItemsBySaleId } from "../../../services/SaleItemService"
 import { createSale, getAllSales } from "../../../services/SalesService"
 import PhoneInput from "react-phone-input-2"
-import { formatDateWithTime } from "../../../utilities/DateUtility"
+import { formatDate, formatDateWithTime } from "../../../utilities/DateUtility"
 import { useDisclosure } from "@mantine/hooks"
-
+import { Spotlight, type SpotlightActionData, spotlight } from '@mantine/spotlight';
+import { getAllMedicinesByPrescriptionId, getAllPrescriptionDetails } from "../../../services/AppointmentService"
+import { frequencyMap } from "../../../data/DropDownData"
 type SaleItem = {
   medicineId: string
   quantity: number | string
@@ -44,6 +46,12 @@ type MedicineOption = {
   dosage?: string
 }
 
+type PrescriptionDetails = {
+  idPrescription?: number
+  patientName?: string | null
+  doctorName?: string | null
+  prescriptionDate?: string
+}
 const Sales = () => {
   const [loading, setLoading] = useState(false)
   const [opened, { open, close }] = useDisclosure(false)
@@ -54,6 +62,7 @@ const Sales = () => {
   const [data, setData] = useState<any[]>([])
   const [medicineOptions, setMedicineOptions] = useState<MedicineOption[]>([])
   const [selectedSaleItems, setSelectedSaleItems] = useState<SaleItem[]>([])
+  const [actions, setActions] = useState<SpotlightActionData[]>([])
   const [filters, setFilters] = useState<DataTableFilterMeta>({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   })
@@ -62,7 +71,6 @@ const Sales = () => {
   const getMedicineOptionById = (medicineId: string | number) => {
     return medicineOptions.find((option) => option.value === String(medicineId))
   }
-
   const form = useForm({
     initialValues: {
       buyerName: "",
@@ -117,10 +125,62 @@ const Sales = () => {
         errorNotification(error?.response?.data?.errorMessage || "Erro ao carregar medicamentos")
       })
   }
-
+  const fetchAllPrescription = () => {
+    getAllPrescriptionDetails()
+      .then((res) => {
+        console.log(res)
+        setActions(Array.isArray(res) ? res.map((prescription: PrescriptionDetails) => ({
+          id: String(prescription.idPrescription),
+          label: `${prescription.patientName}`,
+          description: `Prescrição de ${prescription.doctorName} em ${formatDate(prescription.prescriptionDate)}`,
+          onClick: () => {
+            handleImportPrescription(prescription)
+          },
+        })) : [])
+      })
+      .catch((error: any) => {
+        console.log(error)
+      })
+  }
+  const handleImportPrescription = (item: any) => {
+    const prescriptionId = Number(item.idPrescription)
+    if (!Number.isFinite(prescriptionId)) {
+      errorNotification("Não foi possível identificar a prescrição selecionada.")
+      return
+    }
+    setLoading(true)
+    getAllMedicinesByPrescriptionId(prescriptionId)
+      .then((res) => {
+        console.log(res)
+       form.setValues({
+        ...form.values,
+        buyerName: item.patientName || "",
+        contactPhone: item.contactPhone || "",
+        saleItems: res.filter((x: any) => x.medicineId != null).map((x: any) => ({
+          medicineId: String(x.medicineId) || x.idMedicine,
+          quantity: calculateQuantity(x.frequency, x.duration),
+        }))
+       })
+      })
+      .catch((error: any) => {
+        console.log(error)
+        errorNotification(error?.response?.data?.errorMessage || "Erro ao importar prescrição médica")
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
+  const calculateQuantity = (freq: string, duration: number) => {
+    const freqValue = frequencyMap[freq]
+    if (!freqValue) {
+      return 0
+    }
+    return Math.ceil(freqValue * duration)
+  }
   useEffect(() => {
     fetchData()
     fetchMedicineDropdown()
+    fetchAllPrescription()
   }, [])
 
   const onGlobalFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,7 +194,16 @@ const Sales = () => {
   const handleSubmit = (values: any) => {
     const normalizedQuantity = values.saleItems[0]?.quantity ? Number(values.saleItems[0].quantity) : NaN
     const normalizedMedicineId = values.saleItems[0]?.medicineId
-
+    let hasError = false
+    values.saleItems.forEach((item: any) => {
+      if(item.quantity > getMedicineOptionById(item.medicineId)?.stock!) {
+        form.setFieldError(`saleItems.${values.saleItems.indexOf(item)}.quantity`, "A quantidade excede o estoque disponível")
+        hasError = true
+      }
+    })
+    if (hasError) {
+      return
+    }
     const payload = {
       buyerName: values.buyerName,
       contactPhone: values.contactPhone,
@@ -153,7 +222,7 @@ const Sales = () => {
       errorNotification("Preencha os dados da venda corretamente antes de enviar.")
       return
     }
-
+    
     const update = isEditing
 
     setLoading(true)
@@ -193,7 +262,6 @@ const Sales = () => {
         setLoading(false)
       })
   }
-
   const onAddMoreMedicines = () => {
     form.insertListItem("saleItems", {
       medicineId: "",
@@ -261,7 +329,15 @@ const Sales = () => {
   return (
     <div className="space-y-4">
       {isFormOpen ? (
-        <form className="grid gap-5" onSubmit={form.onSubmit(handleSubmit)}>
+        <div>
+          <div className="mb-5 flex items-center justify-between">
+            <h3 className="text-xl text-primary-500 font-medium">Vender Medicamento</h3>
+            <Button variant="filled" leftSection={<IconUpload size={18} />} onClick={spotlight.open}>
+              Importar prescrição médica
+            </Button>
+
+          </div>
+          <form className="grid gap-5" onSubmit={form.onSubmit(handleSubmit)}>
           <LoadingOverlay visible={loading} />
           <Fieldset
             className="grid gap-5"
@@ -378,7 +454,7 @@ const Sales = () => {
               </Button>
             </div>
           </div>
-        </form>
+        </form></div>
       ) : null}
 
       {!isFormOpen ? (
@@ -457,6 +533,15 @@ const Sales = () => {
           {selectedSaleItems.length === 0 ? <Text>Nenhum medicamento registrado nesta venda.</Text> : null}
         </Stack>
       </Modal>
+      <Spotlight
+        actions={actions}
+        nothingFound="Nothing found..."
+        highlightQuery
+        searchProps={{
+          leftSection: <IconEye size={20} />,
+          placeholder: 'Search...',
+        }}
+      />
     </div>
   )
 }

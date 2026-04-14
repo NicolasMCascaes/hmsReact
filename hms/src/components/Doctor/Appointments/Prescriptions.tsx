@@ -7,9 +7,10 @@ import { DataTable, type DataTableFilterMeta, } from 'primereact/datatable';
 import { Toolbar } from 'primereact/toolbar';
 import { useEffect, useState } from 'react'
 import { getPrescriptionsByPatientId } from '../../../services/AppointmentService';
-import { formatDateWithTime } from '../../../utilities/DateUtility';
+import { formatDate } from '../../../utilities/DateUtility';
 import { useNavigate } from 'react-router-dom';
 import { useDisclosure } from '@mantine/hooks';
+import { routes } from '../../../data/DropDownData';
 
 
 const Prescriptions = ({ appointment }: any) => {
@@ -55,7 +56,7 @@ const Prescriptions = ({ appointment }: any) => {
     setGlobalFilterValue(value);
   };
   const timeTemplate = (rowData: any) => {
-    return <span className='text-primary-900'>{formatDateWithTime(rowData.prescriptionDate)}</span>
+    return <span className='text-primary-900'>{formatDate(rowData.prescriptionDate)}</span>
   }
   const rightToolbarTemplate = () => {
     return <TextInput value={globalFilterValue} leftSection={<IconSearch />} fw={500} onChange={onGlobalFilterChange} placeholder="Pesquisar palavra-chave" />;
@@ -77,6 +78,7 @@ const Prescriptions = ({ appointment }: any) => {
       tarde: "Tarde",
       noite: "Noite",
       manha_noite: "Manhã e noite",
+      tarde_noite: "Tarde e noite",
       manha_tarde: "Manhã e tarde",
       tres_vezes_dia: "3 vezes ao dia",
       "8h": "A cada 8 horas",
@@ -84,10 +86,12 @@ const Prescriptions = ({ appointment }: any) => {
     };
     return map[value] || value;
   }
-
-
-  function capitalize(str: string): string {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+  function formatRoute(value: string): string {
+    const routesMap = routes.reduce((acc: Record<string, string>, route) => {
+      acc[route.value] = route.label;
+      return acc;
+    }, {});
+    return routesMap[value] || value;
   }
   return (
     <div>
@@ -131,7 +135,7 @@ const Prescriptions = ({ appointment }: any) => {
                   <strong>Duração:</strong> {data.duration} {data.duration === 1 ? "dia" : "dias"}
                 </Text>
                 <Text>
-                  <strong>Via de administração:</strong> {capitalize(data.route)}
+                  <strong>Via de administração:</strong> {formatRoute(data.route)}
                 </Text>
                 <Text>
                   <strong>Instruções:</strong> {data.instructions || "—"}

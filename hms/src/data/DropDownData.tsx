@@ -95,6 +95,20 @@ const frequency = [
   { value: "12h", label: "A cada 12 horas" },
   { value: "24h", label: "A cada 24 horas" },
 ]
+
+const frequencyMap: Record<string, number> = {
+  "manha": 1,
+  "tarde": 1,
+  "noite": 1,
+  "manha_tarde": 2,
+  "manha_noite": 2,
+  "tarde_noite": 2,
+  "tres_vezes_dia": 3,
+  "6h": 4,
+  "8h": 3,
+  "12h": 2,
+  "24h": 1,
+}
 const routes = [
   { value: "oral", label: "Oral" },
   { value: "sublingual", label: "Sublingual" },
@@ -197,4 +211,5 @@ export {
   medicineTypes,
   medicineCategoryLabels,
   medicineTypeLabels,
+  frequencyMap
 }

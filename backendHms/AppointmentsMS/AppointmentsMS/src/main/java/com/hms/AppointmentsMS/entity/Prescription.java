@@ -44,7 +44,7 @@ public class Prescription {
     }
 
     public PrescriptionDetails toPrescriptionDetails() {
-        return new PrescriptionDetails(idPrescription, patientId, doctorId, null, appointment.getIdAppointment(),
+        return new PrescriptionDetails(idPrescription, patientId, null, doctorId, null, appointment.getIdAppointment(),
                 prescriptionDate, notes, null);
     }
 }

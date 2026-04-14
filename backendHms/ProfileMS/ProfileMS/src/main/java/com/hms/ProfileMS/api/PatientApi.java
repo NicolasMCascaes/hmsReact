@@ -8,6 +8,7 @@ import com.hms.ProfileMS.exception.HmsException;
 import com.hms.ProfileMS.services.PatientService;
 
 import java.util.UUID;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.hms.ProfileMS.dto.PatientDropdown;
 
 @RestController
 @RequestMapping("/profile/patient")
@@ -49,6 +53,12 @@ public class PatientApi {
     @GetMapping("/exists/{id}")
     public ResponseEntity<Boolean> patientExistss(@PathVariable UUID id) throws HmsException {
         return new ResponseEntity<>(patientService.patientExists(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllPatientsDropdownById")
+    public ResponseEntity<List<PatientDropdown>> getAllPatientsDropdownById(@RequestParam List<UUID> ids)
+            throws HmsException {
+        return new ResponseEntity<>(patientService.getAllPatientDropdownsByIds(ids), HttpStatus.OK);
     }
 
 }

@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hms.AppointmentsMS.dto.aprecord.ApRecordDTO;
 import com.hms.AppointmentsMS.dto.aprecord.RecordDetails;
+import com.hms.AppointmentsMS.dto.medicine.MedicineDto;
 import com.hms.AppointmentsMS.dto.prescription.PrescriptionDetails;
 import com.hms.AppointmentsMS.exceptions.HmsException;
 import com.hms.AppointmentsMS.services.aprecord.ApRecordService;
+import com.hms.AppointmentsMS.services.medicine.MedicineService;
 import com.hms.AppointmentsMS.services.prescription.PrescriptionService;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,10 +32,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class ApRecordApi {
     private final ApRecordService apRecordService;
     private final PrescriptionService prescriptionService;
+    private final MedicineService medicineService;
 
-    public ApRecordApi(ApRecordService apRecordService, PrescriptionService prescriptionService) {
+    public ApRecordApi(ApRecordService apRecordService, PrescriptionService prescriptionService,
+            MedicineService medicineService) {
         this.apRecordService = apRecordService;
         this.prescriptionService = prescriptionService;
+        this.medicineService = medicineService;
     }
 
     @PostMapping("/create")
@@ -71,6 +76,17 @@ public class ApRecordApi {
     public ResponseEntity<List<PrescriptionDetails>> getPrescriptionsByPatientId(@PathVariable UUID patientId)
             throws HmsException {
         return new ResponseEntity<>(prescriptionService.getPrescriptionsByPatientId(patientId), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllPrescriptionDetails")
+    public ResponseEntity<List<PrescriptionDetails>> getAllPrescriptionDetails() throws HmsException {
+        return new ResponseEntity<>(prescriptionService.getAllPrescriptionDetails(), HttpStatus.OK);
+    }
+
+    @GetMapping("/getMedicinesByPrescriptionId/{id}")
+    public ResponseEntity<List<MedicineDto>> getMedicinesByPrescriptionId(@PathVariable Long id)
+            throws HmsException {
+        return new ResponseEntity<>(medicineService.getAllMedicinesByPrescriptionId(id), HttpStatus.OK);
     }
 
 }

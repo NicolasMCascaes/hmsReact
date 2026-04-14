@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class PrescriptionDetails {
     private Long idPrescription;
     private UUID patientId;
+    private String patientName;
     private UUID doctorId;
     private String doctorName;
     private Long appointmentId;

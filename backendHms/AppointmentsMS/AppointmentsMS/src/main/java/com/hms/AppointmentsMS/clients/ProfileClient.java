@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.hms.AppointmentsMS.dto.profile.DoctorDto;
 import com.hms.AppointmentsMS.dto.profile.DoctorName;
+import com.hms.AppointmentsMS.dto.profile.PatientName;
 import com.hms.AppointmentsMS.dto.profile.PatientDto;
 
 @FeignClient(name = "ProfileMS")
@@ -28,4 +29,7 @@ public interface ProfileClient {
 
     @GetMapping("/profile/doctor/getAllDoctorsDropdownById")
     List<DoctorName> getAllDoctorDropdowns(@RequestParam List<UUID> ids);
+
+    @GetMapping("/profile/patient/getAllPatientsDropdownById")
+    List<PatientName> getAllPatientDropdowns(@RequestParam List<UUID> ids);
 }

@@ -12,6 +12,7 @@ import com.hms.AppointmentsMS.clients.ProfileClient;
 import com.hms.AppointmentsMS.dto.prescription.PrescriptionDTO;
 import com.hms.AppointmentsMS.dto.prescription.PrescriptionDetails;
 import com.hms.AppointmentsMS.dto.profile.DoctorName;
+import com.hms.AppointmentsMS.dto.profile.PatientName;
 import com.hms.AppointmentsMS.entity.Prescription;
 import com.hms.AppointmentsMS.exceptions.HmsException;
 import com.hms.AppointmentsMS.repositories.PrescriptionRepository;
@@ -80,6 +81,51 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
         });
         List<UUID> doctorsIds = prescriptionDetails.stream().map(PrescriptionDetails::getDoctorId).distinct().toList();
+        List<DoctorName> doctorNames = apiService.getAllDoctorDropdowns(doctorsIds);
+        Map<UUID, String> doctorMap = doctorNames.stream()
+                .collect(Collectors.toMap(DoctorName::getId, DoctorName::getName));
+        prescriptionDetails.forEach(prescription -> {
+            String doctorName = doctorMap.get(prescription.getDoctorId());
+            if (doctorName != null) {
+                prescription.setDoctorName(doctorName);
+            } else {
+                prescription.setDoctorName("DOCTOR_NOT_FOUND");
+            }
+        });
+        return prescriptionDetails;
+    }
+
+    @Override
+    public List<PrescriptionDetails> getAllPrescriptionDetails() throws HmsException {
+        List<PrescriptionDetails> prescriptionDetails = prescriptionRepository.findAll().stream()
+                .map(Prescription::toPrescriptionDetails)
+                .toList();
+        prescriptionDetails.forEach(details -> {
+            try {
+                details.setMedicines(medicineService.getAllMedicinesByPrescriptionId(details.getIdPrescription()));
+            } catch (HmsException e) {
+                e.printStackTrace();
+            }
+
+        });
+        List<UUID> patientIds = prescriptionDetails.stream().map(PrescriptionDetails::getPatientId).distinct().toList();
+        if (!patientIds.isEmpty()) {
+            List<PatientName> patientNames = apiService.getAllPatientDropdowns(patientIds);
+            Map<UUID, String> patientMap = patientNames.stream()
+                    .collect(Collectors.toMap(PatientName::getId, PatientName::getName));
+            prescriptionDetails.forEach(prescription -> {
+                String patientName = patientMap.get(prescription.getPatientId());
+                if (patientName != null) {
+                    prescription.setPatientName(patientName);
+                } else {
+                    prescription.setPatientName("Paciente desconhecido");
+                }
+            });
+        }
+        List<UUID> doctorsIds = prescriptionDetails.stream().map(PrescriptionDetails::getDoctorId).distinct().toList();
+        if (doctorsIds.isEmpty()) {
+            return prescriptionDetails;
+        }
         List<DoctorName> doctorNames = apiService.getAllDoctorDropdowns(doctorsIds);
         Map<UUID, String> doctorMap = doctorNames.stream()
                 .collect(Collectors.toMap(DoctorName::getId, DoctorName::getName));
