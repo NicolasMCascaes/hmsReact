@@ -1,6 +1,7 @@
 import { Avatar, Button, Divider, Group, Modal, NumberInput, Select, Table, TagsInput, Text, TextInput } from "@mantine/core"
+import avatar from '../../../assets/avatar.jpg'
 import { useSelector } from "react-redux"
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { IconEdit, IconPhoto, IconUpload, IconX } from "@tabler/icons-react";
 import { DateInput } from '@mantine/dates';
 import 'dayjs/locale/pt-br';
@@ -13,92 +14,25 @@ import { errorNotification, sucessNotification } from "../../../utilities/Notifi
 import { arrayToCsv } from "../../../utilities/OtherUtilities";
 import { bloodGroup, bloodGroups } from "../../../data/DropDownData";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
-import { downloadMediaFile, uploadMediaFile } from "../../../services/MediaService";
+import { uploadMediaFile } from "../../../services/MediaService";
 
 const Profile = () => {
     const [editMode, setEditMode] = useState(false)
     const user = useSelector((state: any) => state.user)
     const [opened, { open, close }] = useDisclosure(false);
     const [profile, setProfile] = useState<any>({})
-    const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
-    const profileImageObjectUrlRef = useRef<string | null>(null)
-
-    const normalizeProfile = (data: any) => ({
-        ...data,
-        alergies: data.alergies ? JSON.parse(data.alergies) : [],
-        chronicDisease: data.chronicDisease ? JSON.parse(data.chronicDisease) : [],
-    })
-
-    const serializeListField = (value: any) => {
-        if (Array.isArray(value)) {
-            return JSON.stringify(value)
-        }
-
-        return value ?? null
-    }
-
-    const buildPatientPayload = (data: any) => ({
-        ...data,
-        alergies: serializeListField(data.alergies),
-        chronicDisease: serializeListField(data.chronicDisease),
-    })
-
-    const replaceProfileImageUrl = (nextUrl: string | null) => {
-        if (profileImageObjectUrlRef.current) {
-            URL.revokeObjectURL(profileImageObjectUrlRef.current)
-        }
-        profileImageObjectUrlRef.current = nextUrl
-        setProfileImageUrl(nextUrl)
-    }
-
     useEffect(() => {
         getPatientProfile(user.profileId)
             .then((data) => {
-                setProfile(normalizeProfile(data));
+                setProfile({
+                    ...data,
+                    alergies: data.alergies ? JSON.parse(data.alergies) : [],
+                    chronicDisease: data.chronicDisease ? JSON.parse(data.chronicDisease) : [],
+                });
             })
             .catch((error) => console.log(error));
     }, []);
-
-    useEffect(() => {
-        let cancelled = false
-
-        if (profile.profilePictureId == null) {
-            replaceProfileImageUrl(null)
-            return
-        }
-
-        downloadMediaFile(profile.profilePictureId)
-            .then((blob) => {
-                const nextUrl = URL.createObjectURL(blob)
-
-                if (cancelled) {
-                    URL.revokeObjectURL(nextUrl)
-                    return
-                }
-
-                replaceProfileImageUrl(nextUrl)
-            })
-            .catch((error) => {
-                console.log(error)
-                if (!cancelled) {
-                    replaceProfileImageUrl(null)
-                }
-            })
-
-        return () => {
-            cancelled = true
-        }
-    }, [profile.profilePictureId]);
-
-    useEffect(() => {
-        return () => {
-            if (profileImageObjectUrlRef.current) {
-                URL.revokeObjectURL(profileImageObjectUrlRef.current)
-            }
-        }
-    }, [])
-
     const form = useForm({
         initialValues: {
             profileId: profile.profileId ?? '',
@@ -120,10 +54,10 @@ const Profile = () => {
 
     });
     const handleUpdate = () => {
-        setLoading(true)
         let values = form.getValues()
-        updatePatientProfile(buildPatientPayload({ ...profile, ...values })).then((data) => {
-            setProfile(normalizeProfile({ ...data, ...values }))
+        updatePatientProfile({ ...profile, ...values, alergies: values.alergies ? JSON.stringify(values.alergies) : null, chronicDisease: values.chronicDisease ? JSON.stringify(values.chronicDisease) : null }).then((data) => {
+            setLoading(true)
+            setProfile({ ...data, ...values })
             setEditMode(false)
             sucessNotification("Perfil atualizado com sucesso!")
         }).catch((error) => {
@@ -141,27 +75,17 @@ const Profile = () => {
             errorNotification("Nenhum arquivo selecionado!")
             return
         }
-
-        try {
-            setLoading(true)
-            const media = await uploadMediaFile(file)
-            const updatedProfile = await updatePatientProfile(buildPatientPayload({ ...profile, profilePictureId: media.id }))
-            setProfile(normalizeProfile(updatedProfile))
-            close()
-            sucessNotification("Foto de perfil atualizada com sucesso!")
-        } catch (error: any) {
-            console.log(error)
-            errorNotification(error.response?.data?.errorMessage ?? "Não foi possível atualizar a foto de perfil.")
-        } finally {
-            setLoading(false)
-        }
+        const media = await uploadMediaFile(file)
+        updatePatientProfile({ ...profile, profilePictureId: media.id })
+        setProfile({ ...profile, profilePictureId: media.id })
+        sucessNotification("Foto de perfil atualizada com sucesso!")
     }
     return (
         <div className="p-10">
             <div className="flex justify-between items-center">
                 <div className="flex gap-5 items-center">
                     <div className="flex flex-col items-center ">
-                        <Avatar variant="filled" src={profileImageUrl} alt={user.name} size="200" className="mb-5" />
+                        <Avatar variant="filled" src={avatar} alt="Nicolas" size="200" className="mb-5" />
                         {editMode && <Button size="sm" onClick={open} variant="filled" leftSection={<IconEdit />}>Upload</Button>}
                     </div>
                     <div className="flex gap-3 flex-col">
@@ -220,7 +144,6 @@ const Profile = () => {
                     maxSize={5 * 1024 ** 2}
                     accept={[MIME_TYPES.png, MIME_TYPES.jpeg, MIME_TYPES.jpeg]}
                     multiple={false}
-                    loading={loading}
                 >
                     <Group justify="center" gap="xl" mih={220} style={{ pointerEvents: 'none' }}>
                         <Dropzone.Accept>

@@ -28,13 +28,5 @@ const getMediaFileUrl = (id: number | null | undefined) => {
     return `http://localhost:9000/media/${id}`
 }
 
-const downloadMediaFile = async (id: number) => {
-    return axiosInstance.get<Blob>(`/media/${id}`, {
-        responseType: "blob",
-    })
-        .then((response) => response.data)
-        .catch((error) => { throw error })
-}
-
-export { uploadMediaFile, getMediaFileUrl, downloadMediaFile }
+export { uploadMediaFile, getMediaFileUrl }
 export type { MediaFileDto }
