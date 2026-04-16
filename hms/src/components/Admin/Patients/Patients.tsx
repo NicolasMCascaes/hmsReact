@@ -6,7 +6,6 @@ const Patients = () => {
     const [patients, setPatients] = useState<any[]>([])
     useEffect(() => {
         getAllPatients().then((response) => {
-            console.table(response)
             setPatients(response)
         }).catch((error) => {
             console.log(error)

@@ -17,6 +17,7 @@ public class DoctorDto {
     private String name;
     private String email;
     private LocalDate dob;
+    private Long profilePictureId;
     private String phone;
     private String address;
     private String licenseNumber;
@@ -25,7 +26,8 @@ public class DoctorDto {
     private Integer totalExp;
 
     public Doctor toEntity() {
-        return new Doctor(this.idDoctor, this.name, this.email, this.dob, this.phone, this.address, this.licenseNumber,
+        return new Doctor(this.idDoctor, this.name, this.email, this.dob, this.profilePictureId, this.phone,
+                this.address, this.licenseNumber,
                 this.specialization, this.department, this.totalExp);
     }
 
