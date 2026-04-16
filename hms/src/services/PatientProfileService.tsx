@@ -14,5 +14,10 @@ const updatePatientProfile = async(patient:any) =>{
     .then((response: any) => response.data)
     .catch((error:any)=> {throw error})
 }
+const getAllPatients = async() =>{
+    return axiosInstance.get('/profile/patient/getAll')
+    .then((response: any) => response.data)
+    .catch((error:any)=> {throw error})
+}
 
-export {getPatientProfile, addPatientProfile, updatePatientProfile}
+export {getPatientProfile, addPatientProfile, updatePatientProfile, getAllPatients}

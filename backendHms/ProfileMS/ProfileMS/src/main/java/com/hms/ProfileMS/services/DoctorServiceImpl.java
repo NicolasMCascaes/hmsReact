@@ -60,4 +60,9 @@ public class DoctorServiceImpl implements DoctorService {
         return doctorRepository.findAllDoctorDropdownsByIds(ids);
     }
 
+    @Override
+    public List<DoctorDto> getAllDoctors() throws HmsException {
+        return doctorRepository.findAll().stream().map(doctor -> doctor.toDto()).toList();
+    }
+
 }

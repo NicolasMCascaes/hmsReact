@@ -53,4 +53,9 @@ public class PatientServiceImpl implements PatientService {
         return patientRepository.findAllPatientDropdownsByIds(ids);
     }
 
+    @Override
+    public List<PatientDto> getAllPatients() throws HmsException {
+        return patientRepository.findAll().stream().map(patient -> patient.toDto()).toList();
+    }
+
 }

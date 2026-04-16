@@ -16,6 +16,9 @@ import NotFoundPage from "../pages/NotFoundPage"
 import AdminMedicinePage from "../pages/Admin/AdminMedicinePage"
 import AdminInventoryPage from "../pages/Admin/AdminInventoryPage"
 import AdminSalesPage from "../pages/Admin/AdminSalesPage"
+import AdminPatientsPage from "../pages/Admin/AdminPatientsPage"
+import AdminDashboradPage from "../pages/Admin/AdminDashboradPage"
+import AdminDoctorsPage from "../pages/Admin/AdminDoctorsPage"
 
 const AppRoutes = () => {
   return (
@@ -25,11 +28,11 @@ const AppRoutes = () => {
               <Route path="/" element={<Navigate to="/login" />} />
               <Route path="/register" element={<RegisterPage/>}/>
               <Route path='/admin' element={<ProtectedRoute><AdminDashboard/></ProtectedRoute>}>
-                <Route path="dashboard" element={<Random/>} />
+                <Route path="dashboard" element={<AdminDashboradPage/>} />
                 <Route path="medicines" element={<AdminMedicinePage/>} />
-                <Route path="doctors" element={<Random/>} />
+                <Route path="doctors" element={<AdminDoctorsPage/>} />
                 <Route path="inventory" element={<AdminInventoryPage/>} />
-                <Route path="patients" element={<Random/>} />
+                <Route path="patients" element={<AdminPatientsPage/>} />
                 <Route path="sales" element={<AdminSalesPage/>} />
               </Route>
               <Route path='/patient' element={<ProtectedRoute><PatientDashboard/></ProtectedRoute>}>

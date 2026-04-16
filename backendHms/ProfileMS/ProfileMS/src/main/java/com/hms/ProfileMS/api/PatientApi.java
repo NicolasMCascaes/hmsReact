@@ -61,4 +61,9 @@ public class PatientApi {
         return new ResponseEntity<>(patientService.getAllPatientDropdownsByIds(ids), HttpStatus.OK);
     }
 
+    @GetMapping("/getAll")
+    public ResponseEntity<List<PatientDto>> getAllPatients() throws HmsException {
+        return new ResponseEntity<>(patientService.getAllPatients(), HttpStatus.OK);
+    }
+
 }

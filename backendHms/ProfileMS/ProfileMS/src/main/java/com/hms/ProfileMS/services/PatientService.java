@@ -16,5 +16,7 @@ public interface PatientService {
 
     public Boolean patientExists(UUID id) throws HmsException;
 
+    public List<PatientDto> getAllPatients() throws HmsException;
+
     public List<PatientDropdown> getAllPatientDropdownsByIds(List<UUID> ids) throws HmsException;
 }
