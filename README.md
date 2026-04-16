@@ -1,5 +1,8 @@
 # HMS - Hospital Management System
 
+![React](https://img.shields.io/badge/React-19-20232A?logo=react&logoColor=61DAFB) ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-7.1-646CFF?logo=vite&logoColor=white) ![Redux Toolkit](https://img.shields.io/badge/Redux_Toolkit-2.11-764ABC?logo=redux&logoColor=white) ![Axios](https://img.shields.io/badge/Axios-1.13-5A29E4?logo=axios&logoColor=white) ![Mantine](https://img.shields.io/badge/Mantine_UI-8.3-339AF0) ![PrimeReact](https://img.shields.io/badge/PrimeReact-10.9-06B6D4) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1-06B6D4?logo=tailwindcss&logoColor=white)
+![Java](https://img.shields.io/badge/Java-17-ED8B00?logo=openjdk&logoColor=white) ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-6DB33F?logo=springboot&logoColor=white) ![Spring Cloud Gateway](https://img.shields.io/badge/Spring_Cloud_Gateway-API_Gateway-6DB33F?logo=spring&logoColor=white) ![Netflix Eureka](https://img.shields.io/badge/Netflix_Eureka-Service_Discovery-E50914?logo=netflix&logoColor=white) ![OpenFeign](https://img.shields.io/badge/OpenFeign-HTTP_Client-0F766E) ![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?logo=mysql&logoColor=white) ![JWT](https://img.shields.io/badge/JWT-Auth-000000?logo=jsonwebtokens&logoColor=white)
+
 O HMS é uma plataforma full stack para apoiar a operação hospitalar com uma experiência única para três perfis centrais: administração, corpo clínico e pacientes. Em vez de espalhar processos entre planilhas, sistemas isolados e cadastros duplicados, o projeto concentra autenticação, perfis, consultas, farmácia e mídia em uma arquitetura integrada.
 
 ## O problema que o produto resolve
