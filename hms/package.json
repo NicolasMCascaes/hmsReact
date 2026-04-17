@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
+    "@mantine/charts": "^9.0.2",
     "@mantine/core": "^8.3.6",
     "@mantine/dates": "^8.3.6",
     "@mantine/dropzone": "^8.3.6",
@@ -33,6 +34,7 @@
     "react-phone-input-2": "^2.15.1",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.9.6",
+    "recharts": "^3.8.1",
     "redux": "^5.0.1"
   },
   "devDependencies": {
