@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hms.ProfileMS.dto.DoctorDropdown;
 import com.hms.ProfileMS.dto.DoctorDto;
+import com.hms.ProfileMS.dto.DoctorPhotoUpdateDto;
 import com.hms.ProfileMS.exception.HmsException;
 import com.hms.ProfileMS.services.DoctorService;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -45,6 +46,12 @@ public class DoctorApi {
     @PutMapping("/update")
     public ResponseEntity<DoctorDto> updateDoctor(@RequestBody DoctorDto doctor) throws HmsException {
         return new ResponseEntity<>(doctorService.updateDoctor(doctor), HttpStatus.OK);
+    }
+
+    @PutMapping("/updatePhoto")
+    public ResponseEntity<DoctorDto> updateDoctorPhoto(@RequestBody DoctorPhotoUpdateDto photoUpdateDto)
+            throws HmsException {
+        return new ResponseEntity<>(doctorService.updateDoctorPhoto(photoUpdateDto), HttpStatus.OK);
     }
 
     @GetMapping("/exists/{id}")

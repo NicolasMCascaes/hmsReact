@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.hms.ProfileMS.dto.DoctorDropdown;
 import com.hms.ProfileMS.dto.DoctorDto;
+import com.hms.ProfileMS.dto.DoctorPhotoUpdateDto;
+import com.hms.ProfileMS.entity.Doctor;
 import com.hms.ProfileMS.exception.HmsException;
 import com.hms.ProfileMS.repository.DoctorRepository;
 
@@ -43,6 +45,15 @@ public class DoctorServiceImpl implements DoctorService {
         doctorRepository.findById(dto.getIdDoctor())
                 .orElseThrow(() -> new HmsException("DOCTOR_NOT_FOUND"));
         return doctorRepository.save(dto.toEntity()).toDto();
+    }
+
+    @Override
+    @Transactional
+    public DoctorDto updateDoctorPhoto(DoctorPhotoUpdateDto photoUpdateDto) throws HmsException {
+        Doctor doctor = doctorRepository.findById(photoUpdateDto.getIdDoctor())
+                .orElseThrow(() -> new HmsException("DOCTOR_NOT_FOUND"));
+        doctor.setProfilePictureId(photoUpdateDto.getProfilePictureId());
+        return doctorRepository.save(doctor).toDto();
     }
 
     @Override

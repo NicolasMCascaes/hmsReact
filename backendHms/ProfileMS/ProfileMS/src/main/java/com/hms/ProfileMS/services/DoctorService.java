@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.hms.ProfileMS.dto.DoctorDropdown;
 import com.hms.ProfileMS.dto.DoctorDto;
+import com.hms.ProfileMS.dto.DoctorPhotoUpdateDto;
 import com.hms.ProfileMS.exception.HmsException;
 
 public interface DoctorService {
@@ -13,6 +14,8 @@ public interface DoctorService {
     public DoctorDto getDoctorById(UUID id) throws HmsException;
 
     public DoctorDto updateDoctor(DoctorDto doctor) throws HmsException;
+
+    public DoctorDto updateDoctorPhoto(DoctorPhotoUpdateDto photoUpdateDto) throws HmsException;
 
     public Boolean doctorExists(UUID id) throws HmsException;
 

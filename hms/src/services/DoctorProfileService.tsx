@@ -14,6 +14,11 @@ const updateDoctorProfile = async(doctor:any) =>{
     .then((response: any) => response.data)
     .catch((error:any)=> {throw error})
 }
+const updateDoctorPhoto = async(idDoctor:any, profilePictureId:number) =>{
+    return axiosInstance.put('/profile/doctor/updatePhoto', { idDoctor, profilePictureId })
+    .then((response: any) => response.data)
+    .catch((error:any)=> {throw error})
+}
 const getDoctorDropdown = async() =>{
     return axiosInstance.get('/profile/doctor/getAllDropdown')
     .then((response:any) => response.data)
@@ -24,4 +29,4 @@ const getAllDoctors = async() =>{
     .then((response: any) => response.data)
     .catch((error:any)=> {throw error})
 }
-export {getDoctorProfile, addDoctorProfile, updateDoctorProfile, getDoctorDropdown, getAllDoctors}
+export {getDoctorProfile, addDoctorProfile, updateDoctorProfile, updateDoctorPhoto, getDoctorDropdown, getAllDoctors}

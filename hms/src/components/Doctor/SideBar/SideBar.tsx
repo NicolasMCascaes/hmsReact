@@ -1,8 +1,10 @@
 import { Avatar, Text } from '@mantine/core'
 import { IconCalendarCheck, IconHeartbeat, IconLayoutGrid, IconMoodHeart, IconUser, IconVaccine } from '@tabler/icons-react'
-import avatar from '../../../assets/avatar.jpg'
 import { NavLink } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
+import { getDoctorProfile } from '../../../services/DoctorProfileService'
+import { downloadMediaFile } from '../../../services/MediaService'
 const Links = [
   { name: "Painel", url: "/doctor/dashboard", icon: <IconLayoutGrid stroke={1.5} /> },
   { name: "Pacientes", url: "/doctor/patients", icon: <IconMoodHeart stroke={1.5} /> },
@@ -12,6 +14,34 @@ const Links = [
 ]
 const SideBar = () => {
   const user = useSelector((state:any)=> state.user)
+  const [avatarSrc, setAvatarSrc] = useState<string | null>(null)
+
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      if (!user.profileId) {
+        setAvatarSrc(null)
+        return
+      }
+
+      
+      const data =await getDoctorProfile(user.profileId)
+       
+
+      if (data.profilePictureId) {
+        const imageBlob = await downloadMediaFile(data.profilePictureId)
+        const reader = new FileReader()
+        reader.onloadend = () => {
+          setAvatarSrc(typeof reader.result === "string" ? reader.result : null)
+        }
+        reader.readAsDataURL(imageBlob)
+        return
+      }
+
+      setAvatarSrc(null)
+    }
+
+    loadUserProfile()
+  }, [user.profilePictureId, user.profileId, user.roles])
   return (
     <div className='flex'>
       <div className='w-64'>
@@ -26,7 +56,7 @@ const SideBar = () => {
 
           <div className='flex flex-col gap-1 items-center'>
             <div className='p-1 bg-white rounded-full shadow-lg'>
-              <Avatar variant="filled" src={avatar} alt="Nicolas" size="xl" />
+              <Avatar variant="filled" src={avatarSrc} alt="Nicolas" size="xl" />
             </div>
             <span className='font-medium text-light'>{user.name}</span>
             <Text c="dimmed" size='xs' className='text-light'>{user.roles}</Text>
