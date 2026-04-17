@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 
 import com.hms.ProfileMS.dto.PatientDropdown;
 import com.hms.ProfileMS.dto.PatientDto;
+import com.hms.ProfileMS.dto.PatientPhotoUpdateDto;
 import com.hms.ProfileMS.exception.HmsException;
+import com.hms.ProfileMS.entity.Patient;
 import com.hms.ProfileMS.repository.PatientRepository;
 
 import jakarta.transaction.Transactional;
@@ -41,6 +43,15 @@ public class PatientServiceImpl implements PatientService {
     public PatientDto updatePatient(PatientDto dto) throws HmsException {
         patientRepository.findById(dto.getIdPatient()).orElseThrow(() -> new HmsException("PATIENT_NOT_FOUND"));
         return patientRepository.save(dto.toEntity()).toDto();
+    }
+
+    @Override
+    @Transactional
+    public PatientDto updatePatientPhoto(PatientPhotoUpdateDto photoUpdateDto) throws HmsException {
+        Patient patient = patientRepository.findById(photoUpdateDto.getIdPatient())
+                .orElseThrow(() -> new HmsException("PATIENT_NOT_FOUND"));
+        patient.setProfilePictureId(photoUpdateDto.getProfilePictureId());
+        return patientRepository.save(patient).toDto();
     }
 
     @Override

@@ -1,38 +1,60 @@
 import { Avatar, Button, Divider, Group, Modal, NumberInput, Select, Table, TagsInput, Text, TextInput } from "@mantine/core"
-import avatar from '../../../assets/avatar.jpg'
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useEffect, useState } from "react";
 import { IconEdit, IconPhoto, IconUpload, IconX } from "@tabler/icons-react";
 import { DateInput } from '@mantine/dates';
 import 'dayjs/locale/pt-br';
 import PhoneInput from 'react-phone-input-2'
 import { useDisclosure } from "@mantine/hooks";
-import { getPatientProfile, updatePatientProfile } from "../../../services/PatientProfileService";
+import { getPatientProfile, updatePatientPhoto, updatePatientProfile } from "../../../services/PatientProfileService";
 import { formatDate } from "../../../utilities/DateUtility";
 import { useForm } from "@mantine/form";
 import { errorNotification, sucessNotification } from "../../../utilities/NotificationUtility";
 import { arrayToCsv } from "../../../utilities/OtherUtilities";
 import { bloodGroup, bloodGroups } from "../../../data/DropDownData";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
-import { uploadMediaFile } from "../../../services/MediaService";
+import { downloadMediaFile, uploadMediaFile } from "../../../services/MediaService";
+import { setProfilePictureId } from "../../../slices/UserSlice";
 
 const Profile = () => {
     const [editMode, setEditMode] = useState(false)
     const user = useSelector((state: any) => state.user)
     const [opened, { open, close }] = useDisclosure(false);
     const [profile, setProfile] = useState<any>({})
+    const [avatarSrc, setAvatarSrc] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
+    const [uploadingPhoto, setUploadingPhoto] = useState(false)
+    const dispatch = useDispatch()
+
     useEffect(() => {
-        getPatientProfile(user.profileId)
-            .then((data) => {
+        const loadProfile = async () => {
+            try {
+                const data = await getPatientProfile(user.profileId)
                 setProfile({
                     ...data,
                     alergies: data.alergies ? JSON.parse(data.alergies) : [],
                     chronicDisease: data.chronicDisease ? JSON.parse(data.chronicDisease) : [],
-                });
-            })
-            .catch((error) => console.log(error));
-    }, []);
+                })
+
+                if (data.profilePictureId == null) {
+                    setAvatarSrc(null)
+                    return
+                }
+
+                const imageBlob = await downloadMediaFile(data.profilePictureId)
+                const reader = new FileReader()
+                reader.onloadend = () => {
+                    setAvatarSrc(typeof reader.result === "string" ? reader.result : null)
+                }
+                reader.readAsDataURL(imageBlob)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        loadProfile()
+    }, [user.profileId]);
+
     const form = useForm({
         initialValues: {
             profileId: profile.profileId ?? '',
@@ -53,10 +75,21 @@ const Profile = () => {
         }
 
     });
+
     const handleUpdate = () => {
-        let values = form.getValues()
-        updatePatientProfile({ ...profile, ...values, alergies: values.alergies ? JSON.stringify(values.alergies) : null, chronicDisease: values.chronicDisease ? JSON.stringify(values.chronicDisease) : null }).then((data) => {
-            setLoading(true)
+        const values = form.getValues()
+        setLoading(true)
+
+        updatePatientProfile({
+            ...profile,
+            dob: values.dob,
+            phone: values.phone,
+            address: values.address,
+            cpf: values.cpf,
+            bloodGroup: values.bloodGroup,
+            alergies: values.alergies ? JSON.stringify(values.alergies) : null,
+            chronicDisease: values.chronicDisease ? JSON.stringify(values.chronicDisease) : null
+        }).then((data) => {
             setProfile({ ...data, ...values })
             setEditMode(false)
             sucessNotification("Perfil atualizado com sucesso!")
@@ -65,28 +98,65 @@ const Profile = () => {
             errorNotification(error.response.data.errorMessage)
         }).finally(() => setLoading(false))
     }
+
     const handleEdit = () => {
-        form.setValues({ ...profile, dob: profile.dob ? new Date(profile.dob) : undefined, chronicDisease: profile.chronicDisease ?? [], alergies: profile.alergies ?? [] })
+        form.setValues({
+            dob: profile.dob ? new Date(profile.dob) : undefined,
+            phone: profile.phone ?? '',
+            address: profile.address ?? '',
+            cpf: profile.cpf ?? '',
+            bloodGroup: profile.bloodGroup,
+            chronicDisease: profile.chronicDisease ?? [],
+            alergies: profile.alergies ?? []
+        })
         setEditMode(true)
     }
+
     const handlePhotoUpload = async (files: File[]) => {
         const file = files[0]
+
         if (!file) {
             errorNotification("Nenhum arquivo selecionado!")
             return
         }
-        const media = await uploadMediaFile(file)
-        updatePatientProfile({ ...profile, profilePictureId: media.id })
-        setProfile({ ...profile, profilePictureId: media.id })
-        sucessNotification("Foto de perfil atualizada com sucesso!")
+        close()
+        setUploadingPhoto(true)
+
+        try {
+            const media = await uploadMediaFile(file)
+            await updatePatientPhoto(profile.idPatient, media.id)
+            setProfile((current: any) => ({ ...current, profilePictureId: media.id }))
+            dispatch(setProfilePictureId(media.id))
+            const reader = new FileReader()
+            reader.onloadend = () => {
+                setAvatarSrc(typeof reader.result === "string" ? reader.result : null)
+            }
+            reader.readAsDataURL(file)
+            sucessNotification("Foto de perfil atualizada com sucesso!")
+        } catch (error: any) {
+            console.log(error)
+            errorNotification(error.response?.data?.errorMessage ?? "Não foi possível atualizar a foto de perfil.")
+        } finally {
+            setUploadingPhoto(false)
+        }
     }
+
     return (
         <div className="p-10">
             <div className="flex justify-between items-center">
                 <div className="flex gap-5 items-center">
                     <div className="flex flex-col items-center ">
-                        <Avatar variant="filled" src={avatar} alt="Nicolas" size="200" className="mb-5" />
-                        {editMode && <Button size="sm" onClick={open} variant="filled" leftSection={<IconEdit />}>Upload</Button>}
+                        <Avatar variant="filled" src={avatarSrc} alt={user.name} size="200" className="mb-5" />
+                        {editMode &&
+                            <Button
+                                size="sm"
+                                onClick={open}
+                                variant="filled"
+                                loading={uploadingPhoto}
+                                leftSection={<IconEdit />}
+                            >
+                                Upload
+                            </Button>}
                     </div>
                     <div className="flex gap-3 flex-col">
                         <div className="text-3xl font-medium text-neutral-900">{user.name}</div>
@@ -94,7 +164,7 @@ const Profile = () => {
                     </div>
                 </div>
                 {!editMode ? <Button size="md" onClick={handleEdit} variant="filled" leftSection={<IconEdit />}>Editar</Button> :
-                    <Button size="md" onClick={handleUpdate} type="submit" variant="filled" loading={loading} leftSection={<IconEdit />}>Confirmar</Button>}
+                    <Button size="md" onClick={handleUpdate} type="submit" variant="filled" loading={loading} disabled={uploadingPhoto} leftSection={<IconEdit />}>Confirmar</Button>}
             </div>
             <Divider my="xl" />
             <div>
@@ -139,10 +209,10 @@ const Profile = () => {
             </div>
             <Modal opened={opened} onClose={close} title={<span className="text-xl">Atualizar foto de perfil</span>}>
                 <Dropzone
-                    onDrop={(files) => handlePhotoUpload(files)}
-                    onReject={(files) => console.log('rejected files', files)}
+                    onDrop={handlePhotoUpload}
+                    onReject={() => errorNotification("Selecione uma imagem PNG ou JPEG de até 5 MB.")}
                     maxSize={5 * 1024 ** 2}
-                    accept={[MIME_TYPES.png, MIME_TYPES.jpeg, MIME_TYPES.jpeg]}
+                    accept={[MIME_TYPES.png, MIME_TYPES.jpeg]}
                     multiple={false}
                 >
                     <Group justify="center" gap="xl" mih={220} style={{ pointerEvents: 'none' }}>

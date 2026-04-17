@@ -7,18 +7,44 @@ import {
   IconTrash,
   IconArrowsLeftRight,
 } from '@tabler/icons-react';
-import avatar from '../../assets/avatar.jpg'
 import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { downloadMediaFile } from '../../services/MediaService';
+import { getPatientProfile } from '../../services/PatientProfileService';
 
 const ProfileMenu = () => {
   const user = useSelector((state:any)=> state.user)
+  const [avatarSrc, setAvatarSrc] = useState<string | null>(null)
 
+  useEffect(() => {
+    const loadUserProfile = async () => {
+       if (!user.profileId) {
+        setAvatarSrc(null)
+        return
+      } 
+      const data = await getPatientProfile(user.profileId)
+      if (data.profilePictureId) {
+        const imageBlob = await downloadMediaFile(data.profilePictureId)
+        const reader = new FileReader()
+        reader.onloadend = () => {
+          const base64data = reader.result as string
+          setAvatarSrc(base64data)
+        }
+        if (imageBlob) {
+          setAvatarSrc(typeof reader.result === "string" ? reader.result : null)
+        }
+        reader.readAsDataURL(imageBlob)
+      }
+    }
+
+    loadUserProfile()
+  }, [user.profilePictureId, user.profileId])
   return (
     <Menu shadow="md" width={200}>
       <Menu.Target>
          <div className='flex items-center gap-3 cursor-pointer'>
            <span className='font-medium text-lg text-neutral-900'>{user.name}</span>
-           <Avatar variant = "filled" src={avatar} alt="Nicolas" size={50}/>
+           <Avatar variant = "filled" src={avatarSrc} alt="Nicolas" size={50}/>
          </div>
       </Menu.Target>
 
