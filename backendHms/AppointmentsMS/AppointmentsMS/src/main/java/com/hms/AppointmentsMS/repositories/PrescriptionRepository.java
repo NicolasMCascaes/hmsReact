@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.hms.AppointmentsMS.entity.Prescription;
@@ -14,4 +15,7 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Long
     List<Prescription> findAllByPatientId(UUID patientId);
 
     Optional<Prescription> findByAppointment_IdAppointment(Long IdAppointment);
+
+    @Query("SELECT p.idPrescription FROM Prescription p WHERE p.patientId = ?1")
+    List<Long> findAllPrescriptionIdsByPatientId(UUID patientId);
 }

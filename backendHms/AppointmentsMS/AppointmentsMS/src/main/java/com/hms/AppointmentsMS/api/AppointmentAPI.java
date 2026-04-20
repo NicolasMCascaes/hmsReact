@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hms.AppointmentsMS.dto.appointment.AppointmentDTO;
 import com.hms.AppointmentsMS.dto.appointment.AppointmentDetailsDto;
+import com.hms.AppointmentsMS.dto.appointment.ReasonCountProjection;
+import com.hms.AppointmentsMS.dto.profile.MonthlyVisitProjection;
 import com.hms.AppointmentsMS.exceptions.HmsException;
 import com.hms.AppointmentsMS.services.appointment.AppointmentService;
 
@@ -65,6 +67,52 @@ public class AppointmentAPI {
     public ResponseEntity<List<AppointmentDetailsDto>> getAllAppointmentsByDoctorId(@PathVariable UUID profileId)
             throws HmsException {
         return new ResponseEntity<>(appointmentService.findAllAppointmentsByDoctorId(profileId), HttpStatus.OK);
+    }
+
+    @GetMapping("/getCurrentYearVisits/{patientId}")
+    public ResponseEntity<List<MonthlyVisitProjection>> getCurrentYearVisits(@PathVariable UUID patientId)
+            throws HmsException {
+        return new ResponseEntity<>(appointmentService.countCurrentYearVisitsByPatient(patientId), HttpStatus.OK);
+    }
+
+    @GetMapping("/getByReasonAndPatientId/{patientId}")
+    public ResponseEntity<List<ReasonCountProjection>> getByReasonAndPatientId(@PathVariable UUID patientId)
+            throws HmsException {
+        return new ResponseEntity<>(appointmentService.countByReasonAndPatientId(patientId), HttpStatus.OK);
+    }
+
+    @GetMapping("/getByReasonAndDoctorId/{doctorId}")
+    public ResponseEntity<List<ReasonCountProjection>> getByReasonAndDoctorId(@PathVariable UUID doctorId)
+            throws HmsException {
+        return new ResponseEntity<>(appointmentService.countByReasonAndDoctorId(doctorId), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAppointmentCount")
+    public ResponseEntity<List<MonthlyVisitProjection>> getAppointmentCount() throws HmsException {
+        return new ResponseEntity<>(appointmentService.countCurrentYearVisits(), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAppointmentCountByDoctor/{doctorId}")
+    public ResponseEntity<List<MonthlyVisitProjection>> getAppointmentCountByDoctor(@PathVariable UUID doctorId)
+            throws HmsException {
+        return new ResponseEntity<>(appointmentService.countCurrentYearVisitsByDoctor(doctorId), HttpStatus.OK);
+    }
+
+    @GetMapping("/getReasonCount")
+    public ResponseEntity<List<ReasonCountProjection>> getReasonCount() throws HmsException {
+        return new ResponseEntity<>(appointmentService.countByReasons(), HttpStatus.OK);
+    }
+
+    @GetMapping("/findAllTodayAppointments")
+    public ResponseEntity<List<AppointmentDetailsDto>> findAllTodayAppointments() throws HmsException {
+        return new ResponseEntity<>(appointmentService.findAllTodayAppointmentDetails(), HttpStatus.OK);
+    }
+
+    @GetMapping("/findAllTodayAppointmentsByDoctorId/{doctorId}")
+    public ResponseEntity<List<AppointmentDetailsDto>> findAllTodayAppointmentsByDoctorId(@PathVariable UUID doctorId)
+            throws HmsException {
+        return new ResponseEntity<>(appointmentService.findAllTodayAppointmentDetailsByDoctorId(doctorId),
+                HttpStatus.OK);
     }
 
 }

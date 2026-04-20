@@ -36,4 +36,10 @@ public class MedicineServiceImpl implements MedicineService {
         return medicineRepository.findAllByPrescription_IdPrescription(id).stream().map(Medicine::toDto).toList();
     }
 
+    @Override
+    public List<MedicineDto> getMedicinesByPrescriptionIds(List<Long> prescriptionIds) throws HmsException {
+        return medicineRepository.findAllByPrescription_IdPrescriptionIn(prescriptionIds).stream().map(Medicine::toDto)
+                .toList();
+    }
+
 }

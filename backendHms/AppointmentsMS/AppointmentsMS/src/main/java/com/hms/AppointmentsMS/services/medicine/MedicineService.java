@@ -11,4 +11,6 @@ public interface MedicineService {
     public List<MedicineDto> saveAllMedicines(List<MedicineDto> medicines) throws HmsException;
 
     public List<MedicineDto> getAllMedicinesByPrescriptionId(Long id) throws HmsException;
+
+    public List<MedicineDto> getMedicinesByPrescriptionIds(List<Long> prescriptionIds) throws HmsException;
 }

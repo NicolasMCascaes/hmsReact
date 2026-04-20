@@ -89,4 +89,10 @@ public class ApRecordApi {
         return new ResponseEntity<>(medicineService.getAllMedicinesByPrescriptionId(id), HttpStatus.OK);
     }
 
+    @GetMapping("/getAllMedicinesByPatientId/{patientId}")
+    public ResponseEntity<List<MedicineDto>> getAllMedicinesByPatientId(@PathVariable UUID patientId)
+            throws HmsException {
+        return new ResponseEntity<>(prescriptionService.getMedicinesByPatientID(patientId), HttpStatus.OK);
+    }
+
 }

@@ -3,6 +3,7 @@ package com.hms.AppointmentsMS.services.prescription;
 import java.util.List;
 import java.util.UUID;
 
+import com.hms.AppointmentsMS.dto.medicine.MedicineDto;
 import com.hms.AppointmentsMS.dto.prescription.PrescriptionDTO;
 import com.hms.AppointmentsMS.dto.prescription.PrescriptionDetails;
 import com.hms.AppointmentsMS.exceptions.HmsException;
@@ -17,4 +18,6 @@ public interface PrescriptionService {
     public List<PrescriptionDetails> getPrescriptionsByPatientId(UUID patientId) throws HmsException;
 
     public List<PrescriptionDetails> getAllPrescriptionDetails() throws HmsException;
+
+    public List<MedicineDto> getMedicinesByPatientID(UUID patientId) throws HmsException;
 }

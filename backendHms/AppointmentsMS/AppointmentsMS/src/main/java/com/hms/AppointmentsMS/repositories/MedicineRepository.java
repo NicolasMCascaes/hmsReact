@@ -10,4 +10,6 @@ import com.hms.AppointmentsMS.entity.Medicine;
 @Repository
 public interface MedicineRepository extends JpaRepository<Medicine, Long> {
     List<Medicine> findAllByPrescription_IdPrescription(Long prescriptionId);
+
+    List<Medicine> findAllByPrescription_IdPrescriptionIn(List<Long> prescriptionIds);
 }
