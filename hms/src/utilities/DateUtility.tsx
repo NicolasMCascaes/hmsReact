@@ -43,5 +43,14 @@ const formatDateWithTime = (dateTime: any) => {
 
   return date.toLocaleString("pt-BR", options);
 };
+const extractTime = (dateTime: any) => {
+  if (!dateTime) return "-";
+  const date = new Date(dateTime);
+  const options: Intl.DateTimeFormatOptions = {
+    hour: "numeric",
+    minute: "numeric",
+  };
+  return date.toLocaleTimeString("pt-BR", options);
+}
 
-export { formatDate, toIsoLocalDateTime, toIsoLocalDate, formatDateWithTime };
+export { formatDate, toIsoLocalDateTime, toIsoLocalDate, formatDateWithTime, extractTime };

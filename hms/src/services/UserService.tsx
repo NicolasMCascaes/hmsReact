@@ -11,7 +11,12 @@ const loginUser = async(user: any) =>{
     .then((response: any) => response.data)
     .catch((error: any) => {throw error})
 }
-export {registerUser, loginUser}
+const getRegistrationCounts = async() =>{
+    return axiosInstance.get('/user/getRegistrationCounts')
+    .then((response: any) => response.data)
+    .catch((error: any) => {throw error})
+}
+export {registerUser, loginUser, getRegistrationCounts}
 
 
 

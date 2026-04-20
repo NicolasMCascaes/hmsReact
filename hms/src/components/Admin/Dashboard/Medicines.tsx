@@ -1,7 +1,16 @@
 import { ScrollArea } from "@mantine/core";
-import { medicinesCardData } from "../../../data/DashboardData";
+import { useEffect, useState } from "react";
+import { getAllMedicines } from "../../../services/MedicineService";
 
 const Medicines = () => {
+  const [medData, setMedData] = useState<any[]>([]);
+  useEffect(() => {
+    getAllMedicines().then((data) => {
+      setMedData(data);
+    }).catch((error) => {
+      console.error("Error fetching medicines data:", error);
+    });
+  }, []);
   const card = (app: any) =>{
     return ( 
           <div className="mb-3 flex items-center justify-between gap-3 rounded-xl border border-orange-200/80 border-l-4 border-l-orange-500 bg-white/65 p-3 shadow-sm shadow-orange-950/5">
@@ -22,7 +31,7 @@ const Medicines = () => {
       <div className="text-xl font-semibold ">Medicamentos</div>
       <div>
          <ScrollArea.Autosize mah={300} mx="auto">
-        {medicinesCardData.map((app) => card(app))}
+        {medData.map((app) => card(app))}
       </ScrollArea.Autosize>
       </div>
     </div>

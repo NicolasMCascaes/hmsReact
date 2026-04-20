@@ -1,13 +1,30 @@
 import { AreaChart } from "@mantine/charts";
-import {
-  appointmentsChartData,
-  doctorsChartData,
-  patientsChartData,
-} from "../../../data/DashboardData";
 import { ThemeIcon } from "@mantine/core";
 import { IconFileReport, IconPhoto, IconUser } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
+import { countAllAppointmentsInCurrentYear } from "../../../services/AppointmentService";
+import { getRegistrationCounts } from "../../../services/UserService";
+import { addZeroMonths } from "../../../utilities/OtherUtilities";
 
 const TopCards = () => {
+  const [apData, setApData] = useState<any[]>([]);
+  const [patientData, setPatientData] = useState<any[]>([]);
+  const [doctorData, setDoctorData] = useState<any[]>([]);
+
+  useEffect(() => {
+    countAllAppointmentsInCurrentYear().then((data) => {
+      setApData(data);
+    }).catch((error) => {
+      console.error("Error fetching appointment data:", error);
+    });
+    getRegistrationCounts().then((data) => {
+      setPatientData(data.patientCounts);
+      setDoctorData(data.doctorCounts);
+    }).catch((error) => {
+      console.error("Error fetching registration counts:", error);
+    });
+    
+  }, []);
   const getSum = (data: any[], key: string) => {
     return data.reduce((sum, item) => sum + item[key] || 0, 0);
   };
@@ -46,7 +63,7 @@ const TopCards = () => {
               {icon}
             </ThemeIcon>
             <div className="flex flex-col items-end">
-              <h3 className="text-lg font-semibold text-neutral-900">{name}</h3>
+              <div className="text-lg font-semibold text-neutral-900">{name}</div>
               <span className={"text-2xl font-semibold text-neutral-900"}>
                 {getSum(data, id)}
               </span>
@@ -78,42 +95,43 @@ const TopCards = () => {
   const cards = [
     {
       name: "Consultas",
-      id: "appointments",
+      id: "count",
       color: "violet",
       bgColor: "bg-violet-100",
       icon: <IconFileReport style={{ width: "70%", height: "70%" }} />,
-      data: appointmentsChartData,
+      data: addZeroMonths(apData, "month", "count"),
     },
     {
       name: "Pacientes",
-      id: "patients",
+      id: "count",
       color: "green",
       bgColor: "bg-green-100",
       icon: <IconUser style={{ width: "70%", height: "70%" }} />,
-      data: patientsChartData,
+      data: addZeroMonths(patientData, "month", "count"),
     },
     {
-      name: "Medicos",
-      id: "doctors",
+      name: "Médicos",
+      id: "count",
       color: "orange",
       bgColor: "bg-orange-100",
       icon: <IconPhoto style={{ width: "70%", height: "70%" }} />,
-      data: doctorsChartData,
+      data: addZeroMonths(doctorData, "month", "count"),
     },
   ];
 
   return (
     <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-      {cards.map((cardData) =>
-        card(
+      {cards.map((cardData) => {
+      
+        return card(
           cardData.name,
           cardData.id,
           cardData.color,
           cardData.bgColor,
           cardData.icon,
           cardData.data
-        )
-      )}
+        );
+      })}
     </div>
   );
 };

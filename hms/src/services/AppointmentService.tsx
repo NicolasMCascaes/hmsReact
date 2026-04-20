@@ -85,6 +85,62 @@ const getAllMedicinesByPrescriptionId = (id:any) =>{
         throw error
     })
 }
+const countAppointmentsByPatientId = (patientId:any) =>{
+    return axiosInstance.get('/appointment/getCurrentYearVisits/{patientId}' + patientId).then((response: any) =>{
+        return response.data
+    }).catch((error:any) => {
+        throw error
+    })
+}
+const countAllAppointmentsInCurrentYear = () =>{
+    return axiosInstance.get('/appointment/getAppointmentCount').then((response: any) =>{
+        return response.data
+    }).catch((error:any) => {
+        throw error
+    })
+}
+const countByReasonAndPatientId = (patientId: any) =>{
+    return axiosInstance.get('/appointment/getByReasonAndPatientId/' + patientId).then((response: any) =>{
+        return response.data
+    }).catch((error:any) => {
+        throw error
+    })
+}
+const countByReasonAndDoctorId = (doctorId: any) =>{
+    return axiosInstance.get('/appointment/getByReasonAndDoctorId/' + doctorId).then((response: any) =>{
+        return response.data
+    }).catch((error:any) => {
+        throw error
+    })
+}
+const countAllReasons = () => {
+    return axiosInstance.get('/appointment/getReasonCount').then((response: any) =>{
+        return response.data
+    }).catch((error:any) => {
+        throw error
+    })
+}
+const getAllMedicinesByPatientId = (patientId:any) =>{
+    return axiosInstance.get('/appointment/report/getAllMedicinesByPatientId/' + patientId).then((response: any) =>{
+        return response.data
+    }).catch((error:any) => {
+        throw error
+    })
+}
+const getAllTodaysAppointments = () => {
+    return axiosInstance.get('/appointment/findAllTodayAppointments').then((response: any) =>{
+        return response.data
+    }).catch((error:any) => {
+        throw error
+    })
+}
+const getAllTodaysAppointmentsByDoctorId = (doctorId:any) => {
+    return axiosInstance.get('/appointment/findAllTodayAppointmentsByDoctorId/' + doctorId).then((response: any) =>{
+        return response.data}).catch((error:any) => {
+            throw error
+        })
+}
 
 
-export {scheduleAppointment, cancelAppointment, getAppointmentDetails, getAppointment, getAllAppointmentByPatient, getAllAppointmentByDoctor, createApReport, reportExist, getPatientReports, getPrescriptionsByPatientId, getAllPrescriptionDetails, getAllMedicinesByPrescriptionId}
+
+export {scheduleAppointment, cancelAppointment, getAppointmentDetails, getAppointment, getAllAppointmentByPatient, getAllAppointmentByDoctor, createApReport, reportExist, getPatientReports, getPrescriptionsByPatientId, getAllPrescriptionDetails, getAllMedicinesByPrescriptionId, countAppointmentsByPatientId, countAllAppointmentsInCurrentYear, countByReasonAndPatientId, countByReasonAndDoctorId, countAllReasons, getAllMedicinesByPatientId, getAllTodaysAppointments, getAllTodaysAppointmentsByDoctorId}
