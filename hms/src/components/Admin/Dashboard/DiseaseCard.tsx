@@ -3,7 +3,7 @@ import { diseaseChartData } from "../../../data/DashboardData";
 
 const DiseaseCard = () => {
   return (
-    <div className="p-3 border rounded-xl bg-green-50 shadow-xl">
+    <div className="rounded-2xl border border-green-200/70 bg-green-50 p-3 shadow-lg shadow-green-950/5">
       <div className="text-xl font-semibold">Doenças comuns</div>
       <div className="flex justify-center">
         <DonutChart

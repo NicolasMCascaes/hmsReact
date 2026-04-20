@@ -1,20 +1,30 @@
+import { ScrollArea } from "@mantine/core";
+import { appointmentsCardData } from "../../../data/DashboardData";
+
 const Appointments = () => {
-  const getSum = (data: any[], key: string) => {
-    return data.reduce((sum, item) => sum + item[key] || 0, 0);
-  };
   const card = (app: any) =>{
     return ( 
-          <div className="p-3 mb-3 border rounded-xl">
-            <div className="flex justify-between p-5 items-center">
-
-            </div>
+          <div className="mb-3 flex items-center justify-between gap-3 rounded-xl border border-violet-200/80 border-l-4 border-l-violet-500 bg-white/65 p-3 shadow-sm shadow-violet-950/5">
+           <div>
+              <div className="font-semibold">{app.patient}</div>
+              <div className="text-sm text-gray-500">{app.doctor}</div>
+           </div>
+           <div className="text-right">
+              <div className="text-sm text-gray-500">{app.time}</div>
+              <div className="text-sm text-gray-500">{app.reason}</div>
+           </div>
           </div>
     )
   }
   
   return (
-    <div className="p-3 border rounded-xl bg-violet-50 shadow-xl flex flex-col gap-3">
+    <div className="flex flex-col gap-3 rounded-2xl border border-violet-200/70 bg-violet-100 p-3 shadow-lg shadow-violet-950/5">
       <div className="text-xl font-semibold ">Consultas de hoje</div>
+      <div>
+         <ScrollArea.Autosize mah={300} mx="auto">
+        {appointmentsCardData.map((app) => card(app))}
+      </ScrollArea.Autosize>
+      </div>
     </div>
   );
 };
