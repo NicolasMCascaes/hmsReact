@@ -1,6 +1,7 @@
 package com.hms.user.UserMS.api;
 
 import com.hms.user.UserMS.dto.LoginDto;
+import com.hms.user.UserMS.dto.RegistrationCountsDto;
 import com.hms.user.UserMS.dto.ResponseDto;
 import com.hms.user.UserMS.dto.UserDto;
 import com.hms.user.UserMS.exception.HmsException;
@@ -17,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/user")
@@ -56,9 +58,9 @@ public class UserApi {
         return new ResponseEntity<>(jwt, HttpStatus.OK);
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<?> getMethodName() {
-        return ResponseEntity.ok("TEST");
+    @GetMapping("/getRegistrationCounts")
+    public ResponseEntity<RegistrationCountsDto> getRegistrationCounts() throws HmsException {
+        return new ResponseEntity<>(userService.getRegistrationCountsByRoleGroupedMonth(), HttpStatus.OK);
     }
 
 }

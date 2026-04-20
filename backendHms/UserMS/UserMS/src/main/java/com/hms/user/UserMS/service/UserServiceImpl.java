@@ -1,6 +1,9 @@
 package com.hms.user.UserMS.service;
 
 import com.hms.user.UserMS.dto.LoginDto;
+import com.hms.user.UserMS.dto.MonthlyRoleCount;
+import com.hms.user.UserMS.dto.RegistrationCountsDto;
+import com.hms.user.UserMS.dto.Roles;
 import com.hms.user.UserMS.dto.UserDto;
 import com.hms.user.UserMS.entity.User;
 import com.hms.user.UserMS.exception.HmsException;
@@ -8,6 +11,8 @@ import com.hms.user.UserMS.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -61,6 +66,13 @@ public class UserServiceImpl implements UserService {
     public UserDto findByEmail(String email) throws HmsException {
         return userRepository.findByEmail(email).orElseThrow(() -> new HmsException("USER_NOT_FOUND"))
                 .toDto();
+    }
+
+    @Override
+    public RegistrationCountsDto getRegistrationCountsByRoleGroupedMonth() throws HmsException {
+        List<MonthlyRoleCount> patientCounts = userRepository.countRegistrationsByRoleGroupedMonth(Roles.PATIENT);
+        List<MonthlyRoleCount> doctorCounts = userRepository.countRegistrationsByRoleGroupedMonth(Roles.DOCTOR);
+        return new RegistrationCountsDto(patientCounts, doctorCounts);
     }
 
 }

@@ -7,7 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Data
 @NoArgsConstructor
@@ -23,8 +27,13 @@ public class User {
     private String password;
     private Roles role;
     private UUID profileId;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public UserDto toDto() {
-        return new UserDto(this.id, this.name, this.email, this.password, this.role, this.profileId);
+        return new UserDto(this.id, this.name, this.email, this.password, this.role, this.profileId, this.createdAt,
+                this.updatedAt);
     }
 }
