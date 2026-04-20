@@ -41,4 +41,7 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Long>
 
     @Query("SELECT new com.hms.AppointmentsMS.dto.appointment.AppointmentDetailsDto(a.idAppointment, a.patientId, null, null, null, a.doctorId, null, a.appointmentTime, a.status, a.reason, a.notes) FROM Appointment a WHERE DATE(a.appointmentTime) = CURRENT_DATE AND a.doctorId = ?1")
     List<AppointmentDetailsDto> findAllTodayAppointmentDetailsByDoctorId(UUID doctorId);
+
+    @Query("SELECT new com.hms.AppointmentsMS.dto.appointment.AppointmentDetailsDto(a.idAppointment, a.patientId, null, null, null, a.doctorId, null, a.appointmentTime, a.status, a.reason, a.notes) FROM Appointment a WHERE DATE(a.appointmentTime) = CURRENT_DATE AND a.patientId = ?1")
+    List<AppointmentDetailsDto> findAllTodayAppointmentDetailsByPatientId(UUID patientId);
 }

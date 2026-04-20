@@ -4,10 +4,12 @@ import { useSelector } from "react-redux"
 import { getDoctorProfile } from "../../../services/DoctorProfileService"
 import { getPatientProfile } from "../../../services/PatientProfileService"
 import { downloadMediaFile } from "../../../services/MediaService"
+import { bloodGroups } from "../../../data/DropDownData"
 
 const Welcome = () => {
     const user = useSelector((state: any) => state.user)
      const [avatarSrc, setAvatarSrc] = useState<string | null>(null)
+     const [profileData, setProfileData] = useState<any>(null)
 
   useEffect(() => {
     const loadUserProfile = async () => {
@@ -18,6 +20,7 @@ const Welcome = () => {
       const data = user.roles === 'DOCTOR'
         ? await getDoctorProfile(user.profileId)
         : await getPatientProfile(user.profileId)
+      setProfileData(data)
 
       if (data.profilePictureId) {
         const imageBlob = await downloadMediaFile(data.profilePictureId)
@@ -39,8 +42,8 @@ const Welcome = () => {
             <div className="flex justify-between items-center">
                 <div>
                     <div>Bem vindo de volta</div>
-                    <div className="text-3xl font-semibold text-blue-600">{user?.name}!</div>
-                    <div>A+, Brasil</div>
+                    <div className="text-3xl font-semibold text-blue-600">{profileData?.name || user?.name}!</div>
+                    <div>{bloodGroups[profileData?.bloodGroup || user?.bloodGroup]}, {profileData?.address || user?.address || 'Endereço não informado'}</div>
                 </div>
                 <Avatar src={avatarSrc || user?.avatar} size={100} alt={user?.name} />
             </div>

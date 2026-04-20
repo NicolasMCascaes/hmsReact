@@ -43,4 +43,6 @@ public interface AppointmentService {
 
     List<AppointmentDetailsDto> findAllTodayAppointmentDetailsByDoctorId(UUID doctorId) throws HmsException;
 
+    List<AppointmentDetailsDto> findAllTodayAppointmentDetailsByPatientId(UUID patientId) throws HmsException;
+
 }

@@ -5,7 +5,7 @@ import { Column, type ColumnFilterElementTemplateOptions } from 'primereact/colu
 import { Dropdown, type DropdownChangeEvent } from 'primereact/dropdown';
 import { Tag } from 'primereact/tag';
 import { ActionIcon, Button, LoadingOverlay, Modal, Select, TextInput, Text, SegmentedControl } from '@mantine/core';
-import { IconEye, IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
+import { IconEye, IconLayoutGrid, IconPlus, IconSearch, IconTable, IconTrash } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { getDoctorDropdown } from '../../../services/DoctorProfileService';
 import { DateTimePicker } from '@mantine/dates';
@@ -33,7 +33,7 @@ interface Customer {
 }
 
 const Appointment = () => {
-
+    const [view, setView] = useState<string>('table');
     const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
     const [doctors, setDoctors] = useState<any[]>([])
     const [opened, { open, close }] = useDisclosure(false);
@@ -219,7 +219,18 @@ const Appointment = () => {
         )
     }
     const rightToolbarTemplate = () => {
-        return <TextInput value={globalFilterValue} leftSection={<IconSearch />} fw={500} onChange={onGlobalFilterChange} placeholder="Pesquisar palavra-chave" />;
+        return <div className='flex gap-5 items-center'>
+            <SegmentedControl
+                value={view}
+                onChange={setView}
+                data={[
+                    { label: <IconTable />, value: 'table' },
+                    { label: <IconLayoutGrid />, value: 'angular' },
+                ]}
+                color='primary'
+            />
+            <TextInput value={globalFilterValue} leftSection={<IconSearch />} fw={500} onChange={onGlobalFilterChange} placeholder="Pesquisar palavra-chave" />
+        </div>;
     };
     const filteredAppointments = appointments.filter((appointment) => {
         const appointmentDate = new Date(appointment.appointmentTime)

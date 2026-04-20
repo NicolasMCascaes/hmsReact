@@ -1,16 +1,30 @@
 import { ScrollArea } from "@mantine/core";
-import { appointmentsCardData } from "../../../data/DashboardData";
+import { useEffect, useState } from "react";
+import { getAllTodaysAppointmentsByDoctorId } from "../../../services/AppointmentService";
+import { useSelector } from "react-redux";
+import { extractTime } from "../../../utilities/DateUtility";
 
 const Appointments = () => {
+  const user = useSelector((state: any) => state.user);
+  const [apData, setApData] = useState<any[]>([]);
+  useEffect(() => {
+    getAllTodaysAppointmentsByDoctorId(user.profileId).then((data) => {
+      setApData(data);
+    }).catch((error) => {
+      console.error("Error fetching appointment data:", error);
+    });
+  }, []);
   const card = (app: any) =>{
     return ( 
           <div className="mb-3 flex items-center justify-between gap-3 rounded-xl border border-violet-200/80 border-l-4 border-l-violet-500 bg-white/65 p-3 shadow-sm shadow-violet-950/5">
            <div>
-              <div className="font-semibold">{app.patient}</div>
+              <div className="font-semibold">{app.patientName}</div>
               <div className="text-sm text-gray-500">{app.reason}</div>
            </div>
            <div className="text-right">
-              <div className="text-sm text-gray-500">{app.time}</div>
+              <div className="text-sm text-gray-500">{extractTime(app.appointmentTime)}</div>
+              <div className="text-sm text-gray-500">{app.patientEmail}</div>
+
               
            </div>
           </div>
@@ -22,7 +36,7 @@ const Appointments = () => {
       <div className="text-xl font-semibold ">Consultas de hoje</div>
       <div>
          <ScrollArea.Autosize mah={300} mx="auto">
-        {appointmentsCardData.map((app) => card(app))}
+        {apData.length > 0 ? apData.map((app) => card(app)) : <div className="text-center text-gray-500">Nenhuma consulta para hoje</div>}
       </ScrollArea.Autosize>
       </div>
     </div>

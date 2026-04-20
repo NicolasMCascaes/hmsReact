@@ -86,7 +86,7 @@ const getAllMedicinesByPrescriptionId = (id:any) =>{
     })
 }
 const countAppointmentsByPatientId = (patientId:any) =>{
-    return axiosInstance.get('/appointment/getCurrentYearVisits/{patientId}' + patientId).then((response: any) =>{
+    return axiosInstance.get('/appointment/getCurrentYearVisits/' + patientId).then((response: any) =>{
         return response.data
     }).catch((error:any) => {
         throw error
@@ -140,7 +140,19 @@ const getAllTodaysAppointmentsByDoctorId = (doctorId:any) => {
             throw error
         })
 }
+const getAppointmentCountByDoctorId = (doctorId:any) => {
+    return axiosInstance.get('/appointment/getAppointmentCountByDoctor/' + doctorId).then((response: any) =>{
+        return response.data}).catch((error:any) => {
+            throw error
+    })
+}
+const getAllTodayAppointmentsByPatientId = (patientId:any) => {
+    return axiosInstance.get('/appointment/findAllTodayAppointmentsByPatientId/' + patientId).then((response: any) =>{
+        return response.data}).catch((error:any) => {
+            throw error
+        })
+}
 
 
 
-export {scheduleAppointment, cancelAppointment, getAppointmentDetails, getAppointment, getAllAppointmentByPatient, getAllAppointmentByDoctor, createApReport, reportExist, getPatientReports, getPrescriptionsByPatientId, getAllPrescriptionDetails, getAllMedicinesByPrescriptionId, countAppointmentsByPatientId, countAllAppointmentsInCurrentYear, countByReasonAndPatientId, countByReasonAndDoctorId, countAllReasons, getAllMedicinesByPatientId, getAllTodaysAppointments, getAllTodaysAppointmentsByDoctorId}
+export {scheduleAppointment, cancelAppointment, getAppointmentDetails, getAppointment, getAllAppointmentByPatient, getAllAppointmentByDoctor, createApReport, reportExist, getPatientReports, getPrescriptionsByPatientId, getAllPrescriptionDetails, getAllMedicinesByPrescriptionId, countAppointmentsByPatientId, countAllAppointmentsInCurrentYear, countByReasonAndPatientId, countByReasonAndDoctorId, countAllReasons, getAllMedicinesByPatientId, getAllTodaysAppointments, getAllTodaysAppointmentsByDoctorId, getAppointmentCountByDoctorId, getAllTodayAppointmentsByPatientId}

@@ -7,7 +7,8 @@ import { downloadMediaFile } from "../../../services/MediaService"
 
 const Welcome = () => {
     const user = useSelector((state: any) => state.user)
-     const [avatarSrc, setAvatarSrc] = useState<string | null>(null)
+    const [avatarSrc, setAvatarSrc] = useState<string | null>(null)
+    const [doctorProfile, setDoctorProfile] = useState<any>(null)
 
   useEffect(() => {
     const loadUserProfile = async () => {
@@ -18,6 +19,7 @@ const Welcome = () => {
       const data = user.roles === 'DOCTOR'
         ? await getDoctorProfile(user.profileId)
         : await getPatientProfile(user.profileId)
+      setDoctorProfile(data)
 
       if (data.profilePictureId) {
         const imageBlob = await downloadMediaFile(data.profilePictureId)
@@ -31,7 +33,6 @@ const Welcome = () => {
 
       setAvatarSrc(null)
     }
-
     loadUserProfile()
   }, [user.profilePictureId, user.profileId, user.roles])
     return (
@@ -40,7 +41,7 @@ const Welcome = () => {
                 <div>
                     <div>Bem vindo de volta</div>
                     <div className="text-3xl font-semibold text-blue-600">{user?.name}!</div>
-                    <div>Cirurgião, Cardiologia</div>
+                    <div>{doctorProfile?.specialization || "Especialidade não definida"}, {doctorProfile?.department || "Experiência não definida"}</div>
                 </div>
                 <Avatar src={avatarSrc || user?.avatar} size={100} alt={user?.name} />
             </div>

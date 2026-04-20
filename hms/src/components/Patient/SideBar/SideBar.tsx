@@ -22,7 +22,6 @@ const SideBar = () => {
         return
       }
       const data = await getPatientProfile(user.profileId)
-      console.log(data)
       if (data.profilePictureId) {
         const imageBlob = await downloadMediaFile(data.profilePictureId)
         const reader = new FileReader()

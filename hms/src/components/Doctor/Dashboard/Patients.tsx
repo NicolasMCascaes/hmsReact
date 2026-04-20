@@ -1,7 +1,17 @@
 import { ScrollArea } from "@mantine/core";
-import { patientsCardData } from "../../../data/DashboardData";
+import { useEffect, useState } from "react";
+import { getAllPatients } from "../../../services/PatientProfileService";
+import { bloodGroups } from "../../../data/DropDownData";
 
 const Patients = () => {
+  const [patientsData, setPatientsData] = useState<any[]>([]);
+  useEffect(() => {
+    getAllPatients().then((data) => {
+      setPatientsData(data);
+    }).catch((error) => {
+      console.error("Error fetching patients data:", error);
+    });
+  }, []);
   const card = (app: any) =>{
     return ( 
           <div className="mb-3 flex items-center justify-between gap-3 rounded-xl border border-rose-200/80 border-l-4 border-l-rose-500 bg-white/70 p-3 shadow-sm shadow-rose-950/5">
@@ -11,7 +21,7 @@ const Patients = () => {
            </div>
            <div className="text-right">
               <div className="text-sm text-gray-500">{app.location}</div>
-              <div className="text-sm text-gray-500">{app.bloodGroup}</div>
+              <div className="text-sm text-gray-500">{app.bloodGroup == null ? "Não informado" : bloodGroups[app.bloodGroup] ?? app.bloodGroup}</div>
            </div>
           </div>
     )
@@ -22,7 +32,7 @@ const Patients = () => {
       <div className="text-xl font-semibold ">Pacientes</div>
       <div>
          <ScrollArea.Autosize mah={300} mx="auto">
-        {patientsCardData.map((app) => card(app))}
+        {patientsData.map((app) => card(app))}
       </ScrollArea.Autosize>
       </div>
     </div>

@@ -115,4 +115,11 @@ public class AppointmentAPI {
                 HttpStatus.OK);
     }
 
+    @GetMapping("/findAllTodayAppointmentsByPatientId/{patientId}")
+    public ResponseEntity<List<AppointmentDetailsDto>> findAllTodayAppointmentsByPatientId(@PathVariable UUID patientId)
+            throws HmsException {
+        return new ResponseEntity<>(appointmentService.findAllTodayAppointmentDetailsByPatientId(patientId),
+                HttpStatus.OK);
+    }
+
 }
