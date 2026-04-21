@@ -16,10 +16,8 @@ import { removeJwt } from '../../slices/JwtSlice';
 const ProfileMenu = () => {
   const dispatch = useDispatch();
   const handleLogout = () =>{
-    console.log("logout")
     dispatch(removeJwt())
     dispatch(removeUser())
-
   }
   const user = useSelector((state:any)=> state.user)
   const [avatarSrc, setAvatarSrc] = useState<string | null>(null)

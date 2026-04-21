@@ -9,12 +9,12 @@ const Dashboard = () => {
   return (
     <div className="flex flex-col gap-5">
       <TopCards />
-      <div className="grid grid-cols-3 gap-5">
+      <div className="grid sm:grid-cols-1 lg:grid-cols-3 gap-5">
         <DiseaseCard />
         <Appointments />
         <Medicines />
       </div>
-      <div className="grid grid-cols-2 gap-5">
+      <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-5">
         <Doctors />
         <Patients />
       </div>

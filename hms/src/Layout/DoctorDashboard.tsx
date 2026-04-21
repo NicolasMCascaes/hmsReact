@@ -1,13 +1,15 @@
 import Header from '../components/Header/Header'
 import SideBar from '../components/Doctor/SideBar/SideBar'
 import { Outlet } from 'react-router-dom'
+import { useState } from 'react'
 
 const DoctorDashboard = () => {
+  const [collapsed, setCollapsed] = useState(false)
   return (
     <div className='flex'>
-        <SideBar/>
+        <SideBar collapsed={collapsed}/>
         <div className='w-full flex overflow-hidden flex-col'>
-            <Header/>
+            <Header onToggleSideBar={() => setCollapsed(!collapsed)}/>
             <Outlet />
         </div>  
     </div>

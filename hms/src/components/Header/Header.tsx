@@ -2,11 +2,11 @@ import { ActionIcon } from '@mantine/core'
 import { IconBellRinging, IconLayoutSidebarLeftCollapseFilled } from '@tabler/icons-react'
 import ProfileMenu from './ProfileMenu'
 import {useSelector } from 'react-redux'
-const Header = () => {
+const Header = ({onToggleSideBar}: {onToggleSideBar: () => void}) => {
   const jwt = useSelector((state:any)=> state.jwt)
   return (
     <div className='bg-light shadow-lg w-full h-16 flex justify-between px-5 items-center'> 
-    <ActionIcon variant="transparent" aria-label="Settings" size="xl">
+    <ActionIcon onClick={onToggleSideBar} variant="transparent" aria-label="Settings" size="xl">
     <IconLayoutSidebarLeftCollapseFilled style={{ width: '90%', height: '90%' }} stroke={1.5} />
     </ActionIcon>
 
