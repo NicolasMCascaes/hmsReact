@@ -1,6 +1,6 @@
-import { ActionIcon, Button, Fieldset, NumberInput, Select, TextInput } from "@mantine/core"
+import { ActionIcon, Button, Fieldset, NumberInput, SegmentedControl, Select, TextInput } from "@mantine/core"
 import { useForm } from "@mantine/form"
-import { IconEdit, IconSearch } from "@tabler/icons-react"
+import { IconEdit, IconLayoutGrid, IconSearch, IconTable } from "@tabler/icons-react"
 import { useEffect, useMemo, useState } from "react"
 import { DataTable, type DataTableFilterMeta } from "primereact/datatable"
 import { Column } from "primereact/column"
@@ -13,12 +13,13 @@ import 'dayjs/locale/pt-br';
 import { toIsoLocalDate } from "../../../utilities/DateUtility"
 import { getAllMedicineDropdown } from "../../../services/MedicineService"
 import { Tag } from "primereact/tag"
+import InventoryCard from "./InventoryCard"
 
 type InventoryFormValues = {
   medicineId: string
   batchNo: string
   quantity: number | string
-  expireDate: Date | null
+  expireDate: string | null
 }
 
 type InventoryRecord = InventoryFormValues & {
@@ -26,6 +27,7 @@ type InventoryRecord = InventoryFormValues & {
   name?: string
   manufacturer?: string
   medicineId?: string | number
+  stockStatus: string
 }
 
 type MedicineDropdownRecord = {
@@ -41,6 +43,7 @@ type MedicineOption = {
 }
 
 const Inventory = () => {
+  const [view, setView] = useState<string>("table")
   const [loading, setLoading] = useState(false)
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false)
   const [editingInventoryId, setEditingInventoryId] = useState<number | null>(null)
@@ -194,7 +197,7 @@ const Inventory = () => {
       medicineId: String(rowData.medicineId ?? ""),
       batchNo: rowData.batchNo,
       quantity: rowData.quantity,
-      expireDate: rowData.expireDate ? new Date(rowData.expireDate) : null,
+      expireDate: rowData.expireDate
     })
     setIsFormOpen(true)
   }
@@ -219,19 +222,19 @@ const Inventory = () => {
     )
   }
   const rightToolbarTemplate = () => {
-    return (
-
-      <TextInput
-        value={globalFilterValue}
-        leftSection={<IconSearch size={18} />}
-        fw={500}
-        onChange={onGlobalFilterChange}
-        placeholder="Pesquisar medicamento no estoque"
-      />
-      
-    )
-  }
-
+        return <div className='flex gap-5 items-center'>
+            <SegmentedControl
+                value={view}
+                onChange={setView}
+                data={[
+                    { label: <IconTable />, value: 'table' },
+                    { label: <IconLayoutGrid />, value: 'angular' },
+                ]}
+                color='primary'
+            />
+            <TextInput value={globalFilterValue} leftSection={<IconSearch />} fw={500} onChange={onGlobalFilterChange} placeholder="Pesquisar palavra-chave" />
+        </div>;
+    };
   const statusBodyTemplate = (rowData: any) => {
     return rowData.stockStatus === "ACTIVE" ? (<Tag severity="success" value="Ativo" />) : (
       <Tag severity="danger" value="Inativo" />
@@ -300,8 +303,7 @@ const Inventory = () => {
       </Fieldset> : null} 
         
        <Toolbar className="mb-4" start={leftToolbarTemplate} end={rightToolbarTemplate} />
-
-      <DataTable
+        {view == "table" ? <DataTable
        value={tableData}
         size="small"
         paginator
@@ -322,7 +324,7 @@ const Inventory = () => {
         <Column field="quantity" header="Quantidade" sortable style={{ minWidth: "10rem" }} />
         <Column field="stockStatus" header="Status" sortable body={statusBodyTemplate} style={{ minWidth: "10rem" }} />
         <Column headerStyle={{ width: '5rem', textAlign: 'center' }} bodyStyle={{ textAlign: 'center', overflow: 'visible' }} body={actionBodyTemplate} />
-      </DataTable>
+      </DataTable> : <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t-2 border-primary-500 mt-2 pt-2">{tableData.map((data) => <InventoryCard key={data.id} {...data} onEdit={() => onEdit(data)} />)}</div>}
     </div>
     
   )

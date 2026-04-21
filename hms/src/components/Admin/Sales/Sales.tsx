@@ -1,6 +1,6 @@
-import { ActionIcon, Button, Card, Divider, Fieldset, Group, Input, LoadingOverlay, Modal, NumberInput, Select, Stack, Text, TextInput } from "@mantine/core"
+import { ActionIcon, Button, Card, Divider, Fieldset, Group, Input, LoadingOverlay, Modal, NumberInput, SegmentedControl, Select, Stack, Text, TextInput } from "@mantine/core"
 import { useForm } from "@mantine/form"
-import { IconEye, IconPill, IconPlus, IconSearch, IconTrash, IconUpload } from "@tabler/icons-react"
+import { IconEye, IconLayoutGrid, IconPill, IconPlus, IconSearch, IconTable, IconTrash, IconUpload } from "@tabler/icons-react"
 import { useEffect, useState } from "react"
 import { DataTable, type DataTableFilterMeta } from "primereact/datatable"
 import { Column } from "primereact/column"
@@ -17,6 +17,7 @@ import { useDisclosure } from "@mantine/hooks"
 import { Spotlight, type SpotlightActionData, spotlight } from '@mantine/spotlight';
 import { getAllMedicinesByPrescriptionId, getAllPrescriptionDetails } from "../../../services/AppointmentService"
 import { frequencyMap } from "../../../data/DropDownData"
+import SalesCard from "./SalesCard"
 type SaleItem = {
   medicineId: string
   quantity: number | string
@@ -53,6 +54,7 @@ type PrescriptionDetails = {
   prescriptionDate?: string
 }
 const Sales = () => {
+  const [view, setView] = useState<string>("table")
   const [loading, setLoading] = useState(false)
   const [opened, { open, close }] = useDisclosure(false)
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false)
@@ -315,16 +317,19 @@ const Sales = () => {
   }
 
   const rightToolbarTemplate = () => {
-    return (
-      <TextInput
-        value={globalFilterValue}
-        leftSection={<IconSearch size={18} />}
-        fw={500}
-        onChange={onGlobalFilterChange}
-        placeholder="Pesquisar venda"
-      />
-    )
-  }
+        return <div className='flex gap-5 items-center'>
+            <SegmentedControl
+                value={view}
+                onChange={setView}
+                data={[
+                    { label: <IconTable />, value: 'table' },
+                    { label: <IconLayoutGrid />, value: 'angular' },
+                ]}
+                color='primary'
+            />
+            <TextInput value={globalFilterValue} leftSection={<IconSearch />} fw={500} onChange={onGlobalFilterChange} placeholder="Pesquisar palavra-chave" />
+        </div>;
+    };
 
   return (
     <div className="space-y-4">
@@ -461,7 +466,7 @@ const Sales = () => {
         <>
           <Toolbar className="mb-4" start={leftToolbarTemplate} end={rightToolbarTemplate} />
 
-          <DataTable
+          {view == "table" ? <DataTable
             value={data}
             key="id"
             removableSort
@@ -482,7 +487,7 @@ const Sales = () => {
             <Column field="contactPhone" header="Telefone de contato" sortable style={{ minWidth: "12rem" }} />
             <Column field="saleDate" header="Data da venda" body={saleDateBodyTemplate} sortable style={{ minWidth: "12rem" }} />
             <Column headerStyle={{ width: "5rem", textAlign: "center" }} bodyStyle={{ textAlign: "center", overflow: "visible" }} body={actionBodyTemplate} />
-          </DataTable>
+          </DataTable>: <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-t-2 border-primary-500 mt-2 pt-2">{data.map((data) => <SalesCard key={data.id} {...data} onViewSale={() => {handleDetails(data)}} />)}</div>}
         </>
       ) : null}
 

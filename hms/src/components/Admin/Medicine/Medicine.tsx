@@ -1,6 +1,6 @@
-import { ActionIcon, Button, Fieldset, NumberInput, Select, TextInput } from "@mantine/core"
+import { ActionIcon, Button, Fieldset, NumberInput, SegmentedControl, Select, TextInput } from "@mantine/core"
 import { useForm } from "@mantine/form"
-import { IconEdit, IconSearch } from "@tabler/icons-react"
+import { IconEdit, IconLayoutGrid, IconSearch, IconTable } from "@tabler/icons-react"
 import { useEffect, useState } from "react"
 import { DataTable, type DataTableFilterMeta } from "primereact/datatable"
 import { Column } from "primereact/column"
@@ -14,6 +14,7 @@ import {
   medicineTypes,
   medicineTypeLabels,
 } from "../../../data/DropDownData"
+import MedicineCard from "./MedicineCard"
 
 type MedicineFormValues = {
   name: string
@@ -30,6 +31,7 @@ type MedicineRecord = MedicineFormValues & {
 }
 
 const Medicine = () => {
+  const [view, setView] = useState<string>('table')
   const [loading, setLoading] = useState(false)
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false)
   const [editingMedicineId, setEditingMedicineId] = useState<number | null>(null)
@@ -176,19 +178,20 @@ const Medicine = () => {
         </>
     )
   }
-  const rightToolbarTemplate = () => {
-    return (
-
-      <TextInput
-        value={globalFilterValue}
-        leftSection={<IconSearch size={18} />}
-        fw={500}
-        onChange={onGlobalFilterChange}
-        placeholder="Pesquisar medicamento"
-      />
-      
-    )
-  }
+   const rightToolbarTemplate = () => {
+        return <div className='flex gap-5 items-center'>
+            <SegmentedControl
+                value={view}
+                onChange={setView}
+                data={[
+                    { label: <IconTable />, value: 'table' },
+                    { label: <IconLayoutGrid />, value: 'angular' },
+                ]}
+                color='primary'
+            />
+            <TextInput value={globalFilterValue} leftSection={<IconSearch />} fw={500} onChange={onGlobalFilterChange} placeholder="Pesquisar palavra-chave" />
+        </div>;
+    };
 
   const priceBodyTemplate = (rowData: MedicineRecord) => {
     const value = Number(String(rowData.price ?? 0).replace(",", "."))
@@ -263,8 +266,7 @@ const Medicine = () => {
       </Fieldset> : null} 
         
        <Toolbar className="mb-4" start={leftToolbarTemplate} end={rightToolbarTemplate} />
-
-       <DataTable
+       { view == "table" ? <DataTable
         value={data}
         size="small"
         paginator
@@ -287,7 +289,7 @@ const Medicine = () => {
         <Column field="dosage" header="Dosagem" style={{ minWidth: "10rem" }} />
        
          <Column headerStyle={{ width: '5rem', textAlign: 'center' }} bodyStyle={{ textAlign: 'center', overflow: 'visible' }} body={actionBodyTemplate} />
-      </DataTable>
+      </DataTable> : <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t-2 border-primary-500 mt-2 pt-2">{data.map((medicine) => <MedicineCard key={medicine.idMedicine} {...medicine} onEdit={() => onEdit(medicine)}/>)}</div>}
     </div>
     
   )
