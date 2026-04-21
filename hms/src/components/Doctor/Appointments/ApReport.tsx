@@ -1,6 +1,6 @@
-import { ActionIcon, Button, Fieldset, MultiSelect, NumberInput, Select, Textarea, TextInput } from "@mantine/core"
+import { ActionIcon, Button, Fieldset, MultiSelect, NumberInput, SegmentedControl, Select, Textarea, TextInput } from "@mantine/core"
 import { frequency, medicineTypes, routes, sintoms, tests } from "../../../data/DropDownData"
-import { IconEye, IconSearch, IconTrash } from "@tabler/icons-react"
+import { IconEye, IconLayoutGrid, IconSearch, IconTable, IconTrash } from "@tabler/icons-react"
 import { useForm } from "@mantine/form"
 import { createApReport, getPatientReports, reportExist } from "../../../services/AppointmentService"
 import { errorNotification, sucessNotification } from "../../../utilities/NotificationUtility"
@@ -12,6 +12,7 @@ import { formatDateWithTime } from "../../../utilities/DateUtility"
 import { FilterMatchMode, FilterOperator } from "primereact/api"
 import { Toolbar } from "primereact/toolbar"
 import { getAllMedicines } from "../../../services/MedicineService"
+import ReportCard from "./ReportCard"
 
 type MedicineRecord = {
     idMedicine: number
@@ -37,6 +38,7 @@ type MedicineOption = {
 }
 
 const ApReport = ({ appointment }: any) => {
+    const [view, setView] = useState<string>("table")
     const [loading, setLoading] = useState(false)
     const [globalFilterValue, setGlobalFilterValue] = useState<string>('');
     const [data, setData] = useState<any[]>([])
@@ -207,7 +209,18 @@ const ApReport = ({ appointment }: any) => {
         return <span className='text-primary-900'>{formatDateWithTime(rowData.createdAt)}</span>
     }
     const rightToolbarTemplate = () => {
-        return <TextInput value={globalFilterValue} leftSection={<IconSearch />} fw={500} onChange={onGlobalFilterChange} placeholder="Pesquisar palavra-chave" />;
+        return <div className='flex gap-5 items-center'>
+            <SegmentedControl
+                value={view}
+                onChange={setView}
+                data={[
+                    { label: <IconTable />, value: 'table' },
+                    { label: <IconLayoutGrid />, value: 'angular' },
+                ]}
+                color='primary'
+            />
+            <TextInput value={globalFilterValue} leftSection={<IconSearch />} fw={500} onChange={onGlobalFilterChange} placeholder="Pesquisar palavra-chave" />
+        </div>;
     };
     const actionBodyTemplate = (rowData: any) => {
         return <div className='flex gap-2'>
@@ -222,8 +235,8 @@ const ApReport = ({ appointment }: any) => {
     }
     return (
         <div>
-            <Toolbar className="mb-4" left={leftToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
-            {!edit ? <DataTable value={data} size='small' paginator rows={10}
+            {!edit ? <div> <Toolbar className="mb-4" left={leftToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
+                {view == "table" ? <DataTable value={data} size='small' paginator rows={10}
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 rowsPerPageOptions={[10, 25, 50]} dataKey="idAppointment"
                 emptyMessage="Nenhuma prescrição." currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} prescrições">
@@ -234,7 +247,11 @@ const ApReport = ({ appointment }: any) => {
                 <Column field="notes" header="Observações adicionais" style={{ minWidth: '14rem' }} />
                 <Column headerStyle={{ width: '5rem', textAlign: 'center' }} bodyStyle={{ textAlign: 'center', overflow: 'visible' }} body={actionBodyTemplate} />
 
-            </DataTable>
+            </DataTable> : <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-2 pt-2'>
+                {data.map((appointment) => (
+                    <ReportCard key={appointment.idAppointment} {...appointment} onNavigateToDetails={() => navigate("/doctor/appointments/" + appointment.appointmentId)} />
+                ))}
+            </div>}</div>
                 : <form onSubmit={form.onSubmit(handleSubmit)}>
                     <Fieldset className="grid grid-cols-1 gap-5" legend={<span className="text-lg font-medium text-primary-500">Informações</span>} style={{ border: '1px solid #67e1cf' }}>
                         <MultiSelect withAsterisk label="Sintomas" clearable searchable comboboxProps={{ transitionProps: { transition: 'pop', duration: 200 } }} {...form.getInputProps("sintoms")} data={sintoms} />

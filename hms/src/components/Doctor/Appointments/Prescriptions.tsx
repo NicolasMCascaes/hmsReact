@@ -1,6 +1,6 @@
 
-import { ActionIcon, Card, Fieldset, Group, Modal, TextInput, Text, Divider, Stack, Badge } from '@mantine/core';
-import { IconEye, IconMedicineSyrup, IconPill, IconSearch } from '@tabler/icons-react';
+import { ActionIcon, Card, Fieldset, Group, Modal, TextInput, Text, Divider, Stack, Badge, SegmentedControl } from '@mantine/core';
+import { IconEye, IconLayoutGrid, IconMedicineSyrup, IconPill, IconSearch, IconTable } from '@tabler/icons-react';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { DataTable, type DataTableFilterMeta, } from 'primereact/datatable';
@@ -11,10 +11,11 @@ import { formatDate } from '../../../utilities/DateUtility';
 import { useNavigate } from 'react-router-dom';
 import { useDisclosure } from '@mantine/hooks';
 import { routes } from '../../../data/DropDownData';
+import PresCard from './PresCard';
 
 
 const Prescriptions = ({ appointment }: any) => {
-
+  const [view, setView] = useState<string>("table")
   const [data, setData] = useState<any[]>([])
   const [medicineData, setMedicineData] = useState<any[]>([])
   const [globalFilterValue, setGlobalFilterValue] = useState<string>('');
@@ -59,8 +60,19 @@ const Prescriptions = ({ appointment }: any) => {
     return <span className='text-primary-900'>{formatDate(rowData.prescriptionDate)}</span>
   }
   const rightToolbarTemplate = () => {
-    return <TextInput value={globalFilterValue} leftSection={<IconSearch />} fw={500} onChange={onGlobalFilterChange} placeholder="Pesquisar palavra-chave" />;
-  };
+        return <div className='flex gap-5 items-center'>
+            <SegmentedControl
+                value={view}
+                onChange={setView}
+                data={[
+                    { label: <IconTable />, value: 'table' },
+                    { label: <IconLayoutGrid />, value: 'angular' },
+                ]}
+                color='primary'
+            />
+            <TextInput value={globalFilterValue} leftSection={<IconSearch />} fw={500} onChange={onGlobalFilterChange} placeholder="Pesquisar palavra-chave" />
+        </div>;
+    };
   const actionBodyTemplate = (rowData: any) => {
     return <div className='flex gap-2'>
       <ActionIcon onClick={() => navigate("/doctor/appointments/" + rowData.appointmentId)}>
@@ -97,7 +109,7 @@ const Prescriptions = ({ appointment }: any) => {
     <div>
       <Toolbar className="mb-4" end={rightToolbarTemplate}></Toolbar>
       <Fieldset legend={<span className="text-lg font-medium text-primary-500">Informações</span>} style={{ border: '1px solid gray' }}>
-        <DataTable value={data} size='small' paginator rows={10}
+        {view == "table" ? <DataTable value={data} size='small' paginator rows={10}
           paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
           rowsPerPageOptions={[10, 25, 50]} dataKey="idAppointment"
           emptyMessage="Nenhuma prescrição." currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} prescrições">
@@ -107,7 +119,11 @@ const Prescriptions = ({ appointment }: any) => {
           <Column field="notes" header="Observações adicionais" style={{ minWidth: '14rem' }} />
           <Column headerStyle={{ width: '5rem', textAlign: 'center' }} bodyStyle={{ textAlign: 'center', overflow: 'visible' }} body={actionBodyTemplate} />
 
-        </DataTable>
+        </DataTable> : <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-2 pt-2'>
+                {data.map((appointment) => (
+                    <PresCard key={appointment.idAppointment}{...appointment} onViewMedicines={() => handleMedicine(appointment.medicines)} onNavigateToDetails={() => navigate("/doctor/appointments/" + appointment.appointmentId)}/>
+                ))}
+            </div>}
       </Fieldset>
       <Modal opened={opened} onClose={close} title="Medicamentos">
         {

@@ -18,6 +18,7 @@ import { formatDateWithTime, toIsoLocalDateTime } from '../../../utilities/DateU
 import { appointmentReasons } from '../../../data/DropDownData';
 import { modals } from '@mantine/modals';
 import { Toolbar } from 'primereact/toolbar';
+import ApCard from './ApCard';
 
 
 
@@ -235,8 +236,6 @@ const Appointment = () => {
     const filteredAppointments = appointments.filter((appointment) => {
         const appointmentDate = new Date(appointment.appointmentTime)
         const today = new Date()
-
-        // Zera horas, minutos e segundos de ambos
         appointmentDate.setHours(0, 0, 0, 0)
         today.setHours(0, 0, 0, 0)
 
@@ -251,12 +250,13 @@ const Appointment = () => {
     return (
         <div className="card">
             <Toolbar className="mb-4" start={leftToolbarTemplate} center={centerToolBarTemplate} end={rightToolbarTemplate}></Toolbar>
-            <DataTable value={filteredAppointments} size='small' paginator rows={10}
-                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                rowsPerPageOptions={[10, 25, 50]} dataKey="idAppointment" selectionMode="checkbox" selection={selectedCustomers}
-                onSelectionChange={(e) => {
-                    const customers = e.value as Customer[];
-                    setSelectedCustomers(customers);
+            {view === 'table' ?
+                <DataTable value={filteredAppointments} size='small' paginator rows={10}
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                    rowsPerPageOptions={[10, 25, 50]} dataKey="idAppointment" selectionMode="checkbox" selection={selectedCustomers}
+                    onSelectionChange={(e) => {
+                        const customers = e.value as Customer[];
+                        setSelectedCustomers(customers);
                 }}
                 filters={filters} filterDisplay="menu" globalFilterFields={['doctorName', 'appointmentTime', 'reason', 'notes', 'status']}
                 emptyMessage="Nenhuma consulta encontrada." currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} consultas">
@@ -266,7 +266,15 @@ const Appointment = () => {
                 <Column field="notes" header="Observações adicionais" sortable filter style={{ minWidth: '14rem' }} />
                 <Column field="status" header="Status" sortable filterMenuStyle={{ width: '14rem' }} style={{ minWidth: '12rem' }} body={statusBodyTemplate} filter filterElement={statusFilterTemplate} />
                 <Column headerStyle={{ width: '5rem', textAlign: 'center' }} bodyStyle={{ textAlign: 'center', overflow: 'visible' }} body={actionBodyTemplate} />
-            </DataTable>
+            </DataTable> : <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t-2 border-primary-500 mt-2 pt-2'>
+                {filteredAppointments.map((appointment) => (<ApCard key={appointment.idAppointment} doctorName={appointment.doctorName} appointmentTime={appointment.appointmentTime} reason={appointment.reason} notes={appointment.notes} status={appointment.status} doctorEmail={appointment.doctorEmail} onDelete={()=> handleDelete(Number(appointment.idAppointment))}/>))}
+                </div>
+                }
+                {filteredAppointments.length === 0 && (
+                    <div className='text-center text-gray-500 py-4'>
+                        Nenhuma consulta encontrada.
+                    </div>
+                )}
             <Modal opened={opened} onClose={close} size="lg" title={<div className='text-xl font-semibold text-primary-400 font-poppins'>Agendar Consulta</div>} centered>
                 <form onSubmit={form.onSubmit(handleSubmit)}>
                     <div className='flex flex-col gap-5'>

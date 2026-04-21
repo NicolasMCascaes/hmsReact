@@ -5,7 +5,7 @@ import { Column, type ColumnFilterElementTemplateOptions } from 'primereact/colu
 import { Dropdown, type DropdownChangeEvent } from 'primereact/dropdown';
 import { Tag } from 'primereact/tag';
 import { ActionIcon, Button, LoadingOverlay, Modal, Select, TextInput, Text, SegmentedControl } from '@mantine/core';
-import { IconEye, IconSearch, IconTrash } from '@tabler/icons-react';
+import { IconEye, IconLayoutGrid, IconSearch, IconTable, IconTrash } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { getDoctorDropdown } from '../../../services/DoctorProfileService';
 import { DateTimePicker } from '@mantine/dates';
@@ -19,6 +19,7 @@ import { appointmentReasons } from '../../../data/DropDownData';
 import { modals } from '@mantine/modals';
 import { Toolbar } from 'primereact/toolbar';
 import { useNavigate } from 'react-router-dom';
+import ApCard from './ApCard';
 
 
 
@@ -35,6 +36,7 @@ interface Customer {
 
 const Appointment = () => {
 
+    const [view, setView] = useState<string>('table');
     const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
     const [doctors, setDoctors] = useState<any[]>([])
     const [opened, { close }] = useDisclosure(false);
@@ -213,7 +215,18 @@ const Appointment = () => {
         )
     }
     const rightToolbarTemplate = () => {
-        return <TextInput value={globalFilterValue} leftSection={<IconSearch />} fw={500} onChange={onGlobalFilterChange} placeholder="Pesquisar palavra-chave" />;
+        return <div className='flex gap-5 items-center'>
+            <SegmentedControl
+                value={view}
+                onChange={setView}
+                data={[
+                    { label: <IconTable />, value: 'table' },
+                    { label: <IconLayoutGrid />, value: 'angular' },
+                ]}
+                color='primary'
+            />
+            <TextInput value={globalFilterValue} leftSection={<IconSearch />} fw={500} onChange={onGlobalFilterChange} placeholder="Pesquisar palavra-chave" />
+        </div>;
     };
     const filteredAppointments = appointments.filter((appointment) => {
         const appointmentDate = new Date(appointment.appointmentTime)
@@ -232,8 +245,9 @@ const Appointment = () => {
         }
     })
     return (
-        <div className="card">
+        <div className="card p-3">
             <Toolbar className="mb-4"  center={centerToolBarTemplate} end={rightToolbarTemplate}></Toolbar>
+            {view === 'table' ?
             <DataTable value={filteredAppointments} size='small' paginator rows={10}
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 rowsPerPageOptions={[10, 25, 50]} dataKey="idAppointment" selectionMode="checkbox" selection={selectedCustomers}
@@ -250,7 +264,27 @@ const Appointment = () => {
                 <Column field="notes" header="Observações adicionais" sortable filter style={{ minWidth: '14rem' }} />
                 <Column field="status" header="Status" sortable filterMenuStyle={{ width: '14rem' }} style={{ minWidth: '12rem' }} body={statusBodyTemplate} filter filterElement={statusFilterTemplate} />
                 <Column headerStyle={{ width: '5rem', textAlign: 'center' }} bodyStyle={{ textAlign: 'center', overflow: 'visible' }} body={actionBodyTemplate} />
-            </DataTable>
+            </DataTable> : <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t-2 border-primary-500 mt-2 pt-2'>
+                {filteredAppointments.map((appointment) => (
+                    <ApCard
+                        key={appointment.idAppointment}
+                        patientName={appointment.patientName}
+                        patientPhone={appointment.patientPhone}
+                        appointmentTime={appointment.appointmentTime}
+                        reason={appointment.reason}
+                        notes={appointment.notes}
+                        status={appointment.status}
+                        onViewDetails={() => navigate("" + appointment.idAppointment)}
+                        onDelete={() => handleDelete(Number(appointment.idAppointment))}
+                    />
+                ))}
+            </div>
+            }
+            {filteredAppointments.length === 0 && (
+                <div className='text-center text-gray-500 py-4'>
+                    Nenhuma consulta encontrada.
+                </div>
+            )}
             <Modal opened={opened} onClose={close} size="lg" title={<div className='text-xl font-semibold text-primary-400 font-poppins'>Agendar Consulta</div>} centered>
                 <form onSubmit={form.onSubmit(handleSubmit)}>
                     <div className='flex flex-col gap-5'>
