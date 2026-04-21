@@ -21,7 +21,6 @@ const DiseaseCard = () => {
       color: colors[index % colors.length]
     }));
   };
-  
   return (
     <div className="rounded-2xl border border-green-200/70 bg-green-50 p-3 shadow-lg shadow-green-950/5">
       <div className="text-xl font-semibold">Motivos comuns</div>
@@ -33,7 +32,7 @@ const DiseaseCard = () => {
           data={normalizeData(reasonsData)}
           chartLabel="Motivos comuns"
           thickness={25}
-          size={200}
+          size={160}
           paddingAngle={10}
         />
       </div>

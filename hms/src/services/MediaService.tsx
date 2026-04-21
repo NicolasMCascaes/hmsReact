@@ -33,7 +33,7 @@ const getMediaFileUrl = (id: number | null | undefined) => {
         return null
     }
 
-    return `http://localhost:9000/media/${id}`
+    return `${axiosInstance.defaults.baseURL}/media/${id}`
 }
 
 export { uploadMediaFile, downloadMediaFile, getMediaFileUrl }

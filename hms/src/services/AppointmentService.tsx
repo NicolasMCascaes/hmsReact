@@ -1,7 +1,7 @@
 import axiosInstance from "../interceptor/AxiosInterceptor"
 
 const scheduleAppointment = (appointment:any) =>{
-    return axiosInstance.post('http://localhost:9000/appointment/schedule', appointment)
+    return axiosInstance.post('/appointment/schedule', appointment)
     .then((response:any)=>{
         return response.data
     }).catch((error:any)=>{

@@ -10,7 +10,7 @@ const Links = [
   { name: "Pacientes", url: "/doctor/patients", icon: <IconMoodHeart size = {20} stroke={1.5} /> },
   { name: "Consultas", url: "/doctor/appointments", icon: <IconCalendarCheck size = {20} stroke={1.5} /> },
   { name: "Perfil", url: "/doctor/profile", icon: <IconUser size = {20} stroke={1.5} /> },
-  { name: "FarmÃ¡cia", url: "/doctor/pharmacy", icon: <IconVaccine size = {20} stroke={1.5} /> },
+  { name: "Farmácia", url: "/doctor/pharmacy", icon: <IconVaccine size = {20} stroke={1.5} /> },
 ]
 const SideBar = ({collapsed}: {collapsed: boolean}) => {
   const user = useSelector((state:any)=> state.user)
@@ -49,7 +49,7 @@ const SideBar = ({collapsed}: {collapsed: boolean}) => {
 
       </div>
       <div className={`${collapsed ? 'w-20' : 'w-64'} transition-all duration-300 ease-in-out fixed bg-dark overflow-y-auto hide-scrollbar flex flex-col gap-7 items-center h-screen`}>
-        <div className='fixed z-500 py-3 text-primary-400 bg-dark flex gap-1 items-center'>
+        <div className={`fixed z-500 py-3 text-primary-400 bg-dark flex gap-1 items-center transition-all duration-300 ease-in-out`}>
           <IconHeartbeat size={40} stroke={2.5} />
           {!collapsed && <h2 className='text-3xl font-semibold'>Pulse</h2>}
         </div>

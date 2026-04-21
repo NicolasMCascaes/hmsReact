@@ -1,5 +1,4 @@
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom"
-import Random from '../components/Random'
 import AdminDashboard from '../Layout/AdminDashboard'
 import LoginPage from "../pages/LoginPage"
 import RegisterPage from "../pages/RegisterPage"
@@ -21,6 +20,8 @@ import AdminDashboradPage from "../pages/Admin/AdminDashboradPage"
 import AdminDoctorsPage from "../pages/Admin/AdminDoctorsPage"
 import DoctorDashboardPage from "../pages/Doctor/DoctorDashboardPage"
 import PatientDashboardPage from "../pages/Patient/PatientDashboardPage"
+import DoctorPharmacyPage from "../pages/Doctor/DoctorPharmacyPage"
+import DoctorPatientsPage from "../pages/Doctor/DoctorPatientsPage"
 
 const AppRoutes = () => {
   return (
@@ -46,12 +47,11 @@ const AppRoutes = () => {
               </Route>
               <Route path='/doctor' element={<ProtectedRoute><DoctorDashboard/></ProtectedRoute>}>
                 <Route path="dashboard" element={<DoctorDashboardPage/>} />
-                <Route path="doctors" element={<Random/>} />
                 <Route path="profile" element={<DoctorProfilePage/>} />
-                <Route path="patients" element={<Random/>} />
+                <Route path="patients" element={<DoctorPatientsPage/>} />
                 <Route path="appointments" element={<DoctorAppointmentPage/>} />
                 <Route path="appointments/:idAppointment" element={<DoctorAppointmentDetailsPage/>} />
-                <Route path="pharmacy" element={<Random/>} />
+                <Route path="pharmacy" element={<DoctorPharmacyPage/>} />
               </Route>
               <Route path='*' element={<NotFoundPage/>} />
             </Routes>
