@@ -12,7 +12,7 @@ const Links = [
   { name: "Perfil", url: "/doctor/profile", icon: <IconUser size = {20} stroke={1.5} /> },
   { name: "Farmácia", url: "/doctor/pharmacy", icon: <IconVaccine size = {20} stroke={1.5} /> },
 ]
-const SideBar = ({collapsed}: {collapsed: boolean}) => {
+const DoctorSideBar = ({collapsed}: {collapsed: boolean}) => {
   const user = useSelector((state:any)=> state.user)
   const [avatarSrc, setAvatarSrc] = useState<string | null>(null)
   const collapsedAvatarSize = collapsed ? 50 : 80
@@ -78,4 +78,4 @@ const SideBar = ({collapsed}: {collapsed: boolean}) => {
   )
 }
 
-export default SideBar
+export default DoctorSideBar

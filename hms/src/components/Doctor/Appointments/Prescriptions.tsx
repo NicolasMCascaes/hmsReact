@@ -9,13 +9,14 @@ import { useEffect, useState } from 'react'
 import { getPrescriptionsByPatientId } from '../../../services/AppointmentService';
 import { formatDate } from '../../../utilities/DateUtility';
 import { useNavigate } from 'react-router-dom';
-import { useDisclosure } from '@mantine/hooks';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { routes } from '../../../data/DropDownData';
 import PresCard from './PresCard';
 
 
 const Prescriptions = ({ appointment }: any) => {
-  const [view, setView] = useState<string>("table")
+  const matches = useMediaQuery('(min-width: 768px)');
+  const [view, setView] = useState<string>(matches ? 'table' : 'angular');
   const [data, setData] = useState<any[]>([])
   const [medicineData, setMedicineData] = useState<any[]>([])
   const [globalFilterValue, setGlobalFilterValue] = useState<string>('');

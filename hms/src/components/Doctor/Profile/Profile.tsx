@@ -6,7 +6,7 @@ import { IconEdit, IconPhoto, IconUpload, IconX } from "@tabler/icons-react";
 import { DateInput } from '@mantine/dates';
 import 'dayjs/locale/pt-br';
 import PhoneInput from 'react-phone-input-2'
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { getDoctorProfile, updateDoctorPhoto, updateDoctorProfile } from "../../../services/DoctorProfileService";
 import { errorNotification, sucessNotification } from "../../../utilities/NotificationUtility";
 import { useForm } from "@mantine/form";
@@ -39,7 +39,7 @@ const Profile = () => {
     const [avatarSrc, setAvatarSrc] = useState<string | null>(null)
     const [uploadingPhoto, setUploadingPhoto] = useState(false)
     const dispatch = useDispatch()
-
+    const matches = useMediaQuery('(min-width: 768px)');
     useEffect(() => {
         const loadProfile = async () => {
             try {
@@ -162,13 +162,14 @@ const Profile = () => {
     }
 
     return (
-        <div className="p-10">
-            <div className="flex justify-between items-center">
-                <div className="flex gap-5 items-center">
-                    <div className="flex flex-col items-center ">
-                        <Avatar variant="filled" src={avatarSrc ?? avatar} alt={user.name} size="200" className="mb-5" />
+        <div className="p-4 sm:p-6 md:p-10">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
+                    <div className="flex flex-col items-center">
+                        <Avatar variant="filled" src={avatarSrc ?? avatar} alt={user.name} size={matches ? "200" : "100"} className="mb-5" />
                         {editMode &&
                             <Button
+                                className="w-full"
                                 size="sm"
                                 onClick={open}
                                 variant="filled"
@@ -178,55 +179,55 @@ const Profile = () => {
                                 Upload
                             </Button>}
                     </div>
-                    <div className="flex gap-3 flex-col">
-                        <div className="text-3xl font-medium text-neutral-900">{user.name}</div>
-                        <div className="text-xl text-neutral-700">{user.sub}</div>
+                    <div className="flex flex-col gap-2 text-center sm:text-left">
+                        <div className="text-2xl font-medium text-neutral-900 md:text-3xl">{user.name}</div>
+                        <div className="break-all text-base text-neutral-700 md:text-xl">{user.sub}</div>
                     </div>
                 </div>
-                {!editMode ? <Button size="md" onClick={handleEdit} variant="filled" leftSection={<IconEdit />}>Editar</Button> :
-                    <Button size="md" onClick={handleUpdate} variant="filled" loading={loading} disabled={uploadingPhoto} leftSection={<IconEdit />}>Confirmar</Button>}
+                {!editMode ? <Button className="w-full md:w-auto" size="md" onClick={handleEdit} variant="filled" leftSection={<IconEdit />}>Editar</Button> :
+                    <Button className="w-full md:w-auto" size="md" onClick={handleUpdate} variant="filled" loading={loading} disabled={uploadingPhoto} leftSection={<IconEdit />}>Confirmar</Button>}
             </div>
             <Divider my="xl" />
             <div>
-                <div className="text-2xl font-medium text-neutral-900">Informações pessoais</div>
-                <div className="flex gap-10">
-                    <Table striped stripedColor="primary.1" withRowBorders={false}>
+                <div className="text-xl font-medium text-neutral-900 md:text-2xl">Informações pessoais</div>
+                <div className="overflow-x-auto">
+                    <Table striped stripedColor="primary.1" withRowBorders={false} className="min-w-[680px]">
                         <Table.Tbody>
                             <Table.Tr>
-                                <Table.Th className="font-semibold text-xl">Data de nascimento</Table.Th>
+                                <Table.Th className="whitespace-nowrap font-semibold text-base md:text-xl">Data de nascimento</Table.Th>
                                 {editMode ? <Table.Td><DateInput label="Data de nascimento" locale="pt-br" placeholder="Selecione sua data de nascimento" {...form.getInputProps("dob")} /></Table.Td>
                                     : <Table.Td>{formatDate(profile.dob) ?? '-'}</Table.Td>}</Table.Tr>
                             <Table.Tr>
-                                <Table.Th className="font-semibold text-xl">Telefone</Table.Th>
+                                <Table.Th className="whitespace-nowrap font-semibold text-base md:text-xl">Telefone</Table.Th>
                                 {editMode ? <Table.Td><PhoneInput
                                     country={'br'} {...form.getInputProps("phone")}
                                 /></Table.Td>
                                     : <Table.Td>{profile.phone ?? '-'}</Table.Td>}</Table.Tr>
                             <Table.Tr>
-                                <Table.Th className="font-semibold text-xl">Endereço</Table.Th>
+                                <Table.Th className="whitespace-nowrap font-semibold text-base md:text-xl">Endereço</Table.Th>
                                 {editMode ? <Table.Td><TextInput label="Endereço" placeholder="Endereço" {...form.getInputProps("address")} /></Table.Td>
                                     : <Table.Td>{profile.address ?? '-'}</Table.Td>}</Table.Tr>
                             <Table.Tr>
-                                <Table.Th className="font-semibold text-xl">Documento Profissional</Table.Th>
+                                <Table.Th className="whitespace-nowrap font-semibold text-base md:text-xl">Documento Profissional</Table.Th>
                                 {editMode ? <Table.Td><TextInput label="Documento Profissional" placeholder="Ex: CRM" {...form.getInputProps("licenseNumber")} /></Table.Td>
                                     : <Table.Td>{profile.licenseNumber ?? '-'}</Table.Td>}</Table.Tr>
                             <Table.Tr>
-                                <Table.Th className="font-semibold text-xl">Especialização</Table.Th>
+                                <Table.Th className="whitespace-nowrap font-semibold text-base md:text-xl">Especialização</Table.Th>
                                 {editMode ? <Table.Td><Select label="Especialização" data={specializations} {...form.getInputProps("specialization")} /></Table.Td>
                                     : <Table.Td>{profile.specialization ?? '-'}</Table.Td>}</Table.Tr>
                             <Table.Tr>
-                                <Table.Th className="font-semibold text-xl">Departamento</Table.Th>
+                                <Table.Th className="whitespace-nowrap font-semibold text-base md:text-xl">Departamento</Table.Th>
                                 {editMode ? <Table.Td><Select label="Departamento" data={departments} {...form.getInputProps("department")} /></Table.Td>
                                     : <Table.Td>{profile.department ?? '-'}</Table.Td>}</Table.Tr>
                             <Table.Tr>
-                                <Table.Th className="font-semibold text-xl">Tempo de experiência profissional</Table.Th>
+                                <Table.Th className="whitespace-nowrap font-semibold text-base md:text-xl">Tempo de experiência profissional</Table.Th>
                                 {editMode ? <Table.Td><NumberInput label="Tempo de experiência profissional" maxLength={3} hideControls {...form.getInputProps("totalExp")} /></Table.Td>
                                     : <Table.Td>{profile.totalExp ?? '-'}</Table.Td>}</Table.Tr>
                         </Table.Tbody>
                     </Table>
                 </div>
             </div>
-            <Modal opened={opened} onClose={close} title={<span className="text-xl">Atualizar foto de perfil</span>}>
+            <Modal opened={opened} onClose={close} fullScreen={!matches} title={<span className="text-xl">Atualizar foto de perfil</span>}>
                 <Dropzone
                     onDrop={handlePhotoUpload}
                     onReject={() => errorNotification("Selecione uma imagem PNG ou JPEG de até 5 MB.")}

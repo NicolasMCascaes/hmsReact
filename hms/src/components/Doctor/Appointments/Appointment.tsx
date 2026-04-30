@@ -6,7 +6,7 @@ import { Dropdown, type DropdownChangeEvent } from 'primereact/dropdown';
 import { Tag } from 'primereact/tag';
 import { ActionIcon, Button, LoadingOverlay, Modal, Select, TextInput, Text, SegmentedControl } from '@mantine/core';
 import { IconEye, IconLayoutGrid, IconSearch, IconTable, IconTrash } from '@tabler/icons-react';
-import { useDisclosure } from '@mantine/hooks';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { getDoctorDropdown } from '../../../services/DoctorProfileService';
 import { DateTimePicker } from '@mantine/dates';
 import dayjs from 'dayjs';
@@ -35,8 +35,8 @@ interface Customer {
 }
 
 const Appointment = () => {
-
-    const [view, setView] = useState<string>('table');
+    const matches = useMediaQuery('(min-width: 768px)');
+    const [view, setView] = useState<string>(matches ? 'table' : 'angular');
     const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
     const [doctors, setDoctors] = useState<any[]>([])
     const [opened, { close }] = useDisclosure(false);
@@ -204,19 +204,25 @@ const Appointment = () => {
     }
    
     const centerToolBarTemplate = () => {
-        return (
+        return (<div className='flex items-center justify-center'>
             <SegmentedControl
                 value={tab}
                 onChange={setTab}
                 variant='filled'
                 color={tab === "Hoje" ? "blue" : tab === "Próximas" ? "green" : "red"}
                 data={["Hoje", "Próximas", "Anteriores"]}
-            />
+                className='flex items-center'
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            /></div>
         )
     }
     const rightToolbarTemplate = () => {
         return <div className='flex gap-5 items-center'>
-            <SegmentedControl
+            { matches && <SegmentedControl
                 value={view}
                 onChange={setView}
                 data={[
@@ -224,7 +230,7 @@ const Appointment = () => {
                     { label: <IconLayoutGrid />, value: 'angular' },
                 ]}
                 color='primary'
-            />
+            />}
             <TextInput value={globalFilterValue} leftSection={<IconSearch />} fw={500} onChange={onGlobalFilterChange} placeholder="Pesquisar palavra-chave" />
         </div>;
     };

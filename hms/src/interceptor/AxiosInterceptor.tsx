@@ -1,6 +1,6 @@
 import axios, { type InternalAxiosRequestConfig } from "axios"
 const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_NGROK_URL || import.meta.env.VITE_BACKEND_URL || "http://localhost:9000"
+    baseURL: "http://localhost:9000"
 })
 axiosInstance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) =>{

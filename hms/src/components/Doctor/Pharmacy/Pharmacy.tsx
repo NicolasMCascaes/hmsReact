@@ -15,6 +15,7 @@ import {
   medicineTypeLabels,
 } from "../../../data/DropDownData"
 import MedicineCard from "./PharmacyCard"
+import { useMediaQuery } from "@mantine/hooks"
 
 type MedicineFormValues = {
   name: string
@@ -31,7 +32,8 @@ type MedicineRecord = MedicineFormValues & {
 }
 
 const Pharmacy = () => {
-  const [view, setView] = useState<string>('table')
+  const matches = useMediaQuery('(min-width: 768px)');
+  const [view, setView] = useState<string>(matches ? 'table' : 'angular');
   const [loading, setLoading] = useState(false)
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false)
   const [editingMedicineId, setEditingMedicineId] = useState<number | null>(null)

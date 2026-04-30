@@ -13,6 +13,7 @@ import { FilterMatchMode, FilterOperator } from "primereact/api"
 import { Toolbar } from "primereact/toolbar"
 import { getAllMedicines } from "../../../services/MedicineService"
 import ReportCard from "./ReportCard"
+import { useMediaQuery } from "@mantine/hooks"
 
 type MedicineRecord = {
     idMedicine: number
@@ -38,7 +39,8 @@ type MedicineOption = {
 }
 
 const ApReport = ({ appointment }: any) => {
-    const [view, setView] = useState<string>("table")
+    const matches = useMediaQuery('(min-width: 768px)');
+    const [view, setView] = useState<string>(matches ? 'table' : 'angular');
     const [loading, setLoading] = useState(false)
     const [globalFilterValue, setGlobalFilterValue] = useState<string>('');
     const [data, setData] = useState<any[]>([])

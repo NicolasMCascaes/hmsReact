@@ -10,7 +10,7 @@ const Links = [
   {name: "Estoque", url: "/admin/inventory", icon: <IconBox size = {20} stroke={1.5} /> },
   {name: "Vendas", url: "/admin/sales", icon: <IconBrandCashapp size = {20} stroke={1.5} /> },
 ]
-const SideBar = ({collapsed}: {collapsed: boolean}) => {
+const AdminSideBar = ({collapsed}: {collapsed: boolean}) => {
   const user = useSelector((state:any)=> state.user)
   const collapsedAvatarSize = collapsed ? 50 : 80
   return (
@@ -48,4 +48,4 @@ const SideBar = ({collapsed}: {collapsed: boolean}) => {
   )
 }
 
-export default SideBar
+export default AdminSideBar

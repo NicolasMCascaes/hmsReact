@@ -31,7 +31,7 @@ const AppointmentDetails = () => {
       <Text className="text-primary-400">Detalhes</Text>
       </Breadcrumbs>
         <div className="flex flex-col gap-6">
-        <div className="w-md">
+        <div className="sm:w-auto lg:w-md">
        <Card shadow="sm" padding="lg" radius="md" className="border border-primary-400">
       <Group justify="space-between" mb="md">
         <Text fw={600} size="lg">Agendamento #{idAppointment}</Text>
