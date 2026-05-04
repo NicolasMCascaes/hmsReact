@@ -30,4 +30,5 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration builder) {
         return builder.getAuthenticationManager();
     }
+
 }

@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +34,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Caching(evict = { @CacheEvict(value = "currentYearVisitsByPatient", key = "#dto.patientId"),
+            @CacheEvict(value = "reasonCountByPatient", key = "#dto.patientId"),
+            @CacheEvict(value = "currentYearVisits", allEntries = true),
+            @CacheEvict(value = "currentYearVisitsByDoctor", key = "#dto.doctorId"),
+            @CacheEvict(value = "reasonCountByDoctor", key = "#dto.doctorId"),
+            @CacheEvict(value = "reasonCount", allEntries = true) })
     public Long scheduleAppointment(AppointmentDTO dto) throws HmsException {
         Boolean patientExists = apiService.patientExists(dto.getPatientId());
         Boolean doctorExists = apiService.doctorExists(dto.getDoctorId());
@@ -45,6 +54,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Caching(evict = { @CacheEvict(value = "currentYearVisitsByPatient", key = "#appointmentId"),
+            @CacheEvict(value = "reasonCountByPatient", key = "#appointmentId"),
+            @CacheEvict(value = "currentYearVisits", allEntries = true),
+            @CacheEvict(value = "currentYearVisitsByDoctor", key = "#appointmentId"),
+            @CacheEvict(value = "reasonCountByDoctor", key = "#appointmentId"),
+            @CacheEvict(value = "reasonCount", allEntries = true) })
     public void cancelAppointment(Long appointmentId) throws HmsException {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new HmsException("APPOINTMENT_NOT_FOUND"));
@@ -56,6 +71,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Caching(evict = { @CacheEvict(value = "currentYearVisitsByPatient", key = "#appointmentId"),
+            @CacheEvict(value = "reasonCountByPatient", key = "#appointmentId"),
+            @CacheEvict(value = "currentYearVisits", allEntries = true),
+            @CacheEvict(value = "currentYearVisitsByDoctor", key = "#appointmentId"),
+            @CacheEvict(value = "reasonCountByDoctor", key = "#appointmentId"),
+            @CacheEvict(value = "reasonCount", allEntries = true) })
     public void completeAppointment(Long appointmentId) throws HmsException {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new HmsException("APPOINTMENT_NOT_FOUND"));
@@ -73,6 +94,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Caching(evict = { @CacheEvict(value = "currentYearVisitsByPatient", key = "#appointmentId"),
+            @CacheEvict(value = "reasonCountByPatient", key = "#appointmentId"),
+            @CacheEvict(value = "currentYearVisits", allEntries = true),
+            @CacheEvict(value = "currentYearVisitsByDoctor", key = "#appointmentId"),
+            @CacheEvict(value = "reasonCountByDoctor", key = "#appointmentId"),
+            @CacheEvict(value = "reasonCount", allEntries = true) })
     public void rescheduleAppointment(Long appointmentId, LocalDateTime time) throws HmsException {
         throw new UnsupportedOperationException("Unimplemented method 'rescheduleAppointment'");
     }
@@ -113,31 +140,37 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Cacheable(value = "currentYearVisitsByPatient", key = "#patientId")
     public List<MonthlyVisitProjection> countCurrentYearVisitsByPatient(UUID patientId) throws HmsException {
         return appointmentRepository.countCurrentYearVisitsByPatient(patientId);
     }
 
     @Override
+    @Cacheable(value = "reasonCountByPatient", key = "#patientId")
     public List<ReasonCountProjection> countByReasonAndPatientId(UUID patientId) throws HmsException {
         return appointmentRepository.countByReasonAndPatientId(patientId);
     }
 
     @Override
+    @Cacheable(value = "currentYearVisits")
     public List<MonthlyVisitProjection> countCurrentYearVisits() throws HmsException {
         return appointmentRepository.countCurrentYearVisits();
     }
 
     @Override
+    @Cacheable(value = "currentYearVisitsByDoctor", key = "#doctorId")
     public List<MonthlyVisitProjection> countCurrentYearVisitsByDoctor(UUID doctorId) throws HmsException {
         return appointmentRepository.countCurrentYearVisitsByDoctor(doctorId);
     }
 
     @Override
+    @Cacheable(value = "reasonCountByDoctor", key = "#doctorId")
     public List<ReasonCountProjection> countByReasonAndDoctorId(UUID doctorId) throws HmsException {
         return appointmentRepository.countByReasonAndDoctorId(doctorId);
     }
 
     @Override
+    @Cacheable(value = "reasonCount")
     public List<ReasonCountProjection> countByReasons() throws HmsException {
         return appointmentRepository.countByReasons();
     }

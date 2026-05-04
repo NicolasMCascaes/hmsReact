@@ -2,6 +2,9 @@ package com.hms.ProfileMS.services;
 
 import java.util.List;
 import java.util.UUID;
+
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.hms.ProfileMS.dto.DoctorDropdown;
@@ -35,12 +38,14 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    @Cacheable(value = "doctor", key = "#id")
     public DoctorDto getDoctorById(UUID id) throws HmsException {
         return doctorRepository.findById(id).orElseThrow(() -> new HmsException("DOCTOR_NOT_FOUND")).toDto();
     }
 
     @Override
     @Transactional
+    @CacheEvict(value = "doctor", key = "#dto.idDoctor")
     public DoctorDto updateDoctor(DoctorDto dto) throws HmsException {
         doctorRepository.findById(dto.getIdDoctor())
                 .orElseThrow(() -> new HmsException("DOCTOR_NOT_FOUND"));
@@ -49,6 +54,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "doctor", key = "#photoUpdateDto.idDoctor")
     public DoctorDto updateDoctorPhoto(DoctorPhotoUpdateDto photoUpdateDto) throws HmsException {
         Doctor doctor = doctorRepository.findById(photoUpdateDto.getIdDoctor())
                 .orElseThrow(() -> new HmsException("DOCTOR_NOT_FOUND"));

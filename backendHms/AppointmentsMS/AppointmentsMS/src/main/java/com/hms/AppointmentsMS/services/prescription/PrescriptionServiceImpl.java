@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.hms.AppointmentsMS.clients.ProfileClient;
@@ -38,6 +40,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     }
 
     @Override
+    @CacheEvict(value = "allPrescriptionDetails", allEntries = true)
     public Long savePrescription(PrescriptionDTO dto) throws HmsException {
         dto.setPrescriptionDate(LocalDate.now());
         Long prescriptionId = prescriptionRepository.save(dto.toEntity()).getIdPrescription();
@@ -97,6 +100,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     }
 
     @Override
+    @Cacheable(value = "allPrescriptionDetails")
     public List<PrescriptionDetails> getAllPrescriptionDetails() throws HmsException {
         List<PrescriptionDetails> prescriptionDetails = prescriptionRepository.findAll().stream()
                 .map(Prescription::toPrescriptionDetails)
@@ -142,6 +146,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     }
 
     @Override
+    @Cacheable(value = "medicinesByPatientId", key = "#patientId")
     public List<MedicineDto> getMedicinesByPatientID(UUID patientId) throws HmsException {
         List<Long> prescriptionIds = prescriptionRepository.findAllPrescriptionIdsByPatientId(patientId);
         return medicineService.getMedicinesByPrescriptionIds(prescriptionIds);
