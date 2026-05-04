@@ -35,7 +35,7 @@ public class MediaFileApi {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<byte[]> getMethodName(@PathVariable Long id) {
+    public ResponseEntity<byte[]> getMediaFile(@PathVariable Long id) {
         Optional<MediaFile> mediaFileOptional = mediaFileService.getMediaFileById(id);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,

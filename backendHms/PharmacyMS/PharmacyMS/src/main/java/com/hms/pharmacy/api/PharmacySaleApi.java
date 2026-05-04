@@ -32,7 +32,7 @@ public class PharmacySaleApi {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Long> postMethodName(@RequestBody @Valid SaleRequest dto) throws HmsException {
+    public ResponseEntity<Long> createSale(@RequestBody @Valid SaleRequest dto) throws HmsException {
         return ResponseEntity.ok(pharmacySaleService.createSale(dto));
     }
 

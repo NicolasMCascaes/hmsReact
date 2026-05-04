@@ -60,6 +60,7 @@ public class SaleItemServiceImpl implements SaleItemService {
     }
 
     @Override
+
     public void createSaleItems(Long saleId, List<PharmacySaleItemDto> dtos) throws HmsException {
         dtos.stream().map((dto) -> {
             dto.setSaleId(saleId);

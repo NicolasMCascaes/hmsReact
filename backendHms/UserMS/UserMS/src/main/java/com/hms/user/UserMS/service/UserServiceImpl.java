@@ -8,6 +8,9 @@ import com.hms.user.UserMS.dto.UserDto;
 import com.hms.user.UserMS.entity.User;
 import com.hms.user.UserMS.exception.HmsException;
 import com.hms.user.UserMS.repository.UserRepository;
+
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = "registrationCountsByRoleGroupedMonth", allEntries = true)
     public void registerUser(UserDto userDto) throws HmsException {
         Optional<User> opt = userRepository.findByEmail(userDto.getEmail());
         if (opt.isPresent()) {
@@ -58,6 +62,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = "registrationCountsByRoleGroupedMonth", allEntries = true)
     public void updateUser(UserDto userDto) {
 
     }
@@ -69,6 +74,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "registrationCountsByRoleGroupedMonth")
     public RegistrationCountsDto getRegistrationCountsByRoleGroupedMonth() throws HmsException {
         List<MonthlyRoleCount> patientCounts = userRepository.countRegistrationsByRoleGroupedMonth(Roles.PATIENT);
         List<MonthlyRoleCount> doctorCounts = userRepository.countRegistrationsByRoleGroupedMonth(Roles.DOCTOR);
