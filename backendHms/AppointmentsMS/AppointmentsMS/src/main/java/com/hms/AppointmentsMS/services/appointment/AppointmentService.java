@@ -6,7 +6,8 @@ import java.util.UUID;
 
 import com.hms.AppointmentsMS.dto.appointment.AppointmentDTO;
 import com.hms.AppointmentsMS.dto.appointment.AppointmentDetailsDto;
-import com.hms.AppointmentsMS.dto.appointment.ReasonCountProjection;
+import com.hms.AppointmentsMS.dto.appointment.MonthlyVisitDto;
+import com.hms.AppointmentsMS.dto.appointment.ReasonCountDto;
 import com.hms.AppointmentsMS.dto.profile.MonthlyVisitProjection;
 import com.hms.AppointmentsMS.exceptions.HmsException;
 
@@ -31,13 +32,13 @@ public interface AppointmentService {
 
     List<MonthlyVisitProjection> countCurrentYearVisits() throws HmsException;
 
-    List<MonthlyVisitProjection> countCurrentYearVisitsByDoctor(UUID doctorId) throws HmsException;
+    List<MonthlyVisitDto> countCurrentYearVisitsByDoctor(UUID doctorId) throws HmsException;
 
-    List<ReasonCountProjection> countByReasonAndPatientId(UUID patientId) throws HmsException;
+    List<ReasonCountDto> countByReasonAndPatientId(UUID patientId) throws HmsException;
 
-    List<ReasonCountProjection> countByReasonAndDoctorId(UUID doctorId) throws HmsException;
+    List<ReasonCountDto> countByReasonAndDoctorId(UUID doctorId) throws HmsException;
 
-    List<ReasonCountProjection> countByReasons() throws HmsException;
+    List<ReasonCountDto> countByReasons() throws HmsException;
 
     List<AppointmentDetailsDto> findAllTodayAppointmentDetails() throws HmsException;
 

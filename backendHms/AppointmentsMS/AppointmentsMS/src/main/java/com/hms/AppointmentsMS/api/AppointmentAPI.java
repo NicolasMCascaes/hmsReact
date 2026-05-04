@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hms.AppointmentsMS.dto.appointment.AppointmentDTO;
 import com.hms.AppointmentsMS.dto.appointment.AppointmentDetailsDto;
-import com.hms.AppointmentsMS.dto.appointment.ReasonCountProjection;
+import com.hms.AppointmentsMS.dto.appointment.MonthlyVisitDto;
+import com.hms.AppointmentsMS.dto.appointment.ReasonCountDto;
 import com.hms.AppointmentsMS.dto.profile.MonthlyVisitProjection;
 import com.hms.AppointmentsMS.exceptions.HmsException;
 import com.hms.AppointmentsMS.services.appointment.AppointmentService;
@@ -76,13 +77,13 @@ public class AppointmentAPI {
     }
 
     @GetMapping("/getByReasonAndPatientId/{patientId}")
-    public ResponseEntity<List<ReasonCountProjection>> getByReasonAndPatientId(@PathVariable UUID patientId)
+    public ResponseEntity<List<ReasonCountDto>> getByReasonAndPatientId(@PathVariable UUID patientId)
             throws HmsException {
         return new ResponseEntity<>(appointmentService.countByReasonAndPatientId(patientId), HttpStatus.OK);
     }
 
     @GetMapping("/getByReasonAndDoctorId/{doctorId}")
-    public ResponseEntity<List<ReasonCountProjection>> getByReasonAndDoctorId(@PathVariable UUID doctorId)
+    public ResponseEntity<List<ReasonCountDto>> getByReasonAndDoctorId(@PathVariable UUID doctorId)
             throws HmsException {
         return new ResponseEntity<>(appointmentService.countByReasonAndDoctorId(doctorId), HttpStatus.OK);
     }
@@ -93,13 +94,13 @@ public class AppointmentAPI {
     }
 
     @GetMapping("/getAppointmentCountByDoctor/{doctorId}")
-    public ResponseEntity<List<MonthlyVisitProjection>> getAppointmentCountByDoctor(@PathVariable UUID doctorId)
+    public ResponseEntity<List<MonthlyVisitDto>> getAppointmentCountByDoctor(@PathVariable UUID doctorId)
             throws HmsException {
         return new ResponseEntity<>(appointmentService.countCurrentYearVisitsByDoctor(doctorId), HttpStatus.OK);
     }
 
     @GetMapping("/getReasonCount")
-    public ResponseEntity<List<ReasonCountProjection>> getReasonCount() throws HmsException {
+    public ResponseEntity<List<ReasonCountDto>> getReasonCount() throws HmsException {
         return new ResponseEntity<>(appointmentService.countByReasons(), HttpStatus.OK);
     }
 

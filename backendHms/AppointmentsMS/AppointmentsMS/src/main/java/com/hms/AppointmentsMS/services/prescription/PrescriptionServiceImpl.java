@@ -1,6 +1,7 @@
 package com.hms.AppointmentsMS.services.prescription;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import com.hms.AppointmentsMS.clients.ProfileClient;
@@ -40,7 +42,11 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     }
 
     @Override
-    @CacheEvict(value = "allPrescriptionDetails", allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "prescriptionsByPatientId", key = "#dto.patientId"),
+            @CacheEvict(value = "allPrescriptionDetails", allEntries = true),
+            @CacheEvict(value = "medicinesByPatientId", key = "#dto.patientId")
+    })
     public Long savePrescription(PrescriptionDTO dto) throws HmsException {
         dto.setPrescriptionDate(LocalDate.now());
         Long prescriptionId = prescriptionRepository.save(dto.toEntity()).getIdPrescription();
@@ -72,10 +78,11 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     }
 
     @Override
+    @Cacheable(value = "prescriptionsByPatientId", key = "#patientId")
     public List<PrescriptionDetails> getPrescriptionsByPatientId(UUID patientId) throws HmsException {
         List<Prescription> prescriptions = prescriptionRepository.findAllByPatientId(patientId);
         List<PrescriptionDetails> prescriptionDetails = prescriptions.stream().map(Prescription::toPrescriptionDetails)
-                .toList();
+                .collect(Collectors.toCollection(ArrayList::new));
         prescriptionDetails.forEach(details -> {
             try {
                 details.setMedicines(medicineService.getAllMedicinesByPrescriptionId(details.getIdPrescription()));
@@ -84,7 +91,8 @@ public class PrescriptionServiceImpl implements PrescriptionService {
             }
 
         });
-        List<UUID> doctorsIds = prescriptionDetails.stream().map(PrescriptionDetails::getDoctorId).distinct().toList();
+        List<UUID> doctorsIds = prescriptionDetails.stream().map(PrescriptionDetails::getDoctorId).distinct()
+                .collect(Collectors.toCollection(ArrayList::new));
         List<DoctorName> doctorNames = apiService.getAllDoctorDropdowns(doctorsIds);
         Map<UUID, String> doctorMap = doctorNames.stream()
                 .collect(Collectors.toMap(DoctorName::getId, DoctorName::getName));
@@ -104,7 +112,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     public List<PrescriptionDetails> getAllPrescriptionDetails() throws HmsException {
         List<PrescriptionDetails> prescriptionDetails = prescriptionRepository.findAll().stream()
                 .map(Prescription::toPrescriptionDetails)
-                .toList();
+                .collect(Collectors.toCollection(ArrayList::new));
         prescriptionDetails.forEach(details -> {
             try {
                 details.setMedicines(medicineService.getAllMedicinesByPrescriptionId(details.getIdPrescription()));
@@ -113,7 +121,8 @@ public class PrescriptionServiceImpl implements PrescriptionService {
             }
 
         });
-        List<UUID> patientIds = prescriptionDetails.stream().map(PrescriptionDetails::getPatientId).distinct().toList();
+        List<UUID> patientIds = prescriptionDetails.stream().map(PrescriptionDetails::getPatientId).distinct()
+                .collect(Collectors.toCollection(ArrayList::new));
         if (!patientIds.isEmpty()) {
             List<PatientName> patientNames = apiService.getAllPatientDropdowns(patientIds);
             Map<UUID, String> patientMap = patientNames.stream()
@@ -127,7 +136,8 @@ public class PrescriptionServiceImpl implements PrescriptionService {
                 }
             });
         }
-        List<UUID> doctorsIds = prescriptionDetails.stream().map(PrescriptionDetails::getDoctorId).distinct().toList();
+        List<UUID> doctorsIds = prescriptionDetails.stream().map(PrescriptionDetails::getDoctorId).distinct()
+                .collect(Collectors.toCollection(ArrayList::new));
         if (doctorsIds.isEmpty()) {
             return prescriptionDetails;
         }

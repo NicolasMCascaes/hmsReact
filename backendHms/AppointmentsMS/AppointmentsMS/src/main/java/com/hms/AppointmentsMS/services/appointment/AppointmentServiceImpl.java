@@ -1,8 +1,10 @@
 package com.hms.AppointmentsMS.services.appointment;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -13,7 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hms.AppointmentsMS.clients.ProfileClient;
 import com.hms.AppointmentsMS.dto.appointment.AppointmentDTO;
 import com.hms.AppointmentsMS.dto.appointment.AppointmentDetailsDto;
-import com.hms.AppointmentsMS.dto.appointment.ReasonCountProjection;
+import com.hms.AppointmentsMS.dto.appointment.MonthlyVisitDto;
+import com.hms.AppointmentsMS.dto.appointment.ReasonCountDto;
 import com.hms.AppointmentsMS.dto.profile.DoctorDto;
 import com.hms.AppointmentsMS.dto.profile.MonthlyVisitProjection;
 import com.hms.AppointmentsMS.dto.profile.PatientDto;
@@ -39,7 +42,10 @@ public class AppointmentServiceImpl implements AppointmentService {
             @CacheEvict(value = "currentYearVisits", allEntries = true),
             @CacheEvict(value = "currentYearVisitsByDoctor", key = "#dto.doctorId"),
             @CacheEvict(value = "reasonCountByDoctor", key = "#dto.doctorId"),
-            @CacheEvict(value = "reasonCount", allEntries = true) })
+            @CacheEvict(value = "reasonCount", allEntries = true),
+            @CacheEvict(value = "todayAppointments", allEntries = true),
+            @CacheEvict(value = "todayAppointmentsByDoctor", key = "#dto.doctorId"),
+            @CacheEvict(value = "todayAppointmentsByPatient", key = "#dto.patientId") })
     public Long scheduleAppointment(AppointmentDTO dto) throws HmsException {
         Boolean patientExists = apiService.patientExists(dto.getPatientId());
         Boolean doctorExists = apiService.doctorExists(dto.getDoctorId());
@@ -59,7 +65,10 @@ public class AppointmentServiceImpl implements AppointmentService {
             @CacheEvict(value = "currentYearVisits", allEntries = true),
             @CacheEvict(value = "currentYearVisitsByDoctor", key = "#appointmentId"),
             @CacheEvict(value = "reasonCountByDoctor", key = "#appointmentId"),
-            @CacheEvict(value = "reasonCount", allEntries = true) })
+            @CacheEvict(value = "reasonCount", allEntries = true),
+            @CacheEvict(value = "todayAppointments", allEntries = true),
+            @CacheEvict(value = "todayAppointmentsByDoctor", key = "#appointmentId"),
+            @CacheEvict(value = "todayAppointmentsByPatient", key = "#appointmentId") })
     public void cancelAppointment(Long appointmentId) throws HmsException {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new HmsException("APPOINTMENT_NOT_FOUND"));
@@ -76,7 +85,10 @@ public class AppointmentServiceImpl implements AppointmentService {
             @CacheEvict(value = "currentYearVisits", allEntries = true),
             @CacheEvict(value = "currentYearVisitsByDoctor", key = "#appointmentId"),
             @CacheEvict(value = "reasonCountByDoctor", key = "#appointmentId"),
-            @CacheEvict(value = "reasonCount", allEntries = true) })
+            @CacheEvict(value = "reasonCount", allEntries = true),
+            @CacheEvict(value = "todayAppointments", allEntries = true),
+            @CacheEvict(value = "todayAppointmentsByDoctor", key = "#appointmentId"),
+            @CacheEvict(value = "todayAppointmentsByPatient", key = "#appointmentId") })
     public void completeAppointment(Long appointmentId) throws HmsException {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new HmsException("APPOINTMENT_NOT_FOUND"));
@@ -94,11 +106,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    @Caching(evict = { @CacheEvict(value = "currentYearVisitsByPatient", key = "#appointmentId"),
-            @CacheEvict(value = "reasonCountByPatient", key = "#appointmentId"),
+    @Caching(evict = { @CacheEvict(value = "currentYearVisitsByPatient", key = "#patientId"),
+            @CacheEvict(value = "reasonCountByPatient", key = "#patientId"),
             @CacheEvict(value = "currentYearVisits", allEntries = true),
-            @CacheEvict(value = "currentYearVisitsByDoctor", key = "#appointmentId"),
-            @CacheEvict(value = "reasonCountByDoctor", key = "#appointmentId"),
+            @CacheEvict(value = "currentYearVisitsByDoctor", key = "#doctorId"),
+            @CacheEvict(value = "reasonCountByDoctor", key = "#doctorId"),
             @CacheEvict(value = "reasonCount", allEntries = true) })
     public void rescheduleAppointment(Long appointmentId, LocalDateTime time) throws HmsException {
         throw new UnsupportedOperationException("Unimplemented method 'rescheduleAppointment'");
@@ -123,7 +135,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                     DoctorDto doctorDto = apiService.getDoctor(appointment.getDoctorId());
                     appointment.setDoctorName(doctorDto.getName());
                     return appointment;
-                }).toList();
+                }).collect(Collectors.toCollection(() -> new ArrayList<>()));
     }
 
     @Override
@@ -136,7 +148,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                     appointment.setPatientEmail(patientDto.getEmail());
                     appointment.setPatientPhone(patientDto.getPhone());
                     return appointment;
-                }).toList();
+                }).collect(Collectors.toCollection(() -> new ArrayList<>()));
     }
 
     @Override
@@ -147,8 +159,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Cacheable(value = "reasonCountByPatient", key = "#patientId")
-    public List<ReasonCountProjection> countByReasonAndPatientId(UUID patientId) throws HmsException {
-        return appointmentRepository.countByReasonAndPatientId(patientId);
+    public List<ReasonCountDto> countByReasonAndPatientId(UUID patientId) throws HmsException {
+        return appointmentRepository.countByReasonAndPatientId(patientId).stream()
+                .map(projection -> new ReasonCountDto(projection.getReason(), projection.getCount()))
+                .collect(Collectors.toCollection(() -> new ArrayList<>()));
     }
 
     @Override
@@ -159,23 +173,30 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Cacheable(value = "currentYearVisitsByDoctor", key = "#doctorId")
-    public List<MonthlyVisitProjection> countCurrentYearVisitsByDoctor(UUID doctorId) throws HmsException {
-        return appointmentRepository.countCurrentYearVisitsByDoctor(doctorId);
+    public List<MonthlyVisitDto> countCurrentYearVisitsByDoctor(UUID doctorId) throws HmsException {
+        return appointmentRepository.countCurrentYearVisitsByDoctor(doctorId).stream()
+                .map(projection -> new MonthlyVisitDto(projection.getMonth(), projection.getCount()))
+                .collect(Collectors.toCollection(() -> new ArrayList<>()));
     }
 
     @Override
     @Cacheable(value = "reasonCountByDoctor", key = "#doctorId")
-    public List<ReasonCountProjection> countByReasonAndDoctorId(UUID doctorId) throws HmsException {
-        return appointmentRepository.countByReasonAndDoctorId(doctorId);
+    public List<ReasonCountDto> countByReasonAndDoctorId(UUID doctorId) throws HmsException {
+        return appointmentRepository.countByReasonAndDoctorId(doctorId).stream()
+                .map(projection -> new ReasonCountDto(projection.getReason(), projection.getCount()))
+                .collect(Collectors.toCollection(() -> new ArrayList<>()));
     }
 
     @Override
     @Cacheable(value = "reasonCount")
-    public List<ReasonCountProjection> countByReasons() throws HmsException {
-        return appointmentRepository.countByReasons();
+    public List<ReasonCountDto> countByReasons() throws HmsException {
+        return appointmentRepository.countByReasons().stream()
+                .map(projection -> new ReasonCountDto(projection.getReason(), projection.getCount()))
+                .collect(Collectors.toCollection(() -> new ArrayList<>()));
     }
 
     @Override
+    @Cacheable(value = "todayAppointments")
     public List<AppointmentDetailsDto> findAllTodayAppointmentDetails() throws HmsException {
         return appointmentRepository.findAllTodayAppointmentDetails().stream()
                 .map(appointment -> {
@@ -186,10 +207,11 @@ public class AppointmentServiceImpl implements AppointmentService {
                     appointment.setPatientEmail(patientDto.getEmail());
                     appointment.setPatientPhone(patientDto.getPhone());
                     return appointment;
-                }).toList();
+                }).collect(Collectors.toCollection(() -> new ArrayList<>()));
     }
 
     @Override
+    @Cacheable(value = "todayAppointmentsByDoctor", key = "#doctorId")
     public List<AppointmentDetailsDto> findAllTodayAppointmentDetailsByDoctorId(UUID doctorId) throws HmsException {
         return appointmentRepository.findAllTodayAppointmentDetailsByDoctorId(doctorId).stream()
                 .map(appointment -> {
@@ -200,10 +222,11 @@ public class AppointmentServiceImpl implements AppointmentService {
                     appointment.setPatientEmail(patientDto.getEmail());
                     appointment.setPatientPhone(patientDto.getPhone());
                     return appointment;
-                }).toList();
+                }).collect(Collectors.toCollection(() -> new ArrayList<>()));
     }
 
     @Override
+    @Cacheable(value = "todayAppointmentsByPatient", key = "#patientId")
     public List<AppointmentDetailsDto> findAllTodayAppointmentDetailsByPatientId(UUID patientId) throws HmsException {
         return appointmentRepository.findAllTodayAppointmentDetailsByPatientId(patientId).stream()
                 .map(appointment -> {
@@ -214,7 +237,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                     appointment.setPatientEmail(patientDto.getEmail());
                     appointment.setPatientPhone(patientDto.getPhone());
                     return appointment;
-                }).toList();
+                }).collect(Collectors.toCollection(() -> new ArrayList<>()));
     }
 
 }

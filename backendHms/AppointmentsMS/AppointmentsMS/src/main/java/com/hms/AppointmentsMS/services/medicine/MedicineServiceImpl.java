@@ -1,6 +1,8 @@
 package com.hms.AppointmentsMS.services.medicine;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -27,19 +29,23 @@ public class MedicineServiceImpl implements MedicineService {
 
     @Override
     public List<MedicineDto> saveAllMedicines(List<MedicineDto> medicines) throws HmsException {
-        return medicineRepository.saveAll(medicines.stream().map(MedicineDto::toEntity).toList())
-                .stream().map(Medicine::toDto).toList();
+        List<Medicine> medicineEntities = medicines.stream()
+                .map(MedicineDto::toEntity)
+                .collect(Collectors.toCollection(ArrayList::new));
+        return medicineRepository.saveAll(medicineEntities)
+                .stream().map(Medicine::toDto).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
     public List<MedicineDto> getAllMedicinesByPrescriptionId(Long id) throws HmsException {
-        return medicineRepository.findAllByPrescription_IdPrescription(id).stream().map(Medicine::toDto).toList();
+        return medicineRepository.findAllByPrescription_IdPrescription(id).stream().map(Medicine::toDto)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
     public List<MedicineDto> getMedicinesByPrescriptionIds(List<Long> prescriptionIds) throws HmsException {
         return medicineRepository.findAllByPrescription_IdPrescriptionIn(prescriptionIds).stream().map(Medicine::toDto)
-                .toList();
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
 }
