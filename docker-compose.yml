@@ -63,6 +63,11 @@ services:
   gatewayms:
     build: ./backendHms/GatewayMS/GatewayMS
     container_name: gatewayms
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     environment:
       - JWT_KEY=${JWT_KEY}
     ports:
@@ -89,5 +94,10 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+  frontend:
+    build: ./hms
+    container_name: frontend
+    ports:
+      - "5173:5173"
 volumes:
   mysql_data:

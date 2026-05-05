@@ -10,7 +10,7 @@ import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { getDoctorProfile, updateDoctorPhoto, updateDoctorProfile } from "../../../services/DoctorProfileService";
 import { errorNotification, sucessNotification } from "../../../utilities/NotificationUtility";
 import { useForm } from "@mantine/form";
-import { formatDate } from "../../../utilities/DateUtility";
+import { formatDate, toIsoLocalDate } from "../../../utilities/DateUtility";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 import { downloadMediaFile, uploadMediaFile } from "../../../services/MediaService";
 import { setProfilePictureId } from "../../../slices/UserSlice";
@@ -99,7 +99,7 @@ const Profile = () => {
 
         updateDoctorProfile({
             ...profile,
-            dob: values.dob,
+            dob: toIsoLocalDate(values.dob),
             phone: values.phone,
             address: values.address,
             licenseNumber: values.licenseNumber,
@@ -112,7 +112,7 @@ const Profile = () => {
             sucessNotification("Perfil atualizado com sucesso!")
         }).catch((error) => {
             console.log(error)
-            errorNotification(error.response.data.errorMessage)
+            errorNotification(error.response?.data?.errorMessage ?? "Não foi possível atualizar o perfil.")
         }).finally(() => setLoading(false))
     }
 

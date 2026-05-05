@@ -7,7 +7,7 @@ import 'dayjs/locale/pt-br';
 import PhoneInput from 'react-phone-input-2'
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { getPatientProfile, updatePatientPhoto, updatePatientProfile } from "../../../services/PatientProfileService";
-import { formatDate } from "../../../utilities/DateUtility";
+import { formatDate, toIsoLocalDate } from "../../../utilities/DateUtility";
 import { useForm } from "@mantine/form";
 import { errorNotification, sucessNotification } from "../../../utilities/NotificationUtility";
 import { arrayToCsv } from "../../../utilities/OtherUtilities";
@@ -79,24 +79,40 @@ const Profile = () => {
 
     const handleUpdate = () => {
         const values = form.getValues()
+        const validation = form.validate()
+
+        if (validation.hasErrors) {
+            return
+        }
+
         setLoading(true)
 
-        updatePatientProfile({
+        const updatedProfile = {
             ...profile,
-            dob: values.dob,
+            dob: toIsoLocalDate(values.dob),
             phone: values.phone,
             address: values.address,
-            cpf: values.cpf,
+            cpf: String(values.cpf ?? ''),
             bloodGroup: values.bloodGroup,
             alergies: values.alergies ? JSON.stringify(values.alergies) : null,
             chronicDisease: values.chronicDisease ? JSON.stringify(values.chronicDisease) : null
+        }
+
+        updatePatientProfile({
+            ...updatedProfile,
         }).then((data) => {
-            setProfile({ ...data, ...values })
+            setProfile({
+                ...data,
+                dob: updatedProfile.dob,
+                cpf: updatedProfile.cpf,
+                alergies: values.alergies,
+                chronicDisease: values.chronicDisease,
+            })
             setEditMode(false)
             sucessNotification("Perfil atualizado com sucesso!")
         }).catch((error) => {
             console.log(error)
-            errorNotification(error.response.data.errorMessage)
+            errorNotification(error.response?.data?.errorMessage ?? "Não foi possível atualizar o perfil.")
         }).finally(() => setLoading(false))
     }
 
