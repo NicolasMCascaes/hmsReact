@@ -1,0 +1,93 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - .docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+  userms:
+    build: ./backendHms/UserMS/UserMS
+    container_name: userms
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/userdb
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+      - JWT_KEY=${JWT_KEY}
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+  profilems:
+    build: ./backendHms/ProfileMS/ProfileMS
+    container_name: profilems
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/profiledb
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+      - JWT_KEY=${JWT_KEY}
+    depends_on:
+      mysql:
+        condition: service_healthy
+  pharmacyms:
+    build: ./backendHms/PharmacyMS/PharmacyMS
+    container_name: pharmacyms
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/pharmacydb
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+      - JWT_KEY=${JWT_KEY}
+    depends_on:
+      mysql:
+        condition: service_healthy
+  mediams:
+    build: ./backendHms/media/media
+    container_name: mediams
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/mediadb
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+      - JWT_KEY=${JWT_KEY}
+    depends_on:
+      mysql:
+        condition: service_healthy
+  gatewayms:
+    build: ./backendHms/GatewayMS/GatewayMS
+    container_name: gatewayms
+    environment:
+      - JWT_KEY=${JWT_KEY}
+    ports:
+      - "9000:9000"
+  appointmentsms:
+    build: ./backendHms/AppointmentsMS/AppointmentsMS
+    container_name: appointmentsms
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/appointmentsdb
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+      - JWT_KEY=${JWT_KEY}
+    depends_on:
+      mysql:
+        condition: service_healthy
+  eureka-server:
+    build: ./backendHms/eureka-server/eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+  redis:
+    image: redis:8.0
+    container_name: redis
+    depends_on:
+      mysql:
+        condition: service_healthy
+volumes:
+  mysql_data:
