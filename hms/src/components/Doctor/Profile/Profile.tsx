@@ -1,5 +1,4 @@
 import { Avatar, Button, Divider, Group, Modal, NumberInput, Select, Table, Text, TextInput } from "@mantine/core"
-import avatar from '../../../assets/avatar.jpg'
 import { useDispatch, useSelector } from "react-redux"
 import { useEffect, useState } from "react";
 import { IconEdit, IconPhoto, IconUpload, IconX } from "@tabler/icons-react";
@@ -10,7 +9,7 @@ import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { getDoctorProfile, updateDoctorPhoto, updateDoctorProfile } from "../../../services/DoctorProfileService";
 import { errorNotification, sucessNotification } from "../../../utilities/NotificationUtility";
 import { useForm } from "@mantine/form";
-import { formatDate, toIsoLocalDate } from "../../../utilities/DateUtility";
+import { formatDate, toDateInputValue, toNullableIsoLocalDate } from "../../../utilities/DateUtility";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 import { downloadMediaFile, uploadMediaFile } from "../../../services/MediaService";
 import { setProfilePictureId } from "../../../slices/UserSlice";
@@ -87,38 +86,39 @@ const Profile = () => {
         }
     });
 
-    const handleUpdate = () => {
-        const values = form.getValues()
-        const validation = form.validate()
-
-        if (validation.hasErrors) {
+    const handleUpdate = async (values: typeof form.values) => {
+        if (!profile.idDoctor) {
+            errorNotification("Perfil ainda está carregando.")
             return
         }
 
         setLoading(true)
 
-        updateDoctorProfile({
-            ...profile,
-            dob: toIsoLocalDate(values.dob),
-            phone: values.phone,
-            address: values.address,
-            licenseNumber: values.licenseNumber,
-            specialization: values.specialization,
-            department: values.department,
-            totalExp: values.totalExp
-        }).then((data) => {
+        try {
+            const data = await updateDoctorProfile({
+                ...profile,
+                dob: toNullableIsoLocalDate(values.dob),
+                phone: values.phone,
+                address: values.address,
+                licenseNumber: values.licenseNumber,
+                specialization: values.specialization,
+                department: values.department,
+                totalExp: values.totalExp === '' || values.totalExp == null ? null : Number(values.totalExp)
+            })
             setProfile(data)
             setEditMode(false)
             sucessNotification("Perfil atualizado com sucesso!")
-        }).catch((error) => {
+        } catch (error: any) {
             console.log(error)
             errorNotification(error.response?.data?.errorMessage ?? "Não foi possível atualizar o perfil.")
-        }).finally(() => setLoading(false))
+        } finally {
+            setLoading(false)
+        }
     }
 
     const handleEdit = () => {
         form.setValues({
-            dob: profile.dob ? new Date(profile.dob) : undefined,
+            dob: toDateInputValue(profile.dob),
             phone: profile.phone ?? '',
             address: profile.address ?? '',
             licenseNumber: profile.licenseNumber ?? '',
@@ -166,11 +166,12 @@ const Profile = () => {
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
                     <div className="flex flex-col items-center">
-                        <Avatar variant="filled" src={avatarSrc ?? avatar} alt={user.name} size={matches ? "200" : "100"} className="mb-5" />
+                        <Avatar variant="filled" src={avatarSrc} alt={user.name} size={matches ? "200" : "100"} className="mb-5" />
                         {editMode &&
                             <Button
                                 className="w-full"
                                 size="sm"
+                                type="button"
                                 onClick={open}
                                 variant="filled"
                                 loading={uploadingPhoto}
@@ -184,8 +185,8 @@ const Profile = () => {
                         <div className="break-all text-base text-neutral-700 md:text-xl">{user.sub}</div>
                     </div>
                 </div>
-                {!editMode ? <Button className="w-full md:w-auto" size="md" onClick={handleEdit} variant="filled" leftSection={<IconEdit />}>Editar</Button> :
-                    <Button className="w-full md:w-auto" size="md" onClick={handleUpdate} variant="filled" loading={loading} disabled={uploadingPhoto} leftSection={<IconEdit />}>Confirmar</Button>}
+                {!editMode ? <Button className="w-full md:w-auto" size="md" type="button" onClick={handleEdit} variant="filled" leftSection={<IconEdit />}>Editar</Button> :
+                    <Button className="w-full md:w-auto" size="md" type="button" onClick={() => void form.onSubmit(handleUpdate)()} variant="filled" loading={loading} disabled={uploadingPhoto} leftSection={<IconEdit />}>Confirmar</Button>}
             </div>
             <Divider my="xl" />
             <div>
@@ -201,7 +202,9 @@ const Profile = () => {
                                 <Table.Th className="whitespace-nowrap font-semibold text-base md:text-xl">Telefone</Table.Th>
                                 {editMode ? <Table.Td><PhoneInput
                                     country={'br'} {...form.getInputProps("phone")}
-                                /></Table.Td>
+                                />
+                                    {form.errors.phone && <Text c="red" size="sm" mt={4}>{form.errors.phone}</Text>}
+                                </Table.Td>
                                     : <Table.Td>{profile.phone ?? '-'}</Table.Td>}</Table.Tr>
                             <Table.Tr>
                                 <Table.Th className="whitespace-nowrap font-semibold text-base md:text-xl">Endereço</Table.Th>

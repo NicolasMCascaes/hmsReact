@@ -7,7 +7,7 @@ import 'dayjs/locale/pt-br';
 import PhoneInput from 'react-phone-input-2'
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { getPatientProfile, updatePatientPhoto, updatePatientProfile } from "../../../services/PatientProfileService";
-import { formatDate, toIsoLocalDate } from "../../../utilities/DateUtility";
+import { formatDate, toDateInputValue, toNullableIsoLocalDate } from "../../../utilities/DateUtility";
 import { useForm } from "@mantine/form";
 import { errorNotification, sucessNotification } from "../../../utilities/NotificationUtility";
 import { arrayToCsv } from "../../../utilities/OtherUtilities";
@@ -27,14 +27,25 @@ const Profile = () => {
     const dispatch = useDispatch()
     const matches = useMediaQuery('(min-width: 768px)');
 
+    const parseTags = (value: any) => {
+        if (Array.isArray(value)) return value
+        if (!value) return []
+
+        try {
+            return JSON.parse(value)
+        } catch {
+            return []
+        }
+    }
+
     useEffect(() => {
         const loadProfile = async () => {
             try {
                 const data = await getPatientProfile(user.profileId)
                 setProfile({
                     ...data,
-                    alergies: data.alergies ? JSON.parse(data.alergies) : [],
-                    chronicDisease: data.chronicDisease ? JSON.parse(data.chronicDisease) : [],
+                    alergies: parseTags(data.alergies),
+                    chronicDisease: parseTags(data.chronicDisease),
                 })
 
                 if (data.profilePictureId == null) {
@@ -77,11 +88,9 @@ const Profile = () => {
 
     });
 
-    const handleUpdate = () => {
-        const values = form.getValues()
-        const validation = form.validate()
-
-        if (validation.hasErrors) {
+    const handleUpdate = async (values: typeof form.values) => {
+        if (!profile.idPatient) {
+            errorNotification("Perfil ainda está carregando.")
             return
         }
 
@@ -89,36 +98,35 @@ const Profile = () => {
 
         const updatedProfile = {
             ...profile,
-            dob: toIsoLocalDate(values.dob),
+            dob: toNullableIsoLocalDate(values.dob),
             phone: values.phone,
             address: values.address,
             cpf: String(values.cpf ?? ''),
             bloodGroup: values.bloodGroup,
-            alergies: values.alergies ? JSON.stringify(values.alergies) : null,
-            chronicDisease: values.chronicDisease ? JSON.stringify(values.chronicDisease) : null
+            alergies: values.alergies?.length ? JSON.stringify(values.alergies) : null,
+            chronicDisease: values.chronicDisease?.length ? JSON.stringify(values.chronicDisease) : null
         }
 
-        updatePatientProfile({
-            ...updatedProfile,
-        }).then((data) => {
+        try {
+            const data = await updatePatientProfile(updatedProfile)
             setProfile({
                 ...data,
-                dob: updatedProfile.dob,
-                cpf: updatedProfile.cpf,
-                alergies: values.alergies,
-                chronicDisease: values.chronicDisease,
+                alergies: parseTags(data.alergies),
+                chronicDisease: parseTags(data.chronicDisease),
             })
             setEditMode(false)
             sucessNotification("Perfil atualizado com sucesso!")
-        }).catch((error) => {
+        } catch (error: any) {
             console.log(error)
             errorNotification(error.response?.data?.errorMessage ?? "Não foi possível atualizar o perfil.")
-        }).finally(() => setLoading(false))
+        } finally {
+            setLoading(false)
+        }
     }
 
     const handleEdit = () => {
         form.setValues({
-            dob: profile.dob ? new Date(profile.dob) : undefined,
+            dob: toDateInputValue(profile.dob),
             phone: profile.phone ?? '',
             address: profile.address ?? '',
             cpf: profile.cpf ?? '',
@@ -168,6 +176,7 @@ const Profile = () => {
                             <Button
                                 className="w-full"
                                 size="sm"
+                                type="button"
                                 onClick={open}
                                 variant="filled"
                                 loading={uploadingPhoto}
@@ -181,8 +190,8 @@ const Profile = () => {
                         <div className="break-all text-base text-neutral-700 md:text-xl">{user.sub}</div>
                     </div>
                 </div>
-                {!editMode ? <Button className="w-full md:w-auto" size="md" onClick={handleEdit} variant="filled" leftSection={<IconEdit />}>Editar</Button> :
-                    <Button className="w-full md:w-auto" size="md" onClick={handleUpdate} type="submit" variant="filled" loading={loading} disabled={uploadingPhoto} leftSection={<IconEdit />}>Confirmar</Button>}
+                {!editMode ? <Button className="w-full md:w-auto" size="md" type="button" onClick={handleEdit} variant="filled" leftSection={<IconEdit />}>Editar</Button> :
+                    <Button className="w-full md:w-auto" size="md" type="button" onClick={() => void form.onSubmit(handleUpdate)()} variant="filled" loading={loading} disabled={uploadingPhoto} leftSection={<IconEdit />}>Confirmar</Button>}
             </div>
             <Divider my="xl" />
             <div>
@@ -198,7 +207,9 @@ const Profile = () => {
                                 <Table.Th className="whitespace-nowrap font-semibold text-base md:text-xl">Telefone</Table.Th>
                                 {editMode ? <Table.Td><PhoneInput
                                     country={'br'} {...form.getInputProps('phone')}
-                                /></Table.Td>
+                                />
+                                    {form.errors.phone && <Text c="red" size="sm" mt={4}>{form.errors.phone}</Text>}
+                                </Table.Td>
                                     : <Table.Td>{profile.phone ?? '-'}</Table.Td>}</Table.Tr>
                             <Table.Tr>
                                 <Table.Th className="whitespace-nowrap font-semibold text-base md:text-xl">Endereço</Table.Th>
