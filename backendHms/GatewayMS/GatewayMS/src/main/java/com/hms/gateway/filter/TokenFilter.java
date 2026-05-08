@@ -11,7 +11,7 @@ import io.jsonwebtoken.Jwts;
 
 @Component
 public class TokenFilter extends AbstractGatewayFilterFactory<TokenFilter.Config> {
-    @Value("${JWT_KEY}")
+    @Value("${JWT_KEY:${jwt.key}}")
     private String secret;
 
     public TokenFilter() {
