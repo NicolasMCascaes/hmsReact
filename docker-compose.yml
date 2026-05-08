@@ -113,9 +113,8 @@ services:
   redis:
     image: redis:8.0
     container_name: redis
-    depends_on:
-      mysql:
-        condition: service_healthy
+    ports:
+      - "6379:6379"
   frontend:
     build: ./hms
     container_name: frontend

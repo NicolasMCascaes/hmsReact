@@ -35,19 +35,27 @@ public class TokenFilter extends AbstractGatewayFilterFactory<TokenFilter.Config
                 throw new RuntimeException("Authorization header is invalid!");
             }
             String token = authHeader.substring(7);
+            String profileId;
+            String roles;
             try {
                 Claims claims = Jwts.parserBuilder()
                         .setSigningKey(secret)
                         .build()
                         .parseClaimsJws(token)
                         .getBody();
-
+                profileId = claims.get("profileId").toString();
+                roles = claims.get("roles").toString();
             } catch (Exception e) {
                 throw new RuntimeException("INVALID_TOKEN");
             }
             return chain.filter(
                     exchange.mutate()
-                            .request(r -> r.header("X-Secret-Key", "SECRET"))
+                            .request(r -> r.headers(httpHeaders -> {
+                                httpHeaders.remove("X-Secret-Key");
+                                httpHeaders.remove("X-Profile-Id");
+                                httpHeaders.remove("X-User-Role");
+                            }).header("X-Secret-Key", "SECRET").header("X-Profile-Id", profileId).header("X-User-Role",
+                                    roles))
                             .build());
         };
 
