@@ -1,5 +1,5 @@
 import { Avatar, Text } from '@mantine/core'
-import { IconCalendarCheck, IconHeartbeat, IconLayoutGrid, IconUser } from '@tabler/icons-react'
+import { IconCalendarCheck, IconHeartbeat, IconLayoutGrid, IconPhoneCall, IconUser } from '@tabler/icons-react'
 import { NavLink } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
@@ -9,6 +9,7 @@ const Links = [
   { name: "Painel", url: "/patient/dashboard", icon: <IconLayoutGrid size = {20} stroke={1.5} /> },
   { name: "Perfil", url: "/patient/profile", icon: <IconUser size = {20} stroke={1.5} /> },
   { name: "Consultas", url: "/patient/appointments", icon: <IconCalendarCheck size = {20} stroke={1.5} /> },
+  {name: "Videochamada", url: "/patient/videocall", icon: <IconPhoneCall size={20} stroke={1.5} /> }
   
 ]
 const SideBar = ({collapsed}: {collapsed: boolean}) => {

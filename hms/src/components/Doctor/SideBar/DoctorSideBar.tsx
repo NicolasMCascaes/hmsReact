@@ -1,5 +1,5 @@
 import { Avatar, Text } from '@mantine/core'
-import { IconCalendarCheck, IconHeartbeat, IconLayoutGrid, IconMoodHeart, IconUser, IconVaccine } from '@tabler/icons-react'
+import { IconCalendarCheck, IconHeartbeat, IconLayoutGrid, IconMoodHeart, IconPhoneCall, IconUser, IconVaccine } from '@tabler/icons-react'
 import { NavLink } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
@@ -11,6 +11,7 @@ const Links = [
   { name: "Consultas", url: "/doctor/appointments", icon: <IconCalendarCheck size = {20} stroke={1.5} /> },
   { name: "Perfil", url: "/doctor/profile", icon: <IconUser size = {20} stroke={1.5} /> },
   { name: "Farmácia", url: "/doctor/pharmacy", icon: <IconVaccine size = {20} stroke={1.5} /> },
+  { name: "Videochamada", url: "/doctor/videocall", icon: <IconPhoneCall size = {20} stroke={1.5} /> }
 ]
 const DoctorSideBar = ({collapsed}: {collapsed: boolean}) => {
   const user = useSelector((state:any)=> state.user)

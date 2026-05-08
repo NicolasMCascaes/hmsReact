@@ -22,6 +22,8 @@ import DoctorDashboardPage from "../pages/Doctor/DoctorDashboardPage"
 import PatientDashboardPage from "../pages/Patient/PatientDashboardPage"
 import DoctorPharmacyPage from "../pages/Doctor/DoctorPharmacyPage"
 import DoctorPatientsPage from "../pages/Doctor/DoctorPatientsPage"
+import PatientVideoCallPage from "../pages/Patient/PatientVideoCallPage"
+import DoctorVideoCallPage from "../pages/Doctor/DoctorVideoCallPage"
 
 const AppRoutes = () => {
   return (
@@ -42,7 +44,7 @@ const AppRoutes = () => {
                 <Route path="dashboard" element={<PatientDashboardPage/>} />
                 <Route path="profile" element={<PatientProfilePage/>} />
                 <Route path="appointments" element={<PatientAppointmentPage/>} />
-                
+                <Route path="videocall" element={<PatientVideoCallPage/>} />
                 
               </Route>
               <Route path='/doctor' element={<ProtectedRoute><DoctorDashboard/></ProtectedRoute>}>
@@ -52,6 +54,7 @@ const AppRoutes = () => {
                 <Route path="appointments" element={<DoctorAppointmentPage/>} />
                 <Route path="appointments/:idAppointment" element={<DoctorAppointmentDetailsPage/>} />
                 <Route path="pharmacy" element={<DoctorPharmacyPage/>} />
+                <Route path="videocall" element={<DoctorVideoCallPage/>} />
               </Route>
               <Route path='*' element={<NotFoundPage/>} />
             </Routes>
