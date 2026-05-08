@@ -19,6 +19,7 @@ services:
     build: ./backendHms/UserMS/UserMS
     container_name: userms
     environment:
+      - SPRING_PROFILES_ACTIVE=container
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/userdb
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
@@ -31,6 +32,7 @@ services:
     build: ./backendHms/ProfileMS/ProfileMS
     container_name: profilems
     environment:
+      - SPRING_PROFILES_ACTIVE=container
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/profiledb
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
@@ -42,6 +44,7 @@ services:
     build: ./backendHms/PharmacyMS/PharmacyMS
     container_name: pharmacyms
     environment:
+      - SPRING_PROFILES_ACTIVE=container
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/pharmacydb
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
@@ -53,6 +56,7 @@ services:
     build: ./backendHms/media/media
     container_name: mediams
     environment:
+      - SPRING_PROFILES_ACTIVE=container
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/mediadb
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
@@ -69,6 +73,7 @@ services:
       timeout: 5s
       retries: 5
     environment:
+      - SPRING_PROFILES_ACTIVE=container
       - JWT_KEY=${JWT_KEY}
     ports:
       - "9000:9000"
@@ -76,9 +81,26 @@ services:
     build: ./backendHms/AppointmentsMS/AppointmentsMS
     container_name: appointmentsms
     environment:
+      - SPRING_PROFILES_ACTIVE=container
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/appointmentsdb
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+      - JWT_KEY=${JWT_KEY}
+    depends_on:
+      mysql:
+        condition: service_healthy
+  videocallms:
+    build: ./backendHms/VideoCallMS/VideoCallMS
+    container_name: videocallms
+    environment:
+      - SPRING_PROFILES_ACTIVE=container
+      - SERVER_PORT=8084
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/videocalldb
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
       - JWT_KEY=${JWT_KEY}
     depends_on:
       mysql:
