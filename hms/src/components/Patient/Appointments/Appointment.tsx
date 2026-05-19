@@ -41,6 +41,7 @@ const Appointment = () => {
     const user = useSelector((state: any) => state.user)
     const [loading, setLoading] = useState(false)
     const [, { toggle }] = useDisclosure(false);
+    
     const [appointments, setAppointments] = useState<any[]>([])
     const [tab, setTab] = useState<string>('Hoje');
 
