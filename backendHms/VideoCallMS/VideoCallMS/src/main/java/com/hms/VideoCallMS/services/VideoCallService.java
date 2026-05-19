@@ -1,13 +1,15 @@
 package com.hms.VideoCallMS.services;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.hms.VideoCallMS.dto.VideoCallDto;
+import com.hms.VideoCallMS.dto.VideoCallRequest;
 import com.hms.VideoCallMS.entity.CallStatus;
 import com.hms.VideoCallMS.exceptions.HmsException;
 
 public interface VideoCallService {
-    VideoCallDto createCall(VideoCallDto request) throws HmsException;
+    VideoCallDto createCall(UUID callerId, VideoCallRequest request) throws HmsException;
 
     void acceptCall(Long callId) throws HmsException;
 
@@ -20,4 +22,8 @@ public interface VideoCallService {
     List<VideoCallDto> getAllVideoCalls();
 
     List<VideoCallDto> getCallsByStatus(CallStatus status);
+
+    List<VideoCallDto> getCallsByParticipant(UUID participantId);
+
+    List<VideoCallDto> getCallsByCaller(UUID callerId);
 }

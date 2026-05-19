@@ -1,0 +1,19 @@
+package com.hms.VideoCallMS.entity;
+
+public enum CallEventType {
+    CALL_ACCEPTED,
+    CALL_CANCELED,
+    CALL_CREATED,
+    CALL_STARTED,
+    CALL_ENDED,
+    PARTICIPANT_JOINED,
+    PARTICIPANT_LEFT,
+    VIDEO_ON,
+    VIDEO_OFF,
+    AUDIO_ON,
+    AUDIO_OFF,
+    WEBRTC_OFFER,
+    WEBRTC_ANSWER,
+    ICE_CANDIDATE,
+    ROOM_STATE
+}

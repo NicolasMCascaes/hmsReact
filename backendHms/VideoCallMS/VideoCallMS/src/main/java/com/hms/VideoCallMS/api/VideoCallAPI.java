@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hms.VideoCallMS.dto.VideoCallDto;
+import com.hms.VideoCallMS.dto.VideoCallRequest;
 import com.hms.VideoCallMS.entity.CallStatus;
 import com.hms.VideoCallMS.exceptions.HmsException;
 import com.hms.VideoCallMS.services.VideoCallService;
@@ -11,12 +12,15 @@ import com.hms.VideoCallMS.services.VideoCallService;
 import jakarta.validation.Valid;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -31,30 +35,31 @@ public class VideoCallAPI {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<VideoCallDto> createCall(@RequestBody VideoCallDto dto) throws HmsException {
-        return new ResponseEntity<>(videoCallService.createCall(dto), HttpStatus.OK);
+    public ResponseEntity<VideoCallDto> createCall(@RequestHeader("X-Profile-Id") UUID callerId,
+            @RequestBody VideoCallRequest dto) throws HmsException {
+        return new ResponseEntity<>(videoCallService.createCall(callerId, dto), HttpStatus.OK);
     }
 
-    @PatchMapping("/accept")
-    public ResponseEntity<Void> acceptCall(@RequestBody Long callId) throws HmsException {
+    @PatchMapping("/accept/{callId}")
+    public ResponseEntity<Void> acceptCall(@PathVariable Long callId) throws HmsException {
         videoCallService.acceptCall(callId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PatchMapping("/end")
-    public ResponseEntity<Void> endCall(@RequestBody Long callId) throws HmsException {
+    @PatchMapping("/end/{callId}")
+    public ResponseEntity<Void> endCall(@PathVariable Long callId) throws HmsException {
         videoCallService.endCall(callId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PatchMapping("/cancel")
-    public ResponseEntity<Void> cancelCall(@RequestBody Long callId) throws HmsException {
+    @PatchMapping("/cancel/{callId}")
+    public ResponseEntity<Void> cancelCall(@PathVariable Long callId) throws HmsException {
         videoCallService.cancelCall(callId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PatchMapping("/initiate")
-    public ResponseEntity<Void> initiateCall(@RequestBody Long callId) throws HmsException {
+    @PatchMapping("/initiate/{callId}")
+    public ResponseEntity<Void> initiateCall(@PathVariable Long callId) throws HmsException {
         videoCallService.initiateCall(callId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -67,6 +72,18 @@ public class VideoCallAPI {
     @GetMapping("/getAllByStatus")
     public ResponseEntity<List<VideoCallDto>> getAllCallsByStatus(@RequestParam CallStatus status) throws HmsException {
         return new ResponseEntity<>(videoCallService.getCallsByStatus(status), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllByReceiver/{receiverId}")
+    public ResponseEntity<List<VideoCallDto>> getAllCallsByReceiver(@PathVariable UUID receiverId)
+            throws HmsException {
+        return new ResponseEntity<>(videoCallService.getCallsByParticipant(receiverId), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllByCaller/{callerId}")
+    public ResponseEntity<List<VideoCallDto>> getAllCallsByCaller(@PathVariable UUID callerId)
+            throws HmsException {
+        return new ResponseEntity<>(videoCallService.getCallsByCaller(callerId), HttpStatus.OK);
     }
 
 }
