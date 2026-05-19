@@ -24,5 +24,9 @@ const getAllPatients = async() =>{
     .then((response: any) => response.data)
     .catch((error:any)=> {throw error})
 }
-
-export {getPatientProfile, addPatientProfile, updatePatientProfile, updatePatientPhoto, getAllPatients}
+const getAllPatientsDropdown = async() =>{
+    return axiosInstance.get('/profile/patient/getAllPatientsDropdown')
+    .then((response: any) => response.data)
+    .catch((error:any)=> {throw error})
+}
+export {getPatientProfile, addPatientProfile, updatePatientProfile, updatePatientPhoto, getAllPatients, getAllPatientsDropdown}

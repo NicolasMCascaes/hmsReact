@@ -22,4 +22,6 @@ public interface PatientService {
     public List<PatientDto> getAllPatients() throws HmsException;
 
     public List<PatientDropdown> getAllPatientDropdownsByIds(List<UUID> ids) throws HmsException;
+
+    public List<PatientDropdown> getAllPatientDropdowns() throws HmsException;
 }

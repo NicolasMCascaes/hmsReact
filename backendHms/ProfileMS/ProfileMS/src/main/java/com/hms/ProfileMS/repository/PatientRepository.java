@@ -19,4 +19,7 @@ public interface PatientRepository extends JpaRepository<Patient, UUID> {
 
     @Query("SELECT p.idPatient AS id, p.name AS name FROM Patient p WHERE p.idPatient in ?1")
     List<PatientDropdown> findAllPatientDropdownsByIds(List<UUID> ids);
+
+    @Query("SELECT p.idPatient AS id, p.name AS name FROM Patient p")
+    List<PatientDropdown> findAllPatientDropdowns();
 }
