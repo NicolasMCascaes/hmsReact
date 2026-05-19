@@ -1,9 +1,9 @@
 # HMS - Hospital Management System
 
 ![React](https://img.shields.io/badge/React-19-20232A?logo=react&logoColor=61DAFB) ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-7.1-646CFF?logo=vite&logoColor=white) ![Redux Toolkit](https://img.shields.io/badge/Redux_Toolkit-2.11-764ABC?logo=redux&logoColor=white) ![Axios](https://img.shields.io/badge/Axios-1.13-5A29E4?logo=axios&logoColor=white) ![Mantine](https://img.shields.io/badge/Mantine_UI-8.3-339AF0) ![PrimeReact](https://img.shields.io/badge/PrimeReact-10.9-06B6D4) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1-06B6D4?logo=tailwindcss&logoColor=white)
-![Java](https://img.shields.io/badge/Java-17-ED8B00?logo=openjdk&logoColor=white) ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-6DB33F?logo=springboot&logoColor=white) ![Spring Cloud Gateway](https://img.shields.io/badge/Spring_Cloud_Gateway-API_Gateway-6DB33F?logo=spring&logoColor=white) ![Netflix Eureka](https://img.shields.io/badge/Netflix_Eureka-Service_Discovery-E50914?logo=netflix&logoColor=white) ![OpenFeign](https://img.shields.io/badge/OpenFeign-HTTP_Client-0F766E) ![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?logo=mysql&logoColor=white) ![JWT](https://img.shields.io/badge/JWT-Auth-000000?logo=jsonwebtokens&logoColor=white)
+![Java](https://img.shields.io/badge/Java-17-ED8B00?logo=openjdk&logoColor=white) ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-6DB33F?logo=springboot&logoColor=white) ![Spring Cloud Gateway](https://img.shields.io/badge/Spring_Cloud_Gateway-API_Gateway-6DB33F?logo=spring&logoColor=white) ![Netflix Eureka](https://img.shields.io/badge/Netflix_Eureka-Service_Discovery-E50914?logo=netflix&logoColor=white) ![OpenFeign](https://img.shields.io/badge/OpenFeign-HTTP_Client-0F766E) ![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?logo=mysql&logoColor=white) ![Redis](https://img.shields.io/badge/Redis-8-DC382D?logo=redis&logoColor=white) ![JWT](https://img.shields.io/badge/JWT-Auth-000000?logo=jsonwebtokens&logoColor=white)
 
-O HMS é uma plataforma full stack para apoiar a operação hospitalar com uma experiência única para três perfis centrais: administração, corpo clínico e pacientes. Em vez de espalhar processos entre planilhas, sistemas isolados e cadastros duplicados, o projeto concentra autenticação, perfis, consultas, farmácia e mídia em uma arquitetura integrada.
+O HMS é uma plataforma full stack para apoiar a operação hospitalar com uma experiência única para três perfis centrais: administração, corpo clínico e pacientes. Em vez de espalhar processos entre planilhas, sistemas isolados e cadastros duplicados, o projeto concentra autenticação, perfis, consultas, farmácia, mídia e videochamadas em uma arquitetura integrada.
 
 ## O problema que o produto resolve
 
@@ -26,6 +26,7 @@ No estágio atual do repositório, a solução cobre os seguintes fluxos princip
 - Registro de relatórios e prescrições clínicas.
 - Gestão farmacêutica com catálogo de medicamentos, controle de estoque e vendas.
 - Upload e recuperação de arquivos de mídia.
+- Videochamadas com criação de salas, listagem por participante e sinalização em tempo real.
 
 ## Arquitetura em alto nível
 
@@ -39,6 +40,7 @@ flowchart LR
     GW --> PR[ProfileMS :8081]
     GW --> AP[AppointmentsMS :8082]
     GW --> PH[PharmacyMS :8083]
+    GW --> VC[VideoCallMS :8084]
     GW --> MD[MediaMS :8085]
 
     GW -. service discovery .-> EU[Eureka Server :8761]
@@ -46,6 +48,7 @@ flowchart LR
     PR -. register .-> EU
     AP -. register .-> EU
     PH -. register .-> EU
+    VC -. register .-> EU
     MD -. register .-> EU
 ```
 
@@ -55,7 +58,9 @@ flowchart LR
 - O `GatewayMS` recebe as requisições externas, valida o JWT e encaminha cada rota para o microserviço correto.
 - O `Eureka Server` remove o acoplamento por endereço fixo entre os serviços.
 - Cada domínio possui seu próprio serviço e seu próprio banco MySQL, reduzindo dependências cruzadas.
+- O fluxo de videochamada combina endpoints REST em `/videocalls/*` com um canal WebSocket em `/videocalls/ws`, ambos passando pelo gateway.
 - A comunicação interna entre serviços utiliza o cabeçalho `X-Secret-Key` para chamadas protegidas.
+- Redis apoia as camadas de cache já presentes em múltiplos serviços.
 
 ## Módulos de negócio
 
@@ -65,6 +70,7 @@ flowchart LR
 | `ProfileMS` | Gestão de perfis de médicos e pacientes. |
 | `AppointmentsMS` | Consultas, prontuários e prescrições. |
 | `PharmacyMS` | Medicamentos, estoque, vendas e itens de venda. |
+| `VideoCallMS` | Agendamento de videochamadas, salas e sinalização em tempo real. |
 | `MediaMS` | Upload e recuperação de arquivos. |
 | `GatewayMS` | Roteamento, validação de token e entrada única da API. |
 | `eureka-server` | Descoberta e registro de serviços. |
@@ -91,8 +97,10 @@ flowchart LR
 - Netflix Eureka
 - Spring Security
 - Spring Data JPA
+- Spring WebSocket
 - OpenFeign
 - MySQL
+- Redis
 - JWT com `io.jsonwebtoken`
 
 ## Pontos técnicos importantes
@@ -102,6 +110,7 @@ flowchart LR
 - As rotas são separadas por perfil de uso: `admin`, `doctor` e `patient`.
 - O controle de sessão usa `localStorage`, `Redux Toolkit` e rotas protegidas.
 - A camada de consumo da API fica desacoplada em `services/`, com autenticação centralizada em `interceptor/AxiosInterceptor.tsx`.
+- O frontend já inclui o fluxo de videochamada para médico e paciente, com salas dedicadas e navegação por `video-room/:roomId`.
 - A organização do frontend segue uma divisão clara entre `Layout`, `pages`, `components`, `services`, `slices` e `utilities`.
 
 ### Backend
@@ -109,12 +118,16 @@ flowchart LR
 - O gateway concentra autenticação e roteamento, evitando replicar essa responsabilidade em todos os serviços expostos externamente.
 - Os serviços se registram no Eureka e podem ser resolvidos por nome, o que melhora a flexibilidade da malha interna.
 - Cada microserviço mantém seu próprio contexto de dados, alinhado ao domínio que representa.
-- O repositório já inclui diagramas de banco para apoiar entendimento e evolução da modelagem.
+- O `VideoCallMS` expõe operações REST e também sinalização WebSocket para orquestrar a entrada e a permanência dos participantes em sala.
+- O repositório já inclui diagramas de banco e arquitetura em `docs/db-diagrams/` para apoiar entendimento e evolução da modelagem.
 
 ## Estrutura do repositório
 
 ```text
 hmsReact/
+|- docs/
+|  |- db-diagrams/           # Diagramas de banco e arquitetura
+|  |- screenshots/           # Capturas de tela do projeto
 |- hms/                      # Frontend React + TypeScript
 |- backendHms/
 |  |- eureka-server/         # Descoberta de serviços
@@ -123,8 +136,9 @@ hmsReact/
 |  |- ProfileMS/             # Perfis de médicos e pacientes
 |  |- AppointmentsMS/        # Consultas, prontuários e prescrições
 |  |- PharmacyMS/            # Farmácia, estoque e vendas
+|  |- VideoCallMS/           # Videochamadas e sinalização em tempo real
 |  |- media/                 # Arquivos e mídia
-|  |- DB_Diagrams/           # Diagramas de banco de dados
+|- docker-compose.yml        # Orquestração local via containers
 |- README.md
 ```
 
@@ -134,14 +148,15 @@ As rotas principais atualmente implementadas no aplicativo são:
 
 - Públicas: `/login` e `/register`
 - Administração: `/admin/*`
-- Médico: `/doctor/*`
-- Paciente: `/patient/*`
+- Médico: `/doctor/*`, com destaque para `/doctor/videocall` e `/doctor/video-room/:roomId`
+- Paciente: `/patient/*`, com destaque para `/patient/videocall` e `/patient/video-room/:roomId`
 
 ## Segurança
 
 - O JWT é emitido no `UserMS`.
 - O `GatewayMS` valida o token antes de encaminhar a requisição.
 - As rotas públicas de autenticação ficam liberadas para login e registro.
+- O handshake de WebSocket das videochamadas também passa pela validação do gateway.
 - As chamadas internas entre serviços usam o cabeçalho `X-Secret-Key`.
 
 ## Bancos de dados por domínio
@@ -152,14 +167,15 @@ Os serviços estão organizados com bancos MySQL separados:
 - `profiledb`
 - `appointmentsdb`
 - `pharmacydb`
+- `videocalldb`
 - `mediadb`
 
 Diagramas disponíveis no repositório:
 
-- `backendHms/DB_Diagrams/user_ms_db_diagram.pdf`
-- `backendHms/DB_Diagrams/profile_ms_db_diagram.pdf`
-- `backendHms/DB_Diagrams/appointment_ms_db_diagram.pdf`
-- `backendHms/DB_Diagrams/micro_diagram_v1.pdf`
+- `docs/db-diagrams/user_ms_db_diagram.pdf`
+- `docs/db-diagrams/profile_ms_db_diagram.pdf`
+- `docs/db-diagrams/appointment_ms_db_diagram.pdf`
+- `docs/db-diagrams/micro_diagram_v1.pdf`
 
 ## Pré-requisitos
 
@@ -167,6 +183,7 @@ Diagramas disponíveis no repositório:
 - npm 10+
 - Java JDK 17
 - MySQL 8+
+- Redis 8+
 - Maven Wrapper, já incluído em cada microserviço
 
 ## Configuração de ambiente
@@ -186,9 +203,13 @@ Recomendações:
 
 ## Como rodar localmente
 
+Se preferir um ambiente conteinerizado, o repositório também inclui um `docker-compose.yml` na raiz.
+
 ### 1. Subir o back-end
 
 Abra um terminal para cada serviço e siga a ordem abaixo.
+
+Além dos serviços Java, mantenha uma instância Redis disponível em `localhost:6379` para os fluxos com cache e videochamadas.
 
 1. `eureka-server`
 
@@ -219,6 +240,9 @@ cd backendHms/AppointmentsMS/AppointmentsMS
 cd backendHms/PharmacyMS/PharmacyMS
 ./mvnw.cmd spring-boot:run
 
+cd backendHms/VideoCallMS/VideoCallMS
+./mvnw.cmd spring-boot:run
+
 cd backendHms/media/media
 ./mvnw.cmd spring-boot:run
 ```
@@ -241,7 +265,9 @@ Aplicação local do frontend: `http://localhost:5173`
 - `ProfileMS`: `8081`
 - `AppointmentsMS`: `8082`
 - `PharmacyMS`: `8083`
+- `VideoCallMS`: `8084`
 - `MediaMS`: `8085`
+- `Redis`: `6379`
 
 ## Endpoints de referência via gateway
 
@@ -249,6 +275,8 @@ Aplicação local do frontend: `http://localhost:5173`
 - Perfis: `/profile/*`
 - Consultas: `/appointment/*`
 - Farmácia: `/pharmacy/*`
+- Videochamadas: `/videocalls/*`
+- WebSocket de videochamada: `/videocalls/ws`
 - Mídia: `/media/*`
 
 Base URL local: `http://localhost:9000`
@@ -258,8 +286,8 @@ Base URL local: `http://localhost:9000`
 O projeto já demonstra uma base consistente para um sistema hospitalar modular, com separação por domínio e autenticação centralizada. Como próximos passos naturais de produto e engenharia, vale considerar:
 
 - Ampliação dos fluxos administrativos e clínicos ainda em evolução no frontend.
+- Evolução da experiência de videochamada, incluindo robustez de reconexão e estados de sala.
 - Testes integrados para jornadas críticas.
-- Conteinerização com Docker Compose.
 - Pipeline de CI/CD com verificações automáticas.
 - Documentação de API com OpenAPI ou Swagger por serviço.
 
