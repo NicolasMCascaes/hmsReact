@@ -27,14 +27,18 @@ public class TokenFilter extends AbstractGatewayFilterFactory<TokenFilter.Config
                 return chain.filter(exchange.mutate().request(r -> r.header("X-Secret-Key", "SECRET")).build());
             }
             HttpHeaders header = exchange.getRequest().getHeaders();
-            if (!header.containsKey(HttpHeaders.AUTHORIZATION)) {
-                throw new RuntimeException("Authorization header is missing");
-            }
             String authHeader = header.getFirst(HttpHeaders.AUTHORIZATION);
-            if (authHeader == null || !authHeader.startsWith("Bearer")) {
-                throw new RuntimeException("Authorization header is invalid!");
+            String token = null;
+
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7);
             }
-            String token = authHeader.substring(7);
+            if (token == null) {
+                token = exchange.getRequest().getQueryParams().getFirst("token");
+            }
+            if (token == null || token.isBlank()) {
+                throw new RuntimeException("Authorization token is missing");
+            }
             String profileId;
             String roles;
             try {
@@ -54,6 +58,9 @@ public class TokenFilter extends AbstractGatewayFilterFactory<TokenFilter.Config
                                 httpHeaders.remove("X-Secret-Key");
                                 httpHeaders.remove("X-Profile-Id");
                                 httpHeaders.remove("X-User-Role");
+                                httpHeaders.remove("Origin");
+                                httpHeaders.remove("Access-Control-Request-Method");
+                                httpHeaders.remove("Access-Control-Request-Headers");
                             }).header("X-Secret-Key", "SECRET").header("X-Profile-Id", profileId).header("X-User-Role",
                                     roles))
                             .build());
