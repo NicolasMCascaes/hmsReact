@@ -16,7 +16,6 @@ import { getAllPatientsDropdown } from "../../../services/PatientProfileService"
 import { createVideoCall, getAllByCaller, initiateVideoCall } from "../../../services/VideoCallService"
 import { errorNotification, sucessNotification } from "../../../utilities/NotificationUtility"
 import { formatDateWithTime, toIsoLocalDateTime } from "../../../utilities/DateUtility"
-import { modals } from "@mantine/modals"
 
 type VideoCallStatus = "CREATED" | "WAITING_PATIENT" | "IN_PROGRESS" | "ENDED" | "CANCELED"
 
@@ -54,7 +53,6 @@ const VideoCall = () => {
     const token = localStorage.getItem("token")
     const [calls, setCalls] = useState<VideoCallItem[]>([])
     const [patients, setPatients] = useState<PatientOption[]>([])
-    const [canEnterRoom, setCanEnterRoom] = useState(false)
     const [opened, { open, close }] = useDisclosure(false)
     const [loading, setLoading] = useState(false)
     const [tableLoading, setTableLoading] = useState(false)
@@ -244,20 +242,24 @@ const VideoCall = () => {
 
     const actionBodyTemplate = (rowData: VideoCallItem) => {
         const roomId = getRoomIdFromUrl(rowData.callUrl)
-        const canEnter = rowData.status === "WAITING_PATIENT" || (rowData.status === "IN_PROGRESS" && roomId)
-        const ended = rowData.status === "ENDED"
-        if (canEnter && !canEnterRoom) {
-            setCanEnterRoom(true)
-        } else if (!canEnter && canEnterRoom) {
-            setCanEnterRoom(false)
-        }
-        const buttonLabel = rowData.status === "WAITING_PATIENT" ? "Iniciar chamada" : rowData.status === "ENDED" ? "Chamada encerrada" : "Entrar na chamada"
+
+        const canStart: boolean = rowData.status === "WAITING_PATIENT" && !!roomId
+        const canJoin: boolean = rowData.status === "IN_PROGRESS" && !!roomId
+        const isEndedOrCanceled: boolean = rowData.status === "ENDED" || rowData.status === "CANCELED"
+
+        const disabled = (!canStart && !canJoin) || isEndedOrCanceled
+
+        const buttonLabel =
+            canStart ? "Iniciar chamada" :
+                canJoin ? "Entrar na chamada" :
+                    rowData.status === "ENDED" ? "Chamada encerrada" :
+                        "Indisponível"
 
         return (
             <Button
                 size="xs"
                 variant="light"
-                disabled={canEnterRoom || ended}
+                disabled={disabled}
                 onClick={() => handleInitiateCall(rowData)}
             >
                 {buttonLabel}
@@ -290,31 +292,28 @@ const VideoCall = () => {
         if (!call.callUrl) {
             errorNotification("Essa chamada ainda não possui uma sala disponível.")
             return
-        } else if (call.status === "IN_PROGRESS") {
-            navigate(`/doctor/video-room/${getRoomIdFromUrl(call.callUrl)}`, {
-                state: {
-                    callId: call.callId,
-                    callUrl: call.callUrl,
-                },
+        }
+
+        const roomId = getRoomIdFromUrl(call.callUrl)
+
+        if (call.status === "IN_PROGRESS") {
+            navigate(`/doctor/video-room/${roomId}`, {
+                state: { callId: call.callId, callUrl: call.callUrl },
             })
             return
         }
-        modals.openConfirmModal({
-            title: "Iniciar chamada de vídeo",
-            centered: true,
-            children: <p>Tem certeza que deseja iniciar a chamada de vídeo? O paciente será notificado para entrar na sala.</p>,
-            labels: { confirm: "Sim, iniciar", cancel: "Não, cancelar" },
-            onConfirm: () => {
-                initiateVideoCall(call.callId).then(() => {
-                    navigate(`/doctor/video-room/${getRoomIdFromUrl(call.callUrl)}`, {
-                        state: {
-                            callId: call.callId,
-                            callUrl: call.callUrl,
-                        },
+
+        if (call.status === "WAITING_PATIENT") {
+            initiateVideoCall(call.callId)
+                .then(() => {
+                    navigate(`/doctor/video-room/${roomId}`, {
+                        state: { callId: call.callId, callUrl: call.callUrl },
                     })
                 })
-            },
-        })
+                .catch((error) => {
+                    errorNotification(error?.response?.data?.errorMessage || "Erro ao iniciar chamada.")
+                })
+        }
     }
     return (
         <div className="card">

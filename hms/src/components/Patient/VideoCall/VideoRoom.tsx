@@ -1,6 +1,6 @@
 import { Button } from "@mantine/core"
 import { useEffect, useRef, useState } from "react"
-import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { errorNotification } from "../../../utilities/NotificationUtility"
 import { IconMicrophone, IconMicrophoneOff, IconVideo, IconVideoOff } from "@tabler/icons-react"
 import { useSelector } from "react-redux"
@@ -16,7 +16,6 @@ type VideoCallSocketEvent = {
 }
 
 const VideoRoom = () => {
-    const { roomId } = useParams()
     const user = useSelector((state: any) => state.user)
     const location = useLocation()
     const [remoteVideoEnabled, setRemoteVideoEnabled] = useState(true)

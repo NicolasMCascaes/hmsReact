@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { errorNotification, sucessNotification } from "../../../utilities/NotificationUtility"
 import { IconMicrophone, IconMicrophoneOff, IconVideo, IconVideoOff } from "@tabler/icons-react"
-import { useDisclosure } from "@mantine/hooks"
 import { endVideoCall } from "../../../services/VideoCallService"
 import { useSelector } from "react-redux"
+import { modals } from "@mantine/modals"
 
 type VideoRoomState = {
     callId?: number
@@ -22,7 +22,6 @@ const VideoRoom = () => {
     const { roomId } = useParams()
     const [remoteVideoEnabled, setRemoteVideoEnabled] = useState(true)
     const [audioEnabled, setAudioEnabled] = useState(true)
-    const [opened, { close }] = useDisclosure(false);
     const user = useSelector((state: any) => state.user)
     const location = useLocation()
     const state = (location.state as VideoRoomState | null) ?? null
@@ -370,8 +369,20 @@ const VideoRoom = () => {
             }
         }
     }
+    const handleEndCall = () => {
+        modals.openConfirmModal({
+                    title: "Encerrar chamada de vídeo",
+                    centered: true,
+                    children: <p>Tem certeza que deseja encerrar a chamada de vídeo? O paciente sairá da sala automaticamente.</p>,
+                    labels: { confirm: "Sim, encerrar", cancel: "Não, cancelar" },
+                    onConfirm: () => {
+                        endCall()
+                    },
+                })
+    }
 
     const endCall = () => {
+
         endVideoCall(callId as number).then(() => {
             if (socketRef.current?.readyState === WebSocket.OPEN) {
                 socketRef.current.send(JSON.stringify({
@@ -406,7 +417,7 @@ const VideoRoom = () => {
                 <div className="flex justify-between">
                     <div className="text-2xl font-semibold text-primary-500">Sala de videochamada</div>
                     <div>
-                        <Button color="red" variant="gradient" onClick={endCall}>Encerrar chamada</Button>
+                        <Button color="red" variant="gradient" onClick={handleEndCall}>Encerrar chamada</Button>
                     </div>
                 </div>
                 <div className="mt-2 text-sm text-gray-600">Room ID: {roomId}</div>
